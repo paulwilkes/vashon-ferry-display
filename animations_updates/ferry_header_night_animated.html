@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ferry Header - Night Animated</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #f0f0f0;
+        }
+        .container {
+            max-width: 1400px;
+            width: 100%;
+        }
+        
+        /* Boat bobbing animation */
+        @keyframes bob {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-3px); }
+        }
+        
+        .ferry {
+            animation: bob 3s ease-in-out infinite;
+            transform-origin: center;
+        }
+        
+        /* Stars twinkling */
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.9; }
+            50% { opacity: 0.3; }
+        }
+        
+        @keyframes twinkleSlow {
+            0%, 100% { opacity: 0.9; }
+            50% { opacity: 0.5; }
+        }
+        
+        .star-1 { animation: twinkle 2s ease-in-out infinite; }
+        .star-2 { animation: twinkleSlow 3s ease-in-out 0.5s infinite; }
+        .star-3 { animation: twinkle 2.5s ease-in-out 1s infinite; }
+        .star-4 { animation: twinkleSlow 3.5s ease-in-out 1.5s infinite; }
+        .star-5 { animation: twinkle 2.8s ease-in-out 2s infinite; }
+        
+        /* Navigation lights blinking */
+        @keyframes blinkRed {
+            0%, 45%, 55%, 100% { opacity: 0.9; }
+            50% { opacity: 0.3; }
+        }
+        
+        @keyframes blinkGreen {
+            0%, 45%, 55%, 100% { opacity: 0.9; }
+            50% { opacity: 0.3; }
+        }
+        
+        .nav-light-red { animation: blinkRed 2s ease-in-out infinite; }
+        .nav-light-green { animation: blinkGreen 2s ease-in-out 1s infinite; }
+        
+        /* Mast light blinking */
+        @keyframes blinkMast {
+            0%, 90%, 100% { opacity: 0.9; }
+            95% { opacity: 0.2; }
+        }
+        
+        .mast-light { animation: blinkMast 3s ease-in-out infinite; }
+        
+        /* Gentle wave movement */
+        @keyframes wave {
+            0%, 100% { d: path("M 0 310 Q 100 300, 200 310 T 400 310 T 600 310 T 800 310 T 1000 310 T 1200 310"); }
+            50% { d: path("M 0 310 Q 100 305, 200 310 T 400 310 T 600 310 T 800 310 T 1000 310 T 1200 310"); }
+        }
+        
+        @keyframes wave2 {
+            0%, 100% { d: path("M 0 340 Q 120 330, 240 340 T 480 340 T 720 340 T 960 340 T 1200 340"); }
+            50% { d: path("M 0 340 Q 120 335, 240 340 T 480 340 T 720 340 T 960 340 T 1200 340"); }
+        }
+        
+        .wave-1 { animation: wave 4s ease-in-out infinite; }
+        .wave-2 { animation: wave2 5s ease-in-out infinite; }
+        
+        /* Smoke drifting */
+        @keyframes drift {
+            0% { opacity: 0.6; transform: translate(0, 0); }
+            100% { opacity: 0; transform: translate(20px, -30px); }
+        }
+        
+        .smoke-1 { animation: drift 4s ease-out infinite; }
+        .smoke-2 { animation: drift 4s ease-out 0.8s infinite; }
+        .smoke-3 { animation: drift 4s ease-out 1.6s infinite; }
+        
+        /* Window glow pulsing slightly */
+        @keyframes glowPulse {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 0.4; }
+        }
+        
+        .window-glow { animation: glowPulse 3s ease-in-out infinite; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <svg viewBox="0 0 1200 400" xmlns="http://www.w3.org/2000/svg">
+            <!-- Background - dark night sky -->
+            <rect width="1200" height="400" fill="#1A1F3A" rx="20"/>
+            
+            <!-- Stars scattered across the sky -->
+            <circle class="star-1" cx="80" cy="60" r="2" fill="#FFFFFF" opacity="0.9"/>
+            <circle class="star-2" cx="150" cy="90" r="2" fill="#FFFFFF" opacity="0.9"/>
+            <circle class="star-3" cx="220" cy="50" r="2" fill="#FFFFFF" opacity="0.9"/>
+            <circle class="star-4" cx="280" cy="120" r="2" fill="#FFFFFF" opacity="0.9"/>
+            <circle class="star-5" cx="350" cy="70" r="2" fill="#FFFFFF" opacity="0.9"/>
+            <circle class="star-1" cx="420" cy="110" r="2" fill="#FFFFFF" opacity="0.9"/>
+            <circle class="star-2" cx="490" cy="80" r="2" fill="#FFFFFF" opacity="0.9"/>
+            <circle class="star-3" cx="560" cy="130" r="2" fill="#FFFFFF" opacity="0.9"/>
+            <circle class="star-4" cx="630" cy="60" r="2" fill="#FFFFFF" opacity="0.9"/>
+            <circle class="star-5" cx="700" cy="100" r="2" fill="#FFFFFF" opacity="0.9"/>
+            <circle class="star-1" cx="770" cy="70" r="2" fill="#FFFFFF" opacity="0.9"/>
+            <circle class="star-2" cx="840" cy="120" r="2" fill="#FFFFFF" opacity="0.9"/>
+            <circle class="star-3" cx="910" cy="50" r="2" fill="#FFFFFF" opacity="0.9"/>
+            <circle class="star-4" cx="980" cy="90" r="2" fill="#FFFFFF" opacity="0.9"/>
+            <circle class="star-5" cx="1050" cy="110" r="2" fill="#FFFFFF" opacity="0.9"/>
+            <circle class="star-1" cx="1120" cy="70" r="2" fill="#FFFFFF" opacity="0.9"/>
+            
+            <circle class="star-2" cx="120" cy="140" r="2" fill="#FFFFFF" opacity="0.9"/>
+            <circle class="star-3" cx="190" cy="170" r="2" fill="#FFFFFF" opacity="0.9"/>
+            <circle class="star-4" cx="260" cy="150" r="2" fill="#FFFFFF" opacity="0.9"/>
+            <circle class="star-5" cx="330" cy="180" r="2" fill="#FFFFFF" opacity="0.9"/>
+            <circle class="star-1" cx="400" cy="160" r="2" fill="#FFFFFF" opacity="0.9"/>
+            <circle class="star-2" cx="470" cy="190" r="2" fill="#FFFFFF" opacity="0.9"/>
+            <circle class="star-3" cx="820" cy="190" r="2" fill="#FFFFFF" opacity="0.9"/>
+            <circle class="star-4" cx="890" cy="170" r="2" fill="#FFFFFF" opacity="0.9"/>
+            <circle class="star-5" cx="960" cy="150" r="2" fill="#FFFFFF" opacity="0.9"/>
+            <circle class="star-1" cx="1030" cy="180" r="2" fill="#FFFFFF" opacity="0.9"/>
+            <circle class="star-2" cx="1100" cy="160" r="2" fill="#FFFFFF" opacity="0.9"/>
+            
+            <!-- Brighter stars -->
+            <circle class="star-3" cx="200" cy="80" r="3" fill="#FFE66D" opacity="0.9"/>
+            <circle class="star-4" cx="500" cy="120" r="3" fill="#FFE66D" opacity="0.9"/>
+            <circle class="star-5" cx="800" cy="60" r="3" fill="#FFE66D" opacity="0.9"/>
+            <circle class="star-1" cx="1000" cy="130" r="3" fill="#FFE66D" opacity="0.9"/>
+            
+            <!-- Moon -->
+            <circle cx="1050" cy="80" r="40" fill="#FFE66D" opacity="0.9"/>
+            <circle cx="1065" cy="75" r="35" fill="#1A1F3A" opacity="0.3"/>
+            
+            <!-- Water - dark at night -->
+            <path d="M 0 280 Q 150 270, 300 280 T 600 280 T 900 280 T 1200 280 L 1200 400 L 0 400 Z" fill="#0D1B2E"/>
+            <path class="wave-1" d="M 0 310 Q 100 300, 200 310 T 400 310 T 600 310 T 800 310 T 1000 310 T 1200 310" fill="none" stroke="#1A2A3E" stroke-width="3" opacity="0.5"/>
+            <path class="wave-2" d="M 0 340 Q 120 330, 240 340 T 480 340 T 720 340 T 960 340 T 1200 340" fill="none" stroke="#1A2A3E" stroke-width="3" opacity="0.5"/>
+            
+            <!-- Moon reflection on water -->
+            <ellipse cx="1050" cy="320" rx="20" ry="40" fill="#FFE66D" opacity="0.3"/>
+            <ellipse cx="1050" cy="360" rx="15" ry="20" fill="#FFE66D" opacity="0.2"/>
+            
+            <!-- Ferry group with bobbing animation -->
+            <g class="ferry">
+                <path d="M 470 260 L 455 305 L 825 305 L 815 260 Z" fill="#FFFFFF"/>
+                <rect x="485" y="205" width="310" height="55" fill="#4B6EDB" rx="4"/>
+                <rect x="515" y="155" width="250" height="50" fill="#FFFFFF" rx="4"/>
+                <rect x="595" y="110" width="90" height="45" fill="#FF6B6B" rx="4"/>
+                
+                <!-- Pilot house windows - GLOWING yellow at night -->
+                <rect x="605" y="125" width="18" height="22" fill="#FFE66D" rx="2"/>
+                <rect x="632" y="125" width="18" height="22" fill="#FFE66D" rx="2"/>
+                <rect x="659" y="125" width="18" height="22" fill="#FFE66D" rx="2"/>
+                
+                <!-- Window glow effect -->
+                <rect class="window-glow" x="603" y="123" width="22" height="26" fill="#FFE66D" rx="2" opacity="0.3"/>
+                <rect class="window-glow" x="630" y="123" width="22" height="26" fill="#FFE66D" rx="2" opacity="0.3"/>
+                <rect class="window-glow" x="657" y="123" width="22" height="26" fill="#FFE66D" rx="2" opacity="0.3"/>
+                
+                <rect x="635" y="95" width="8" height="15" fill="#4B6EDB"/>
+                <circle cx="639" cy="90" r="6" fill="#FF6B6B"/>
+                <line x1="639" y1="84" x2="639" y2="75" stroke="#FF6B6B" stroke-width="2"/>
+                <circle cx="639" cy="75" r="4" fill="#FF6B6B" opacity="0.9"/>
+                
+                <!-- Red blinking light on mast -->
+                <circle class="mast-light" cx="639" cy="75" r="6" fill="#FF6B6B" opacity="0.4"/>
+                
+                <!-- Upper deck windows - GLOWING -->
+                <rect x="530" y="170" width="22" height="25" fill="#FFE66D" rx="2"/>
+                <rect x="565" y="170" width="22" height="25" fill="#FFE66D" rx="2"/>
+                <rect x="600" y="170" width="22" height="25" fill="#FFE66D" rx="2"/>
+                <rect x="635" y="170" width="22" height="25" fill="#FFE66D" rx="2"/>
+                <rect x="670" y="170" width="22" height="25" fill="#FFE66D" rx="2"/>
+                <rect x="705" y="170" width="22" height="25" fill="#FFE66D" rx="2"/>
+                
+                <!-- Window glow -->
+                <rect class="window-glow" x="528" y="168" width="26" height="29" fill="#FFE66D" rx="2" opacity="0.3"/>
+                <rect class="window-glow" x="563" y="168" width="26" height="29" fill="#FFE66D" rx="2" opacity="0.3"/>
+                <rect class="window-glow" x="598" y="168" width="26" height="29" fill="#FFE66D" rx="2" opacity="0.3"/>
+                <rect class="window-glow" x="633" y="168" width="26" height="29" fill="#FFE66D" rx="2" opacity="0.3"/>
+                <rect class="window-glow" x="668" y="168" width="26" height="29" fill="#FFE66D" rx="2" opacity="0.3"/>
+                <rect class="window-glow" x="703" y="168" width="26" height="29" fill="#FFE66D" rx="2" opacity="0.3"/>
+                
+                <!-- Vehicle deck windows/openings - GLOWING yellow -->
+                <rect x="505" y="220" width="45" height="30" fill="#FFE66D" rx="2"/>
+                <rect x="570" y="220" width="45" height="30" fill="#FFE66D" rx="2"/>
+                <rect x="635" y="220" width="45" height="30" fill="#FFE66D" rx="2"/>
+                <rect x="700" y="220" width="45" height="30" fill="#FFE66D" rx="2"/>
+                
+                <!-- Window glow -->
+                <rect class="window-glow" x="503" y="218" width="49" height="34" fill="#FFE66D" rx="2" opacity="0.3"/>
+                <rect class="window-glow" x="568" y="218" width="49" height="34" fill="#FFE66D" rx="2" opacity="0.3"/>
+                <rect class="window-glow" x="633" y="218" width="49" height="34" fill="#FFE66D" rx="2" opacity="0.3"/>
+                <rect class="window-glow" x="698" y="218" width="49" height="34" fill="#FFE66D" rx="2" opacity="0.3"/>
+                
+                <ellipse cx="527" cy="235" rx="10" ry="7" fill="#3D5AA6" opacity="0.6"/>
+                <ellipse cx="592" cy="235" rx="10" ry="7" fill="#3D5AA6" opacity="0.6"/>
+                <ellipse cx="657" cy="235" rx="10" ry="7" fill="#3D5AA6" opacity="0.6"/>
+                
+                <rect x="705" y="135" width="32" height="20" fill="#FF6B6B" rx="3"/>
+                <ellipse cx="721" cy="135" rx="16" ry="5" fill="#FF6B6B"/>
+                
+                <g transform="translate(545, 180)" opacity="0.6">
+                    <circle cx="0" cy="0" r="7" fill="#3D5AA6"/>
+                    <ellipse cx="0" cy="11" rx="6" ry="9" fill="#2A4578"/>
+                </g>
+                <g transform="translate(620, 180)" opacity="0.6">
+                    <circle cx="0" cy="0" r="7" fill="#3D5AA6"/>
+                    <ellipse cx="0" cy="11" rx="6" ry="9" fill="#2A4578"/>
+                </g>
+                <g transform="translate(690, 180)" opacity="0.6">
+                    <circle cx="0" cy="0" r="7" fill="#3D5AA6"/>
+                    <ellipse cx="0" cy="11" rx="6" ry="9" fill="#2A4578"/>
+                </g>
+                
+                <!-- Navigation lights - red (port) and green (starboard) -->
+                <circle class="nav-light-red" cx="460" cy="280" r="4" fill="#FF6B6B" opacity="0.9"/>
+                <circle class="nav-light-red" cx="460" cy="280" r="7" fill="#FF6B6B" opacity="0.3"/>
+                
+                <circle class="nav-light-green" cx="820" cy="280" r="4" fill="#3FB573" opacity="0.9"/>
+                <circle class="nav-light-green" cx="820" cy="280" r="7" fill="#3FB573" opacity="0.3"/>
+            </g>
+            
+            <!-- Smoke puffs - darker at night -->
+            <circle class="smoke-1" cx="718" cy="117" r="11" fill="#3D4A5C" opacity="0.6"/>
+            <circle class="smoke-2" cx="728" cy="108" r="13" fill="#3D4A5C" opacity="0.5"/>
+            <circle class="smoke-3" cx="713" cy="103" r="9" fill="#3D4A5C" opacity="0.6"/>
+            
+            <!-- Decorative waves - subtle at night -->
+            <ellipse cx="200" cy="320" rx="40" ry="14" fill="#1A2A3E" opacity="0.4"/>
+            <ellipse cx="460" cy="325" rx="38" ry="13" fill="#1A2A3E" opacity="0.4"/>
+            <ellipse cx="820" cy="335" rx="45" ry="16" fill="#1A2A3E" opacity="0.4"/>
+            <ellipse cx="1000" cy="315" rx="42" ry="15" fill="#1A2A3E" opacity="0.3"/>
+            <ellipse cx="630" cy="350" rx="35" ry="12" fill="#1A2A3E" opacity="0.3"/>
+        </svg>
+    </div>
+</body>
+</html>

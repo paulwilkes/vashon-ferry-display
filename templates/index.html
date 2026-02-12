@@ -1,0 +1,1912 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vashon Ferry Schedule</title>
+    <!-- Add Google Font -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:ital,wght@0,100..900;1,100..900&family=Cardo:ital,wght@0,400;0,700;1,400&family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Raleway:ital,wght@0,100..900;1,100..900&family=Space+Grotesk:wght@300..700&family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
+<style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #FFB5B5;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.3'/%3E%3C/svg%3E");
+            color: #4B6EDB;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.3);
+            position: relative;
+            overflow: hidden;
+            height:200px;
+        }
+
+        .ferry-illustration {
+            position: absolute;
+            left: 0;
+            right: 0;
+            top: -20px;
+            width: 100%;
+            height: auto;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        header h1,
+        header .update-time {
+            position: relative;
+            z-index: 1;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+               font-family: "Playfair Display", serif;
+  font-optical-sizing: auto;
+  font-weight: 500;
+  font-style: italic;
+            font-size: 7em;
+            margin-bottom:10px;
+   
+        }
+
+        .update-time {
+            font-family: "Space Mono", monospace;
+            font-weight: 400;
+            font-style: normal;
+            font-size: 0.9em;
+            opacity: 0.8;
+            color: #000;
+            padding: 8px 12px;
+            background: #6B8FD9;
+            border-radius: 8px;
+            width:30%;
+            margin: 75px 0 0 0;
+            display: inline-block;
+            float:left;
+        }
+
+        .weather-box {
+            font-family: "Space Mono", monospace;
+            font-weight: 400;
+            font-style: normal;
+            font-size: 0.9em;
+            opacity: 0.8;
+            color: #000;
+            padding: 8px 12px;
+            background: #FFE66D;
+            border-radius: 8px;
+            width: 30%;
+            margin: 45px 0 0 0;
+            display: inline-block;
+            float: right;
+            position: relative;
+            z-index: 1;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .weather-item {
+            margin: 4px 0;
+        }
+
+        .weather-label {
+            font-weight: 700;
+        }
+
+        .routes-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 20px;
+        }
+
+        .route-section {
+            background: rgba(255, 255, 255, 0.3);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+        }
+
+        .route-title {
+             font-family: "Playfair Display", serif;
+            font-optical-sizing: auto;
+            font-weight: 200;
+            font-style: italic;
+            margin-bottom: 20px;
+            text-align: center;
+            color: #4B6EDB;
+            font-size: 40px;
+        }
+
+        .boat-status {
+            text-align: center;
+            font-family: "Space Mono", monospace;
+            font-size: 0.85em;
+            margin-top: 20px;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.3);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+            color: #4B6EDB;
+        }
+
+        .boat-count {
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+
+        .flag-icon {
+            width: 20px;
+            height: 20px;
+            vertical-align: middle;
+            margin-right: 6px;
+        }
+
+        .boat-status.two-boat {
+            border-top: 4px solid #FF6B6B;
+        }
+
+        .boat-status.three-boat {
+            border-top: 4px solid #6B8FD9;
+        }
+
+        .direction-section {
+            margin-bottom: 25px;
+        }
+
+        .direction-section:last-child {
+            margin-bottom: 0;
+        }
+
+        .direction-header {
+              font-family: "Space Mono", monospace;
+                font-weight: 400;
+            font-style: italic;
+            font-size: 1em;
+            margin-bottom: 12px;
+            padding: 8px 12px;
+            background: #6B8FD9;
+            border-radius: 8px;
+            color: #FFFFFF;
+            text-align: center;
+        }
+
+        .direction-arrow {
+            font-size: 0.9em;
+            opacity: 0.8;
+        }
+
+        .sailings {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .sailing {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 15px;
+            border-radius: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: transform 0.2s;
+        }
+
+        .sailing:hover {
+            transform: translateX(5px);
+            background: rgba(255, 255, 255, 0.25);
+        }
+
+        .sailing-time {
+              font-family: "Space Grotesk", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 200;
+  font-style: normal;
+            font-size: 1.8em;
+            font-weight: bold;
+            color: #4B6EDB;
+        }
+
+        .sailing-vessel {
+            font-family: "Space Mono", monospace;
+  font-weight: 400;
+  font-style: normal;
+            font-size: 0.9em;
+            opacity: 0.9;
+            color: #FF6B6B;
+        }
+
+        .loading {
+            text-align: center;
+            font-size: 1.5em;
+            padding: 50px;
+            opacity: 0.7;
+        }
+
+        .error {
+            background: rgba(255, 0, 0, 0.3);
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            text-align: center;
+        }
+
+        .no-sailings {
+            text-align: center;
+            padding: 20px;
+            opacity: 0.7;
+            font-style: italic;
+        }
+
+
+        /* Night mode text adjustments */
+        body.night-mode .route-title {
+            color: #FFFFFF;
+        }
+
+        body.night-mode .sailing-vessel {
+            color: #FFE66D;
+        }
+
+        body.night-mode .sailing-time {
+            color: #FFFFFF;
+        }
+
+        body.night-mode .direction-header {
+            background: #3D5AA6;
+        }
+        
+         body.night-mode .boat-status.three-boat {
+            color: #FFFFFF;
+        }
+        
+        body.night-mode .boat-status.two-boat {
+            color: #FFFFFF;
+        }
+
+        @media (max-width: 768px) {
+            .routes-container {
+                grid-template-columns: 1fr;
+            }
+
+            h1 {
+                font-size: 3em;
+            }
+
+            .route-title {
+                font-size: 1.5em;
+            }
+
+            .sailing-time {
+                font-size: 1.5em;
+            }
+
+            .ferry-illustration {
+                top: -10px;
+            }
+
+            .update-time {
+                width: 45%;
+                margin: 65px 5px 0 5px;
+            }
+            .weather-box {
+                width: 45%;
+                font-size: 0.75em;
+                margin: 40px 5px 0 5px;
+            }
+
+            header {
+                height: 180px;
+            }
+        }
+
+        /* Animation for loading */
+        @keyframes pulse {
+            0%, 100% {
+                opacity: 0.6;
+            }
+            50% {
+                opacity: 1;
+            }
+        }
+
+        .loading {
+            animation: pulse 2s infinite;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <!-- Ferry Illustration Background - Full Width -->
+            <svg class="ferry-illustration" viewBox="0 0 1200 400" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
+                <!-- Water -->
+                <path d="M 0 280 Q 150 270, 300 280 T 600 280 T 900 280 T 1200 280 L 1200 400 L 0 400 Z" fill="#6B8FD9"/>
+                <path d="M 0 310 Q 100 300, 200 310 T 400 310 T 600 310 T 800 310 T 1000 310 T 1200 310" fill="none" stroke="#5577C9" stroke-width="3" opacity="0.5"/>
+                <path d="M 0 340 Q 120 330, 240 340 T 480 340 T 720 340 T 960 340 T 1200 340" fill="none" stroke="#5577C9" stroke-width="3" opacity="0.5"/>
+                
+                <!-- Ferry Hull - white body with angled front -->
+                <path d="M 470 260 L 455 305 L 825 305 L 815 260 Z" fill="#FFFFFF"/>
+                
+                <!-- Vehicle deck structure - bold blue -->
+                <rect x="485" y="205" width="310" height="55" fill="#4B6EDB" rx="4"/>
+                
+                <!-- Upper passenger deck - white -->
+                <rect x="515" y="155" width="250" height="50" fill="#FFFFFF" rx="4"/>
+                
+                <!-- Bridge/Pilot house - pink/coral -->
+                <rect x="595" y="110" width="90" height="45" fill="#FF6B6B" rx="4"/>
+                
+                <!-- Pilot house windows - yellow -->
+                <rect x="605" y="125" width="18" height="22" fill="#FFE66D" rx="2"/>
+                <rect x="632" y="125" width="18" height="22" fill="#FFE66D" rx="2"/>
+                <rect x="659" y="125" width="18" height="22" fill="#FFE66D" rx="2"/>
+                
+                <!-- Radar mast - playful -->
+                <rect x="635" y="95" width="8" height="15" fill="#4B6EDB"/>
+                <circle cx="639" cy="90" r="6" fill="#FFE66D"/>
+                <line x1="639" y1="84" x2="639" y2="75" stroke="#FF6B6B" stroke-width="2"/>
+                <circle cx="639" cy="75" r="4" fill="#FFE66D"/>
+                
+                <!-- Upper deck windows - blue -->
+                <rect x="530" y="170" width="22" height="25" fill="#4B6EDB" rx="2"/>
+                <rect x="565" y="170" width="22" height="25" fill="#4B6EDB" rx="2"/>
+                <rect x="600" y="170" width="22" height="25" fill="#4B6EDB" rx="2"/>
+                <rect x="635" y="170" width="22" height="25" fill="#4B6EDB" rx="2"/>
+                <rect x="670" y="170" width="22" height="25" fill="#4B6EDB" rx="2"/>
+                <rect x="705" y="170" width="22" height="25" fill="#4B6EDB" rx="2"/>
+                
+                <!-- Vehicle deck windows/openings - yellow -->
+                <rect x="505" y="220" width="45" height="30" fill="#FFE66D" rx="2"/>
+                <rect x="570" y="220" width="45" height="30" fill="#FFE66D" rx="2"/>
+                <rect x="635" y="220" width="45" height="30" fill="#FFE66D" rx="2"/>
+                <rect x="700" y="220" width="45" height="30" fill="#FFE66D" rx="2"/>
+                
+                <!-- Stylized cars on deck - fun colors -->
+                <ellipse cx="527" cy="235" rx="10" ry="7" fill="#FF6B6B"/>
+                <ellipse cx="592" cy="235" rx="10" ry="7" fill="#FFFFFF"/>
+                <ellipse cx="657" cy="235" rx="10" ry="7" fill="#FFE66D"/>
+                
+                <!-- Smokestack - coral/pink -->
+                <rect x="705" y="135" width="32" height="20" fill="#FF6B6B" rx="3"/>
+                <ellipse cx="721" cy="135" rx="16" ry="5" fill="#FF6B6B"/>
+                
+                <!-- Smoke puffs - yellow -->
+                <circle cx="718" cy="117" r="11" fill="#FFE66D" opacity="0.8"/>
+                <circle cx="728" cy="108" r="13" fill="#FFE66D" opacity="0.7"/>
+                <circle cx="713" cy="103" r="9" fill="#FFE66D" opacity="0.8"/>
+                <circle cx="723" cy="93" r="11" fill="#FFE66D" opacity="0.6"/>
+                <circle cx="710" cy="88" r="8" fill="#FFE66D" opacity="0.5"/>
+                
+                <!-- People on deck - colorful -->
+                <g transform="translate(545, 180)">
+                    <circle cx="0" cy="0" r="7" fill="#FF6B6B"/>
+                    <ellipse cx="0" cy="11" rx="6" ry="9" fill="#4B6EDB"/>
+                </g>
+                
+                <g transform="translate(620, 180)">
+                    <circle cx="0" cy="0" r="7" fill="#FFE66D"/>
+                    <ellipse cx="0" cy="11" rx="6" ry="9" fill="#FF6B6B"/>
+                </g>
+                
+                <g transform="translate(690, 180)">
+                    <circle cx="0" cy="0" r="7" fill="#4B6EDB"/>
+                    <ellipse cx="0" cy="11" rx="6" ry="9" fill="#FFE66D"/>
+                </g>
+                
+                <!-- Birds in sky - spread across wider canvas -->
+                <path d="M 180 80 Q 190 75, 200 80" fill="none" stroke="#4B6EDB" stroke-width="3" stroke-linecap="round"/>
+                <path d="M 200 80 Q 210 75, 220 80" fill="none" stroke="#4B6EDB" stroke-width="3" stroke-linecap="round"/>
+                
+                <path d="M 350 110 Q 360 105, 370 110" fill="none" stroke="#4B6EDB" stroke-width="3" stroke-linecap="round"/>
+                <path d="M 370 110 Q 380 105, 390 110" fill="none" stroke="#4B6EDB" stroke-width="3" stroke-linecap="round"/>
+                
+                <path d="M 890 100 Q 900 95, 910 100" fill="none" stroke="#4B6EDB" stroke-width="3" stroke-linecap="round"/>
+                <path d="M 910 100 Q 920 95, 930 100" fill="none" stroke="#4B6EDB" stroke-width="3" stroke-linecap="round"/>
+                
+                <path d="M 1020 70 Q 1030 65, 1040 70" fill="none" stroke="#4B6EDB" stroke-width="3" stroke-linecap="round"/>
+                <path d="M 1040 70 Q 1050 65, 1060 70" fill="none" stroke="#4B6EDB" stroke-width="3" stroke-linecap="round"/>
+                
+                <!-- Decorative waves/splashes - spread out -->
+                <ellipse cx="200" cy="320" rx="40" ry="14" fill="#FFFFFF" opacity="0.4"/>
+                <ellipse cx="460" cy="325" rx="38" ry="13" fill="#FFFFFF" opacity="0.4"/>
+                <ellipse cx="820" cy="335" rx="45" ry="16" fill="#FFFFFF" opacity="0.4"/>
+                <ellipse cx="1000" cy="315" rx="42" ry="15" fill="#FFFFFF" opacity="0.3"/>
+                <ellipse cx="630" cy="350" rx="35" ry="12" fill="#FFFFFF" opacity="0.3"/>
+                
+                <circle cx="205" cy="310" r="7" fill="#FFFFFF" opacity="0.5"/>
+                <circle cx="190" cy="315" r="5" fill="#FFFFFF" opacity="0.5"/>
+                <circle cx="815" cy="325" r="7" fill="#FFFFFF" opacity="0.5"/>
+                <circle cx="830" cy="330" r="5" fill="#FFFFFF" opacity="0.5"/>
+                <circle cx="995" cy="305" r="6" fill="#FFFFFF" opacity="0.5"/>
+                <circle cx="1010" cy="310" r="5" fill="#FFFFFF" opacity="0.5"/>
+            </svg>
+
+            <!--<h1>Ferry Times</h1>-->
+            <div class="update-time" id="updateTime">Loading...</div>
+            <div class="weather-box" id="weatherBox">
+                <div class="weather-item"><span class="weather-label">Temp:</span> <span id="temperature">--</span>°F</div>
+                <div class="weather-item"><span class="weather-label">Conditions:</span> <span id="conditions">--</span></div>
+                <div class="weather-item"><span class="weather-label">Wind:</span> <span id="windSpeed">--</span> knots</div>
+            </div>
+        </header>
+
+        <div id="content" class="loading">
+            Loading ferry schedules...
+        </div>
+    </div>
+
+    <script>
+        let refreshInterval;
+
+
+        // ===== DYNAMIC WEATHER HEADER SYSTEM =====
+        const headerSVGs = {
+    clear: {
+        background: '#FFB5B5',
+        css: `
+            @keyframes bob { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-3px); } }
+            @keyframes flapLeft { 0%, 100% { d: path("M 0 0 Q 10 -5, 20 0"); } 50% { d: path("M 0 0 Q 10 -8, 20 0"); } }
+            @keyframes flapRight { 0%, 100% { d: path("M 0 0 Q 10 -5, 20 0"); } 50% { d: path("M 0 0 Q 10 -8, 20 0"); } }
+            @keyframes drift { 0% { opacity: 0.8; transform: translate(0, 0); } 100% { opacity: 0; transform: translate(20px, -30px); } }
+            @keyframes wave { 0%, 100% { d: path("M 0 310 Q 100 300, 200 310 T 400 310 T 600 310 T 800 310 T 1000 310 T 1200 310"); } 50% { d: path("M 0 310 Q 100 305, 200 310 T 400 310 T 600 310 T 800 310 T 1000 310 T 1200 310"); } }
+            @keyframes wave2 { 0%, 100% { d: path("M 0 340 Q 120 330, 240 340 T 480 340 T 720 340 T 960 340 T 1200 340"); } 50% { d: path("M 0 340 Q 120 335, 240 340 T 480 340 T 720 340 T 960 340 T 1200 340"); } }
+            .ferry { animation: bob 3s ease-in-out infinite; transform-origin: center; }
+            .bird-left-1 { animation: flapLeft 0.5s ease-in-out infinite; }
+            .bird-right-1 { animation: flapRight 0.5s ease-in-out infinite; }
+            .bird-left-2 { animation: flapLeft 0.6s ease-in-out infinite; }
+            .bird-right-2 { animation: flapRight 0.6s ease-in-out infinite; }
+            .bird-left-3 { animation: flapLeft 0.55s ease-in-out infinite; }
+            .bird-right-3 { animation: flapRight 0.55s ease-in-out infinite; }
+            .bird-left-4 { animation: flapLeft 0.58s ease-in-out infinite; }
+            .bird-right-4 { animation: flapRight 0.58s ease-in-out infinite; }
+            .smoke-1 { animation: drift 4s ease-out infinite; }
+            .smoke-2 { animation: drift 4s ease-out 0.8s infinite; }
+            .smoke-3 { animation: drift 4s ease-out 1.6s infinite; }
+            .smoke-4 { animation: drift 4s ease-out 2.4s infinite; }
+            .smoke-5 { animation: drift 4s ease-out 3.2s infinite; }
+            .wave-1 { animation: wave 4s ease-in-out infinite; }
+            .wave-2 { animation: wave2 5s ease-in-out infinite; }
+        `,
+        svg: `<svg viewBox="0 0 1200 400" xmlns="http://www.w3.org/2000/svg">
+            <!-- Background -->
+            <rect width="1200" height="400" fill="#FFB5B5" rx="20"/>
+
+            <!-- Water -->
+            <path d="M 0 280 Q 150 270, 300 280 T 600 280 T 900 280 T 1200 280 L 1200 400 L 0 400 Z" fill="#6B8FD9"/>
+            <path class="wave-1" d="M 0 310 Q 100 300, 200 310 T 400 310 T 600 310 T 800 310 T 1000 310 T 1200 310" fill="none" stroke="#5577C9" stroke-width="3" opacity="0.5"/>
+            <path class="wave-2" d="M 0 340 Q 120 330, 240 340 T 480 340 T 720 340 T 960 340 T 1200 340" fill="none" stroke="#5577C9" stroke-width="3" opacity="0.5"/>
+
+            <!-- Ferry group with bobbing animation -->
+            <g class="ferry">
+                <!-- Ferry Hull - white body with angled front -->
+                <path d="M 470 260 L 455 305 L 825 305 L 815 260 Z" fill="#FFFFFF"/>
+
+                <!-- Vehicle deck structure - bold blue -->
+                <rect x="485" y="205" width="310" height="55" fill="#4B6EDB" rx="4"/>
+
+                <!-- Upper passenger deck - white -->
+                <rect x="515" y="155" width="250" height="50" fill="#FFFFFF" rx="4"/>
+
+                <!-- Bridge/Pilot house - pink/coral -->
+                <rect x="595" y="110" width="90" height="45" fill="#FF6B6B" rx="4"/>
+
+                <!-- Pilot house windows - yellow -->
+                <rect x="605" y="125" width="18" height="22" fill="#FFE66D" rx="2"/>
+                <rect x="632" y="125" width="18" height="22" fill="#FFE66D" rx="2"/>
+                <rect x="659" y="125" width="18" height="22" fill="#FFE66D" rx="2"/>
+
+                <!-- Radar mast - playful -->
+                <rect x="635" y="95" width="8" height="15" fill="#4B6EDB"/>
+                <circle cx="639" cy="90" r="6" fill="#FFE66D"/>
+                <line x1="639" y1="84" x2="639" y2="75" stroke="#FF6B6B" stroke-width="2"/>
+                <circle cx="639" cy="75" r="4" fill="#FFE66D"/>
+
+                <!-- Upper deck windows - blue -->
+                <rect x="530" y="170" width="22" height="25" fill="#4B6EDB" rx="2"/>
+                <rect x="565" y="170" width="22" height="25" fill="#4B6EDB" rx="2"/>
+                <rect x="600" y="170" width="22" height="25" fill="#4B6EDB" rx="2"/>
+                <rect x="635" y="170" width="22" height="25" fill="#4B6EDB" rx="2"/>
+                <rect x="670" y="170" width="22" height="25" fill="#4B6EDB" rx="2"/>
+                <rect x="705" y="170" width="22" height="25" fill="#4B6EDB" rx="2"/>
+
+                <!-- Vehicle deck windows/openings - yellow -->
+                <rect x="505" y="220" width="45" height="30" fill="#FFE66D" rx="2"/>
+                <rect x="570" y="220" width="45" height="30" fill="#FFE66D" rx="2"/>
+                <rect x="635" y="220" width="45" height="30" fill="#FFE66D" rx="2"/>
+                <rect x="700" y="220" width="45" height="30" fill="#FFE66D" rx="2"/>
+
+                <!-- Stylized cars on deck - fun colors -->
+                <ellipse cx="527" cy="235" rx="10" ry="7" fill="#FF6B6B"/>
+                <ellipse cx="592" cy="235" rx="10" ry="7" fill="#FFFFFF"/>
+                <ellipse cx="657" cy="235" rx="10" ry="7" fill="#FFE66D"/>
+
+                <!-- Smokestack - coral/pink -->
+                <rect x="705" y="135" width="32" height="20" fill="#FF6B6B" rx="3"/>
+                <ellipse cx="721" cy="135" rx="16" ry="5" fill="#FF6B6B"/>
+
+                <!-- People on deck - colorful -->
+                <g transform="translate(545, 180)">
+                    <circle cx="0" cy="0" r="7" fill="#FF6B6B"/>
+                    <ellipse cx="0" cy="11" rx="6" ry="9" fill="#4B6EDB"/>
+                </g>
+
+                <g transform="translate(620, 180)">
+                    <circle cx="0" cy="0" r="7" fill="#FFE66D"/>
+                    <ellipse cx="0" cy="11" rx="6" ry="9" fill="#FF6B6B"/>
+                </g>
+
+                <g transform="translate(690, 180)">
+                    <circle cx="0" cy="0" r="7" fill="#4B6EDB"/>
+                    <ellipse cx="0" cy="11" rx="6" ry="9" fill="#FFE66D"/>
+                </g>
+            </g>
+
+            <!-- Smoke puffs with drift animation -->
+            <circle class="smoke-1" cx="718" cy="117" r="11" fill="#FFE66D"/>
+            <circle class="smoke-2" cx="728" cy="108" r="13" fill="#FFE66D"/>
+            <circle class="smoke-3" cx="713" cy="103" r="9" fill="#FFE66D"/>
+            <circle class="smoke-4" cx="723" cy="93" r="11" fill="#FFE66D"/>
+            <circle class="smoke-5" cx="710" cy="88" r="8" fill="#FFE66D"/>
+
+            <!-- Birds with flapping animation - Bird 1 -->
+            <g transform="translate(180, 80)">
+                <path class="bird-left-1" d="M 0 0 Q 10 -5, 20 0" fill="none" stroke="#4B6EDB" stroke-width="3" stroke-linecap="round"/>
+                <path class="bird-right-1" d="M 20 0 Q 30 -5, 40 0" fill="none" stroke="#4B6EDB" stroke-width="3" stroke-linecap="round"/>
+            </g>
+
+            <!-- Bird 2 -->
+            <g transform="translate(350, 110)">
+                <path class="bird-left-2" d="M 0 0 Q 10 -5, 20 0" fill="none" stroke="#4B6EDB" stroke-width="3" stroke-linecap="round"/>
+                <path class="bird-right-2" d="M 20 0 Q 30 -5, 40 0" fill="none" stroke="#4B6EDB" stroke-width="3" stroke-linecap="round"/>
+            </g>
+
+            <!-- Bird 3 -->
+            <g transform="translate(890, 100)">
+                <path class="bird-left-3" d="M 0 0 Q 10 -5, 20 0" fill="none" stroke="#4B6EDB" stroke-width="3" stroke-linecap="round"/>
+                <path class="bird-right-3" d="M 20 0 Q 30 -5, 40 0" fill="none" stroke="#4B6EDB" stroke-width="3" stroke-linecap="round"/>
+            </g>
+
+            <!-- Bird 4 -->
+            <g transform="translate(1020, 70)">
+                <path class="bird-left-4" d="M 0 0 Q 10 -5, 20 0" fill="none" stroke="#4B6EDB" stroke-width="3" stroke-linecap="round"/>
+                <path class="bird-right-4" d="M 20 0 Q 30 -5, 40 0" fill="none" stroke="#4B6EDB" stroke-width="3" stroke-linecap="round"/>
+            </g>
+
+            <!-- Decorative waves -->
+            <ellipse cx="200" cy="320" rx="40" ry="14" fill="#FFFFFF" opacity="0.4"/>
+            <ellipse cx="460" cy="325" rx="38" ry="13" fill="#FFFFFF" opacity="0.4"/>
+            <ellipse cx="820" cy="335" rx="45" ry="16" fill="#FFFFFF" opacity="0.4"/>
+            <ellipse cx="1000" cy="315" rx="42" ry="15" fill="#FFFFFF" opacity="0.3"/>
+            <ellipse cx="630" cy="350" rx="35" ry="12" fill="#FFFFFF" opacity="0.3"/>
+
+            <circle cx="205" cy="310" r="7" fill="#FFFFFF" opacity="0.5"/>
+            <circle cx="190" cy="315" r="5" fill="#FFFFFF" opacity="0.5"/>
+            <circle cx="815" cy="325" r="7" fill="#FFFFFF" opacity="0.5"/>
+            <circle cx="830" cy="330" r="5" fill="#FFFFFF" opacity="0.5"/>
+            <circle cx="995" cy="305" r="6" fill="#FFFFFF" opacity="0.5"/>
+            <circle cx="1010" cy="310" r="5" fill="#FFFFFF" opacity="0.5"/>
+        </svg>`
+    },
+    cloudy: {
+        background: '#D9ACAC',
+        css: `
+            @keyframes bob { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-3px); } }
+            @keyframes driftCloud { 0% { transform: translateX(0); } 100% { transform: translateX(50px); } }
+            @keyframes driftCloudSlow { 0% { transform: translateX(0); } 100% { transform: translateX(30px); } }
+            @keyframes drift { 0% { opacity: 0.8; transform: translate(0, 0); } 100% { opacity: 0; transform: translate(20px, -30px); } }
+            @keyframes wave { 0%, 100% { d: path("M 0 310 Q 100 300, 200 310 T 400 310 T 600 310 T 800 310 T 1000 310 T 1200 310"); } 50% { d: path("M 0 310 Q 100 305, 200 310 T 400 310 T 600 310 T 800 310 T 1000 310 T 1200 310"); } }
+            @keyframes wave2 { 0%, 100% { d: path("M 0 340 Q 120 330, 240 340 T 480 340 T 720 340 T 960 340 T 1200 340"); } 50% { d: path("M 0 340 Q 120 335, 240 340 T 480 340 T 720 340 T 960 340 T 1200 340"); } }
+            .ferry { animation: bob 3s ease-in-out infinite; transform-origin: center; }
+            .cloud-1 { animation: driftCloud 40s linear infinite; }
+            .cloud-2 { animation: driftCloudSlow 50s linear infinite; }
+            .cloud-3 { animation: driftCloud 45s linear infinite; }
+            .cloud-4 { animation: driftCloudSlow 55s linear infinite; }
+            .cloud-5 { animation: driftCloud 42s linear infinite; }
+            .smoke-1 { animation: drift 4s ease-out infinite; }
+            .smoke-2 { animation: drift 4s ease-out 0.8s infinite; }
+            .smoke-3 { animation: drift 4s ease-out 1.6s infinite; }
+            .smoke-4 { animation: drift 4s ease-out 2.4s infinite; }
+            .smoke-5 { animation: drift 4s ease-out 3.2s infinite; }
+            .wave-1 { animation: wave 4s ease-in-out infinite; }
+            .wave-2 { animation: wave2 5s ease-in-out infinite; }
+        `,
+        svg: `<svg viewBox="0 0 1200 400" xmlns="http://www.w3.org/2000/svg">
+            <!-- Background - slightly muted pink -->
+            <rect width="1200" height="400" fill="#D9ACAC" rx="20"/>
+
+            <!-- Fluffy clouds -->
+            <g opacity="0.85">
+                <!-- Cloud 1 -->
+                <g class="cloud-1">
+                    <circle cx="120" cy="80" r="30" fill="#FFFFFF"/>
+                    <circle cx="150" cy="75" r="35" fill="#FFFFFF"/>
+                    <circle cx="180" cy="80" r="28" fill="#FFFFFF"/>
+                    <circle cx="145" cy="95" r="32" fill="#FFFFFF"/>
+                </g>
+
+                <!-- Cloud 2 -->
+                <g class="cloud-2">
+                    <circle cx="320" cy="110" r="28" fill="#FFFFFF"/>
+                    <circle cx="350" cy="105" r="32" fill="#FFFFFF"/>
+                    <circle cx="375" cy="110" r="26" fill="#FFFFFF"/>
+                    <circle cx="345" cy="125" r="30" fill="#FFFFFF"/>
+                </g>
+
+                <!-- Cloud 3 -->
+                <g class="cloud-3">
+                    <circle cx="850" cy="90" r="32" fill="#FFFFFF"/>
+                    <circle cx="880" cy="85" r="38" fill="#FFFFFF"/>
+                    <circle cx="915" cy="90" r="30" fill="#FFFFFF"/>
+                    <circle cx="880" cy="110" r="35" fill="#FFFFFF"/>
+                </g>
+
+                <!-- Cloud 4 -->
+                <g class="cloud-4">
+                    <circle cx="1050" cy="120" r="26" fill="#FFFFFF"/>
+                    <circle cx="1075" cy="115" r="30" fill="#FFFFFF"/>
+                    <circle cx="1100" cy="120" r="28" fill="#FFFFFF"/>
+                    <circle cx="1075" cy="135" r="28" fill="#FFFFFF"/>
+                </g>
+
+                <!-- Cloud 5 - smaller -->
+                <g class="cloud-5">
+                    <circle cx="580" cy="70" r="22" fill="#FFFFFF"/>
+                    <circle cx="600" cy="68" r="25" fill="#FFFFFF"/>
+                    <circle cx="620" cy="72" r="20" fill="#FFFFFF"/>
+                </g>
+            </g>
+
+            <!-- Water -->
+            <path d="M 0 280 Q 150 270, 300 280 T 600 280 T 900 280 T 1200 280 L 1200 400 L 0 400 Z" fill="#6B8FD9"/>
+            <path class="wave-1" d="M 0 310 Q 100 300, 200 310 T 400 310 T 600 310 T 800 310 T 1000 310 T 1200 310" fill="none" stroke="#5577C9" stroke-width="3" opacity="0.5"/>
+            <path class="wave-2" d="M 0 340 Q 120 330, 240 340 T 480 340 T 720 340 T 960 340 T 1200 340" fill="none" stroke="#5577C9" stroke-width="3" opacity="0.5"/>
+
+            <!-- Ferry group with bobbing animation -->
+            <g class="ferry">
+                <path d="M 470 260 L 455 305 L 825 305 L 815 260 Z" fill="#FFFFFF"/>
+                <rect x="485" y="205" width="310" height="55" fill="#4B6EDB" rx="4"/>
+                <rect x="515" y="155" width="250" height="50" fill="#FFFFFF" rx="4"/>
+                <rect x="595" y="110" width="90" height="45" fill="#FF6B6B" rx="4"/>
+                <rect x="605" y="125" width="18" height="22" fill="#FFE66D" rx="2"/>
+                <rect x="632" y="125" width="18" height="22" fill="#FFE66D" rx="2"/>
+                <rect x="659" y="125" width="18" height="22" fill="#FFE66D" rx="2"/>
+                <rect x="635" y="95" width="8" height="15" fill="#4B6EDB"/>
+                <circle cx="639" cy="90" r="6" fill="#FFE66D"/>
+                <line x1="639" y1="84" x2="639" y2="75" stroke="#FF6B6B" stroke-width="2"/>
+                <circle cx="639" cy="75" r="4" fill="#FFE66D"/>
+                <rect x="530" y="170" width="22" height="25" fill="#4B6EDB" rx="2"/>
+                <rect x="565" y="170" width="22" height="25" fill="#4B6EDB" rx="2"/>
+                <rect x="600" y="170" width="22" height="25" fill="#4B6EDB" rx="2"/>
+                <rect x="635" y="170" width="22" height="25" fill="#4B6EDB" rx="2"/>
+                <rect x="670" y="170" width="22" height="25" fill="#4B6EDB" rx="2"/>
+                <rect x="705" y="170" width="22" height="25" fill="#4B6EDB" rx="2"/>
+                <rect x="505" y="220" width="45" height="30" fill="#FFE66D" rx="2"/>
+                <rect x="570" y="220" width="45" height="30" fill="#FFE66D" rx="2"/>
+                <rect x="635" y="220" width="45" height="30" fill="#FFE66D" rx="2"/>
+                <rect x="700" y="220" width="45" height="30" fill="#FFE66D" rx="2"/>
+                <ellipse cx="527" cy="235" rx="10" ry="7" fill="#FF6B6B"/>
+                <ellipse cx="592" cy="235" rx="10" ry="7" fill="#FFFFFF"/>
+                <ellipse cx="657" cy="235" rx="10" ry="7" fill="#FFE66D"/>
+                <rect x="705" y="135" width="32" height="20" fill="#FF6B6B" rx="3"/>
+                <ellipse cx="721" cy="135" rx="16" ry="5" fill="#FF6B6B"/>
+
+                <g transform="translate(545, 180)">
+                    <circle cx="0" cy="0" r="7" fill="#FF6B6B"/>
+                    <ellipse cx="0" cy="11" rx="6" ry="9" fill="#4B6EDB"/>
+                </g>
+                <g transform="translate(620, 180)">
+                    <circle cx="0" cy="0" r="7" fill="#FFE66D"/>
+                    <ellipse cx="0" cy="11" rx="6" ry="9" fill="#FF6B6B"/>
+                </g>
+                <g transform="translate(690, 180)">
+                    <circle cx="0" cy="0" r="7" fill="#4B6EDB"/>
+                    <ellipse cx="0" cy="11" rx="6" ry="9" fill="#FFE66D"/>
+                </g>
+            </g>
+
+            <!-- Smoke puffs - yellow -->
+            <circle class="smoke-1" cx="718" cy="117" r="11" fill="#FFE66D" opacity="0.8"/>
+            <circle class="smoke-2" cx="728" cy="108" r="13" fill="#FFE66D" opacity="0.7"/>
+            <circle class="smoke-3" cx="713" cy="103" r="9" fill="#FFE66D" opacity="0.8"/>
+            <circle class="smoke-4" cx="723" cy="93" r="11" fill="#FFE66D" opacity="0.6"/>
+            <circle class="smoke-5" cx="710" cy="88" r="8" fill="#FFE66D" opacity="0.5"/>
+
+            <!-- Birds in sky -->
+            <path d="M 250 160 Q 260 155, 270 160" fill="none" stroke="#4B6EDB" stroke-width="3" stroke-linecap="round"/>
+            <path d="M 270 160 Q 280 155, 290 160" fill="none" stroke="#4B6EDB" stroke-width="3" stroke-linecap="round"/>
+
+            <path d="M 750 140 Q 760 135, 770 140" fill="none" stroke="#4B6EDB" stroke-width="3" stroke-linecap="round"/>
+            <path d="M 770 140 Q 780 135, 790 140" fill="none" stroke="#4B6EDB" stroke-width="3" stroke-linecap="round"/>
+
+            <!-- Decorative waves -->
+            <ellipse cx="200" cy="320" rx="40" ry="14" fill="#FFFFFF" opacity="0.4"/>
+            <ellipse cx="460" cy="325" rx="38" ry="13" fill="#FFFFFF" opacity="0.4"/>
+            <ellipse cx="820" cy="335" rx="45" ry="16" fill="#FFFFFF" opacity="0.4"/>
+            <ellipse cx="1000" cy="315" rx="42" ry="15" fill="#FFFFFF" opacity="0.3"/>
+            <ellipse cx="630" cy="350" rx="35" ry="12" fill="#FFFFFF" opacity="0.3"/>
+
+            <circle cx="205" cy="310" r="7" fill="#FFFFFF" opacity="0.5"/>
+            <circle cx="190" cy="315" r="5" fill="#FFFFFF" opacity="0.5"/>
+            <circle cx="815" cy="325" r="7" fill="#FFFFFF" opacity="0.5"/>
+            <circle cx="830" cy="330" r="5" fill="#FFFFFF" opacity="0.5"/>
+        </svg>`
+    },
+    overcast: {
+        background: '#B5B5B5',
+        css: `
+            @keyframes bob { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-3px); } }
+            @keyframes driftOvercast { 0% { transform: translateX(0); opacity: 0.3; } 50% { opacity: 0.25; } 100% { transform: translateX(20px); opacity: 0.3; } }
+            @keyframes driftOvercastSlow { 0% { transform: translateX(0); opacity: 0.2; } 50% { opacity: 0.15; } 100% { transform: translateX(-15px); opacity: 0.2; } }
+            @keyframes drift { 0% { opacity: 0.7; transform: translate(0, 0); } 100% { opacity: 0; transform: translate(20px, -30px); } }
+            @keyframes wave { 0%, 100% { d: path("M 0 310 Q 100 300, 200 310 T 400 310 T 600 310 T 800 310 T 1000 310 T 1200 310"); } 50% { d: path("M 0 310 Q 100 305, 200 310 T 400 310 T 600 310 T 800 310 T 1000 310 T 1200 310"); } }
+            @keyframes wave2 { 0%, 100% { d: path("M 0 340 Q 120 330, 240 340 T 480 340 T 720 340 T 960 340 T 1200 340"); } 50% { d: path("M 0 340 Q 120 335, 240 340 T 480 340 T 720 340 T 960 340 T 1200 340"); } }
+            .ferry { animation: bob 3s ease-in-out infinite; transform-origin: center; }
+            .overcast-1 { animation: driftOvercast 60s linear infinite; }
+            .overcast-2 { animation: driftOvercastSlow 70s linear infinite; }
+            .overcast-3 { animation: driftOvercast 65s linear infinite; }
+            .overcast-4 { animation: driftOvercastSlow 75s linear infinite; }
+            .overcast-5 { animation: driftOvercast 68s linear infinite; }
+            .smoke-1 { animation: drift 4s ease-out infinite; }
+            .smoke-2 { animation: drift 4s ease-out 0.8s infinite; }
+            .smoke-3 { animation: drift 4s ease-out 1.6s infinite; }
+            .smoke-4 { animation: drift 4s ease-out 2.4s infinite; }
+            .smoke-5 { animation: drift 4s ease-out 3.2s infinite; }
+            .wave-1 { animation: wave 4s ease-in-out infinite; }
+            .wave-2 { animation: wave2 5s ease-in-out infinite; }
+        `,
+        svg: `<svg viewBox="0 0 1200 400" xmlns="http://www.w3.org/2000/svg">
+            <!-- Background - uniform gray overcast sky -->
+            <rect width="1200" height="400" fill="#B5B5B5" rx="20"/>
+
+            <!-- Subtle variations in the overcast - very light patches with gentle movement -->
+            <ellipse class="overcast-1" cx="300" cy="120" rx="250" ry="100" fill="#C0C0C0" opacity="0.3"/>
+            <ellipse class="overcast-2" cx="700" cy="150" rx="280" ry="110" fill="#C0C0C0" opacity="0.25"/>
+            <ellipse class="overcast-3" cx="1000" cy="100" rx="220" ry="90" fill="#C0C0C0" opacity="0.3"/>
+            <ellipse class="overcast-4" cx="150" cy="180" rx="200" ry="80" fill="#ABABAB" opacity="0.2"/>
+            <ellipse class="overcast-5" cx="900" cy="200" rx="240" ry="95" fill="#ABABAB" opacity="0.2"/>
+
+            <!-- Water - darker gray-blue -->
+            <path d="M 0 280 Q 150 270, 300 280 T 600 280 T 900 280 T 1200 280 L 1200 400 L 0 400 Z" fill="#5A6B7A"/>
+            <path class="wave-1" d="M 0 310 Q 100 300, 200 310 T 400 310 T 600 310 T 800 310 T 1000 310 T 1200 310" fill="none" stroke="#4A5A68" stroke-width="3" opacity="0.5"/>
+            <path class="wave-2" d="M 0 340 Q 120 330, 240 340 T 480 340 T 720 340 T 960 340 T 1200 340" fill="none" stroke="#4A5A68" stroke-width="3" opacity="0.5"/>
+
+            <!-- Ferry group with bobbing animation -->
+            <g class="ferry">
+                <path d="M 470 260 L 455 305 L 825 305 L 815 260 Z" fill="#FFFFFF"/>
+                <rect x="485" y="205" width="310" height="55" fill="#4B6EDB" rx="4"/>
+                <rect x="515" y="155" width="250" height="50" fill="#FFFFFF" rx="4"/>
+                <rect x="595" y="110" width="90" height="45" fill="#FF6B6B" rx="4"/>
+                <rect x="605" y="125" width="18" height="22" fill="#FFE66D" rx="2"/>
+                <rect x="632" y="125" width="18" height="22" fill="#FFE66D" rx="2"/>
+                <rect x="659" y="125" width="18" height="22" fill="#FFE66D" rx="2"/>
+                <rect x="635" y="95" width="8" height="15" fill="#4B6EDB"/>
+                <circle cx="639" cy="90" r="6" fill="#FFE66D"/>
+                <line x1="639" y1="84" x2="639" y2="75" stroke="#FF6B6B" stroke-width="2"/>
+                <circle cx="639" cy="75" r="4" fill="#FFE66D"/>
+                <rect x="530" y="170" width="22" height="25" fill="#4B6EDB" rx="2"/>
+                <rect x="565" y="170" width="22" height="25" fill="#4B6EDB" rx="2"/>
+                <rect x="600" y="170" width="22" height="25" fill="#4B6EDB" rx="2"/>
+                <rect x="635" y="170" width="22" height="25" fill="#4B6EDB" rx="2"/>
+                <rect x="670" y="170" width="22" height="25" fill="#4B6EDB" rx="2"/>
+                <rect x="705" y="170" width="22" height="25" fill="#4B6EDB" rx="2"/>
+                <rect x="505" y="220" width="45" height="30" fill="#FFE66D" rx="2"/>
+                <rect x="570" y="220" width="45" height="30" fill="#FFE66D" rx="2"/>
+                <rect x="635" y="220" width="45" height="30" fill="#FFE66D" rx="2"/>
+                <rect x="700" y="220" width="45" height="30" fill="#FFE66D" rx="2"/>
+                <ellipse cx="527" cy="235" rx="10" ry="7" fill="#FF6B6B"/>
+                <ellipse cx="592" cy="235" rx="10" ry="7" fill="#FFFFFF"/>
+                <ellipse cx="657" cy="235" rx="10" ry="7" fill="#FFE66D"/>
+                <rect x="705" y="135" width="32" height="20" fill="#FF6B6B" rx="3"/>
+                <ellipse cx="721" cy="135" rx="16" ry="5" fill="#FF6B6B"/>
+
+                <g transform="translate(545, 180)">
+                    <circle cx="0" cy="0" r="7" fill="#FF6B6B"/>
+                    <ellipse cx="0" cy="11" rx="6" ry="9" fill="#4B6EDB"/>
+                </g>
+                <g transform="translate(620, 180)">
+                    <circle cx="0" cy="0" r="7" fill="#FFE66D"/>
+                    <ellipse cx="0" cy="11" rx="6" ry="9" fill="#FF6B6B"/>
+                </g>
+                <g transform="translate(690, 180)">
+                    <circle cx="0" cy="0" r="7" fill="#4B6EDB"/>
+                    <ellipse cx="0" cy="11" rx="6" ry="9" fill="#FFE66D"/>
+                </g>
+            </g>
+
+            <!-- Smoke puffs - gray tones blending with overcast -->
+            <circle class="smoke-1" cx="718" cy="117" r="11" fill="#9A9A9A" opacity="0.7"/>
+            <circle class="smoke-2" cx="728" cy="108" r="13" fill="#9A9A9A" opacity="0.6"/>
+            <circle class="smoke-3" cx="713" cy="103" r="9" fill="#9A9A9A" opacity="0.7"/>
+            <circle class="smoke-4" cx="723" cy="93" r="11" fill="#9A9A9A" opacity="0.6"/>
+            <circle class="smoke-5" cx="710" cy="88" r="8" fill="#9A9A9A" opacity="0.5"/>
+
+            <!-- Birds barely visible against gray sky -->
+            <path d="M 180 80 Q 190 75, 200 80" fill="none" stroke="#7A7A7A" stroke-width="3" stroke-linecap="round" opacity="0.6"/>
+            <path d="M 200 80 Q 210 75, 220 80" fill="none" stroke="#7A7A7A" stroke-width="3" stroke-linecap="round" opacity="0.6"/>
+            <path d="M 890 100 Q 900 95, 910 100" fill="none" stroke="#7A7A7A" stroke-width="3" stroke-linecap="round" opacity="0.6"/>
+            <path d="M 910 100 Q 920 95, 930 100" fill="none" stroke="#7A7A7A" stroke-width="3" stroke-linecap="round" opacity="0.6"/>
+            <path d="M 1020 70 Q 1030 65, 1040 70" fill="none" stroke="#7A7A7A" stroke-width="3" stroke-linecap="round" opacity="0.6"/>
+            <path d="M 1040 70 Q 1050 65, 1060 70" fill="none" stroke="#7A7A7A" stroke-width="3" stroke-linecap="round" opacity="0.6"/>
+
+            <!-- Decorative waves - muted -->
+            <ellipse cx="200" cy="320" rx="40" ry="14" fill="#FFFFFF" opacity="0.3"/>
+            <ellipse cx="460" cy="325" rx="38" ry="13" fill="#FFFFFF" opacity="0.3"/>
+            <ellipse cx="820" cy="335" rx="45" ry="16" fill="#FFFFFF" opacity="0.3"/>
+            <ellipse cx="1000" cy="315" rx="42" ry="15" fill="#FFFFFF" opacity="0.25"/>
+            <ellipse cx="630" cy="350" rx="35" ry="12" fill="#FFFFFF" opacity="0.25"/>
+
+            <circle cx="205" cy="310" r="7" fill="#FFFFFF" opacity="0.4"/>
+            <circle cx="190" cy="315" r="5" fill="#FFFFFF" opacity="0.4"/>
+            <circle cx="815" cy="325" r="7" fill="#FFFFFF" opacity="0.4"/>
+            <circle cx="830" cy="330" r="5" fill="#FFFFFF" opacity="0.4"/>
+        </svg>`
+    },
+    fog: {
+        background: '#E8D5D5',
+        css: `
+            @keyframes bob { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-3px); } }
+            @keyframes driftFog1 { 0% { transform: translateX(0); opacity: 0.4; } 50% { opacity: 0.35; } 100% { transform: translateX(50px); opacity: 0.4; } }
+            @keyframes driftFog2 { 0% { transform: translateX(0); opacity: 0.35; } 50% { opacity: 0.4; } 100% { transform: translateX(-40px); opacity: 0.35; } }
+            @keyframes driftFog3 { 0% { transform: translateX(0); opacity: 0.4; } 50% { opacity: 0.45; } 100% { transform: translateX(30px); opacity: 0.4; } }
+            @keyframes wave { 0%, 100% { d: path("M 0 310 Q 100 300, 200 310 T 400 310 T 600 310 T 800 310 T 1000 310 T 1200 310"); } 50% { d: path("M 0 310 Q 100 305, 200 310 T 400 310 T 600 310 T 800 310 T 1000 310 T 1200 310"); } }
+            @keyframes wave2 { 0%, 100% { d: path("M 0 340 Q 120 330, 240 340 T 480 340 T 720 340 T 960 340 T 1200 340"); } 50% { d: path("M 0 340 Q 120 335, 240 340 T 480 340 T 720 340 T 960 340 T 1200 340"); } }
+            .ferry { animation: bob 3s ease-in-out infinite; transform-origin: center; }
+            .fog-1 { animation: driftFog1 20s ease-in-out infinite; }
+            .fog-2 { animation: driftFog2 25s ease-in-out infinite; }
+            .fog-3 { animation: driftFog1 22s ease-in-out infinite; }
+            .fog-4 { animation: driftFog2 18s ease-in-out infinite; }
+            .fog-5 { animation: driftFog3 24s ease-in-out infinite; }
+            .fog-6 { animation: driftFog1 21s ease-in-out infinite; }
+            .fog-7 { animation: driftFog2 23s ease-in-out infinite; }
+            .wave-1 { animation: wave 4s ease-in-out infinite; }
+            .wave-2 { animation: wave2 5s ease-in-out infinite; }
+        `,
+        svg: `<svg viewBox="0 0 1200 400" xmlns="http://www.w3.org/2000/svg">
+            <!-- Background - more muted for fog -->
+            <rect width="1200" height="400" fill="#E8D5D5" rx="20"/>
+
+            <!-- Water - more muted -->
+            <path d="M 0 280 Q 150 270, 300 280 T 600 280 T 900 280 T 1200 280 L 1200 400 L 0 400 Z" fill="#8B9DB8"/>
+            <path class="wave-1" d="M 0 310 Q 100 300, 200 310 T 400 310 T 600 310 T 800 310 T 1000 310 T 1200 310" fill="none" stroke="#7A8CA7" stroke-width="3" opacity="0.3"/>
+            <path class="wave-2" d="M 0 340 Q 120 330, 240 340 T 480 340 T 720 340 T 960 340 T 1200 340" fill="none" stroke="#7A8CA7" stroke-width="3" opacity="0.3"/>
+
+            <!-- Fog layers in background -->
+            <ellipse class="fog-1" cx="150" cy="200" rx="180" ry="80" fill="#FFFFFF" opacity="0.4"/>
+            <ellipse class="fog-2" cx="400" cy="240" rx="220" ry="90" fill="#FFFFFF" opacity="0.35"/>
+            <ellipse class="fog-3" cx="900" cy="220" rx="200" ry="85" fill="#FFFFFF" opacity="0.4"/>
+            <ellipse class="fog-4" cx="1050" cy="180" rx="160" ry="70" fill="#FFFFFF" opacity="0.35"/>
+
+            <!-- Ferry group with bobbing animation -->
+            <g class="ferry">
+                <path d="M 470 260 L 455 305 L 825 305 L 815 260 Z" fill="#FFFFFF" opacity="0.85"/>
+                <rect x="485" y="205" width="310" height="55" fill="#4B6EDB" rx="4" opacity="0.85"/>
+                <rect x="515" y="155" width="250" height="50" fill="#FFFFFF" rx="4" opacity="0.85"/>
+                <rect x="595" y="110" width="90" height="45" fill="#FF6B6B" rx="4" opacity="0.85"/>
+                <rect x="605" y="125" width="18" height="22" fill="#FFE66D" rx="2" opacity="0.85"/>
+                <rect x="632" y="125" width="18" height="22" fill="#FFE66D" rx="2" opacity="0.85"/>
+                <rect x="659" y="125" width="18" height="22" fill="#FFE66D" rx="2" opacity="0.85"/>
+                <rect x="635" y="95" width="8" height="15" fill="#4B6EDB" opacity="0.85"/>
+                <circle cx="639" cy="90" r="6" fill="#FFE66D" opacity="0.85"/>
+                <line x1="639" y1="84" x2="639" y2="75" stroke="#FF6B6B" stroke-width="2" opacity="0.85"/>
+                <circle cx="639" cy="75" r="4" fill="#FFE66D" opacity="0.85"/>
+                <rect x="530" y="170" width="22" height="25" fill="#4B6EDB" rx="2" opacity="0.85"/>
+                <rect x="565" y="170" width="22" height="25" fill="#4B6EDB" rx="2" opacity="0.85"/>
+                <rect x="600" y="170" width="22" height="25" fill="#4B6EDB" rx="2" opacity="0.85"/>
+                <rect x="635" y="170" width="22" height="25" fill="#4B6EDB" rx="2" opacity="0.85"/>
+                <rect x="670" y="170" width="22" height="25" fill="#4B6EDB" rx="2" opacity="0.85"/>
+                <rect x="705" y="170" width="22" height="25" fill="#4B6EDB" rx="2" opacity="0.85"/>
+                <rect x="505" y="220" width="45" height="30" fill="#FFE66D" rx="2" opacity="0.85"/>
+                <rect x="570" y="220" width="45" height="30" fill="#FFE66D" rx="2" opacity="0.85"/>
+                <rect x="635" y="220" width="45" height="30" fill="#FFE66D" rx="2" opacity="0.85"/>
+                <rect x="700" y="220" width="45" height="30" fill="#FFE66D" rx="2" opacity="0.85"/>
+                <ellipse cx="527" cy="235" rx="10" ry="7" fill="#FF6B6B" opacity="0.85"/>
+                <ellipse cx="592" cy="235" rx="10" ry="7" fill="#FFFFFF" opacity="0.85"/>
+                <ellipse cx="657" cy="235" rx="10" ry="7" fill="#FFE66D" opacity="0.85"/>
+                <rect x="705" y="135" width="32" height="20" fill="#FF6B6B" rx="3" opacity="0.85"/>
+                <ellipse cx="721" cy="135" rx="16" ry="5" fill="#FF6B6B" opacity="0.85"/>
+
+                <g transform="translate(545, 180)" opacity="0.85">
+                    <circle cx="0" cy="0" r="7" fill="#FF6B6B"/>
+                    <ellipse cx="0" cy="11" rx="6" ry="9" fill="#4B6EDB"/>
+                </g>
+                <g transform="translate(620, 180)" opacity="0.85">
+                    <circle cx="0" cy="0" r="7" fill="#FFE66D"/>
+                    <ellipse cx="0" cy="11" rx="6" ry="9" fill="#FF6B6B"/>
+                </g>
+                <g transform="translate(690, 180)" opacity="0.85">
+                    <circle cx="0" cy="0" r="7" fill="#4B6EDB"/>
+                    <ellipse cx="0" cy="11" rx="6" ry="9" fill="#FFE66D"/>
+                </g>
+            </g>
+
+            <!-- Smoke barely visible in fog -->
+            <circle cx="718" cy="117" r="11" fill="#FFFFFF" opacity="0.5"/>
+            <circle cx="728" cy="108" r="13" fill="#FFFFFF" opacity="0.4"/>
+            <circle cx="713" cy="103" r="9" fill="#FFFFFF" opacity="0.5"/>
+            <circle cx="723" cy="93" r="11" fill="#FFFFFF" opacity="0.4"/>
+            <circle cx="710" cy="88" r="8" fill="#FFFFFF" opacity="0.3"/>
+
+            <!-- More fog layers in front -->
+            <ellipse class="fog-5" cx="300" cy="280" rx="250" ry="100" fill="#FFFFFF" opacity="0.5"/>
+            <ellipse class="fog-6" cx="700" cy="260" rx="200" ry="95" fill="#FFFFFF" opacity="0.45"/>
+            <ellipse class="fog-7" cx="1000" cy="290" rx="180" ry="85" fill="#FFFFFF" opacity="0.5"/>
+
+            <!-- Decorative waves - very subtle -->
+            <ellipse cx="200" cy="320" rx="40" ry="14" fill="#FFFFFF" opacity="0.2"/>
+            <ellipse cx="820" cy="335" rx="45" ry="16" fill="#FFFFFF" opacity="0.2"/>
+            <ellipse cx="1000" cy="315" rx="42" ry="15" fill="#FFFFFF" opacity="0.15"/>
+        </svg>`
+    },
+    rain: {
+        background: '#B8A0A0',
+        css: `
+            @keyframes bob { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-4px); } }
+            @keyframes rain { 0% { transform: translateY(0); opacity: 0.5; } 100% { transform: translateY(400px); opacity: 0.3; } }
+            @keyframes choppyWave { 0%, 100% { d: path("M 0 310 Q 100 300, 200 310 T 400 310 T 600 310 T 800 310 T 1000 310 T 1200 310"); } 50% { d: path("M 0 310 Q 100 295, 200 310 T 400 310 T 600 310 T 800 310 T 1000 310 T 1200 310"); } }
+            @keyframes choppyWave2 { 0%, 100% { d: path("M 0 340 Q 120 330, 240 340 T 480 340 T 720 340 T 960 340 T 1200 340"); } 50% { d: path("M 0 340 Q 120 325, 240 340 T 480 340 T 720 340 T 960 340 T 1200 340"); } }
+            @keyframes splash { 0% { r: 0; opacity: 0.6; } 100% { r: 6; opacity: 0; } }
+            .ferry { animation: bob 2.5s ease-in-out infinite; transform-origin: center; }
+            .rain-drops { animation: rain 1.5s linear infinite; }
+            .rain-drops-2 { animation: rain 1.3s linear infinite 0.3s; }
+            .wave-1 { animation: choppyWave 3s ease-in-out infinite; }
+            .wave-2 { animation: choppyWave2 3.5s ease-in-out infinite; }
+            .splash-1 { animation: splash 0.8s ease-out infinite; }
+            .splash-2 { animation: splash 0.8s ease-out 0.2s infinite; }
+            .splash-3 { animation: splash 0.8s ease-out 0.4s infinite; }
+            .splash-4 { animation: splash 0.8s ease-out 0.6s infinite; }
+        `,
+        svg: `<svg viewBox="0 0 1200 400" xmlns="http://www.w3.org/2000/svg">
+            <!-- Background - darker for rain -->
+            <rect width="1200" height="400" fill="#B8A0A0" rx="20"/>
+
+            <!-- Water - darker and more turbulent -->
+            <path d="M 0 280 Q 150 270, 300 280 T 600 280 T 900 280 T 1200 280 L 1200 400 L 0 400 Z" fill="#4A6B8F"/>
+            <path class="wave-1" d="M 0 310 Q 100 300, 200 310 T 400 310 T 600 310 T 800 310 T 1000 310 T 1200 310" fill="none" stroke="#3D5A7A" stroke-width="3" opacity="0.7"/>
+            <path class="wave-2" d="M 0 340 Q 120 330, 240 340 T 480 340 T 720 340 T 960 340 T 1200 340" fill="none" stroke="#3D5A7A" stroke-width="3" opacity="0.7"/>
+
+            <!-- Ferry group with bobbing animation -->
+            <g class="ferry">
+                <path d="M 470 260 L 455 305 L 825 305 L 815 260 Z" fill="#FFFFFF"/>
+                <rect x="485" y="205" width="310" height="55" fill="#4B6EDB" rx="4"/>
+                <rect x="515" y="155" width="250" height="50" fill="#FFFFFF" rx="4"/>
+                <rect x="595" y="110" width="90" height="45" fill="#FF6B6B" rx="4"/>
+                <rect x="605" y="125" width="18" height="22" fill="#FFE66D" rx="2"/>
+                <rect x="632" y="125" width="18" height="22" fill="#FFE66D" rx="2"/>
+                <rect x="659" y="125" width="18" height="22" fill="#FFE66D" rx="2"/>
+                <rect x="635" y="95" width="8" height="15" fill="#4B6EDB"/>
+                <circle cx="639" cy="90" r="6" fill="#FFE66D"/>
+                <line x1="639" y1="84" x2="639" y2="75" stroke="#FF6B6B" stroke-width="2"/>
+                <circle cx="639" cy="75" r="4" fill="#FFE66D"/>
+                <rect x="530" y="170" width="22" height="25" fill="#4B6EDB" rx="2"/>
+                <rect x="565" y="170" width="22" height="25" fill="#4B6EDB" rx="2"/>
+                <rect x="600" y="170" width="22" height="25" fill="#4B6EDB" rx="2"/>
+                <rect x="635" y="170" width="22" height="25" fill="#4B6EDB" rx="2"/>
+                <rect x="670" y="170" width="22" height="25" fill="#4B6EDB" rx="2"/>
+                <rect x="705" y="170" width="22" height="25" fill="#4B6EDB" rx="2"/>
+                <rect x="505" y="220" width="45" height="30" fill="#FFE66D" rx="2"/>
+                <rect x="570" y="220" width="45" height="30" fill="#FFE66D" rx="2"/>
+                <rect x="635" y="220" width="45" height="30" fill="#FFE66D" rx="2"/>
+                <rect x="700" y="220" width="45" height="30" fill="#FFE66D" rx="2"/>
+                <ellipse cx="527" cy="235" rx="10" ry="7" fill="#FF6B6B"/>
+                <ellipse cx="592" cy="235" rx="10" ry="7" fill="#FFFFFF"/>
+                <ellipse cx="657" cy="235" rx="10" ry="7" fill="#FFE66D"/>
+                <rect x="705" y="135" width="32" height="20" fill="#FF6B6B" rx="3"/>
+                <ellipse cx="721" cy="135" rx="16" ry="5" fill="#FF6B6B"/>
+
+                <g transform="translate(545, 180)">
+                    <circle cx="0" cy="0" r="7" fill="#FF6B6B"/>
+                    <ellipse cx="0" cy="11" rx="6" ry="9" fill="#4B6EDB"/>
+                </g>
+                <g transform="translate(620, 180)">
+                    <circle cx="0" cy="0" r="7" fill="#FFE66D"/>
+                    <ellipse cx="0" cy="11" rx="6" ry="9" fill="#FF6B6B"/>
+                </g>
+                <g transform="translate(690, 180)">
+                    <circle cx="0" cy="0" r="7" fill="#4B6EDB"/>
+                    <ellipse cx="0" cy="11" rx="6" ry="9" fill="#FFE66D"/>
+                </g>
+            </g>
+
+            <!-- Smoke puffs - darker in rain -->
+            <circle cx="718" cy="117" r="11" fill="#9BA8B5" opacity="0.6"/>
+            <circle cx="728" cy="108" r="13" fill="#9BA8B5" opacity="0.5"/>
+            <circle cx="713" cy="103" r="9" fill="#9BA8B5" opacity="0.6"/>
+
+            <!-- Rain streaks - first layer -->
+            <g class="rain-drops">
+                <line x1="50" y1="-80" x2="45" y2="0" stroke="#7A8CA7" stroke-width="2" opacity="0.5"/>
+                <line x1="120" y1="-90" x2="115" y2="-10" stroke="#7A8CA7" stroke-width="2" opacity="0.5"/>
+                <line x1="180" y1="-70" x2="175" y2="10" stroke="#7A8CA7" stroke-width="2" opacity="0.5"/>
+                <line x1="240" y1="-85" x2="235" y2="-5" stroke="#7A8CA7" stroke-width="2" opacity="0.5"/>
+                <line x1="300" y1="-95" x2="295" y2="-15" stroke="#7A8CA7" stroke-width="2" opacity="0.5"/>
+                <line x1="360" y1="-75" x2="355" y2="5" stroke="#7A8CA7" stroke-width="2" opacity="0.5"/>
+                <line x1="420" y1="-80" x2="415" y2="0" stroke="#7A8CA7" stroke-width="2" opacity="0.5"/>
+                <line x1="480" y1="-90" x2="475" y2="-10" stroke="#7A8CA7" stroke-width="2" opacity="0.5"/>
+                <line x1="540" y1="-70" x2="535" y2="10" stroke="#7A8CA7" stroke-width="2" opacity="0.5"/>
+                <line x1="600" y1="-85" x2="595" y2="-5" stroke="#7A8CA7" stroke-width="2" opacity="0.5"/>
+                <line x1="660" y1="-95" x2="655" y2="-15" stroke="#7A8CA7" stroke-width="2" opacity="0.5"/>
+                <line x1="720" y1="-75" x2="715" y2="5" stroke="#7A8CA7" stroke-width="2" opacity="0.5"/>
+                <line x1="780" y1="-80" x2="775" y2="0" stroke="#7A8CA7" stroke-width="2" opacity="0.5"/>
+                <line x1="840" y1="-90" x2="835" y2="-10" stroke="#7A8CA7" stroke-width="2" opacity="0.5"/>
+                <line x1="900" y1="-70" x2="895" y2="10" stroke="#7A8CA7" stroke-width="2" opacity="0.5"/>
+                <line x1="960" y1="-85" x2="955" y2="-5" stroke="#7A8CA7" stroke-width="2" opacity="0.5"/>
+                <line x1="1020" y1="-95" x2="1015" y2="-15" stroke="#7A8CA7" stroke-width="2" opacity="0.5"/>
+                <line x1="1080" y1="-75" x2="1075" y2="5" stroke="#7A8CA7" stroke-width="2" opacity="0.5"/>
+                <line x1="1140" y1="-80" x2="1135" y2="0" stroke="#7A8CA7" stroke-width="2" opacity="0.5"/>
+            </g>
+
+            <!-- Rain streaks - second layer offset -->
+            <g class="rain-drops-2">
+                <line x1="85" y1="-50" x2="80" y2="30" stroke="#7A8CA7" stroke-width="2" opacity="0.5"/>
+                <line x1="155" y1="-60" x2="150" y2="20" stroke="#7A8CA7" stroke-width="2" opacity="0.5"/>
+                <line x1="210" y1="-40" x2="205" y2="40" stroke="#7A8CA7" stroke-width="2" opacity="0.5"/>
+                <line x1="270" y1="-55" x2="265" y2="25" stroke="#7A8CA7" stroke-width="2" opacity="0.5"/>
+                <line x1="330" y1="-65" x2="325" y2="15" stroke="#7A8CA7" stroke-width="2" opacity="0.5"/>
+                <line x1="390" y1="-45" x2="385" y2="35" stroke="#7A8CA7" stroke-width="2" opacity="0.5"/>
+                <line x1="450" y1="-50" x2="445" y2="30" stroke="#7A8CA7" stroke-width="2" opacity="0.5"/>
+                <line x1="510" y1="-60" x2="505" y2="20" stroke="#7A8CA7" stroke-width="2" opacity="0.5"/>
+                <line x1="570" y1="-40" x2="565" y2="40" stroke="#7A8CA7" stroke-width="2" opacity="0.5"/>
+                <line x1="630" y1="-55" x2="625" y2="25" stroke="#7A8CA7" stroke-width="2" opacity="0.5"/>
+                <line x1="690" y1="-65" x2="685" y2="15" stroke="#7A8CA7" stroke-width="2" opacity="0.5"/>
+                <line x1="750" y1="-45" x2="745" y2="35" stroke="#7A8CA7" stroke-width="2" opacity="0.5"/>
+                <line x1="810" y1="-50" x2="805" y2="30" stroke="#7A8CA7" stroke-width="2" opacity="0.5"/>
+                <line x1="870" y1="-60" x2="865" y2="20" stroke="#7A8CA7" stroke-width="2" opacity="0.5"/>
+                <line x1="930" y1="-40" x2="925" y2="40" stroke="#7A8CA7" stroke-width="2" opacity="0.5"/>
+                <line x1="990" y1="-55" x2="985" y2="25" stroke="#7A8CA7" stroke-width="2" opacity="0.5"/>
+                <line x1="1050" y1="-65" x2="1045" y2="15" stroke="#7A8CA7" stroke-width="2" opacity="0.5"/>
+                <line x1="1110" y1="-45" x2="1105" y2="35" stroke="#7A8CA7" stroke-width="2" opacity="0.5"/>
+            </g>
+
+            <!-- Rain splashes on water -->
+            <circle class="splash-1" cx="200" cy="320" r="4" fill="#FFFFFF" opacity="0.6"/>
+            <circle class="splash-2" cx="350" cy="315" r="3" fill="#FFFFFF" opacity="0.6"/>
+            <circle class="splash-3" cx="520" cy="325" r="4" fill="#FFFFFF" opacity="0.6"/>
+            <circle class="splash-4" cx="680" cy="318" r="3" fill="#FFFFFF" opacity="0.6"/>
+            <circle class="splash-1" cx="820" cy="335" r="4" fill="#FFFFFF" opacity="0.6"/>
+            <circle class="splash-2" cx="950" cy="322" r="3" fill="#FFFFFF" opacity="0.6"/>
+            <circle class="splash-3" cx="1100" cy="330" r="4" fill="#FFFFFF" opacity="0.6"/>
+        </svg>`
+    },
+    snow: {
+        background: '#C8D5E0',
+        css: `
+            @keyframes bob { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-3px); } }
+            @keyframes snow { 0% { transform: translateY(0); opacity: 0.9; } 100% { transform: translateY(400px); opacity: 0.7; } }
+            @keyframes snowSlow { 0% { transform: translateY(0); opacity: 0.7; } 100% { transform: translateY(400px); opacity: 0.5; } }
+            @keyframes wave { 0%, 100% { d: path("M 0 310 Q 100 300, 200 310 T 400 310 T 600 310 T 800 310 T 1000 310 T 1200 310"); } 50% { d: path("M 0 310 Q 100 305, 200 310 T 400 310 T 600 310 T 800 310 T 1000 310 T 1200 310"); } }
+            @keyframes wave2 { 0%, 100% { d: path("M 0 340 Q 120 330, 240 340 T 480 340 T 720 340 T 960 340 T 1200 340"); } 50% { d: path("M 0 340 Q 120 335, 240 340 T 480 340 T 720 340 T 960 340 T 1200 340"); } }
+            .ferry { animation: bob 3s ease-in-out infinite; transform-origin: center; }
+            .snow-1 { animation: snow 8s linear infinite; }
+            .snow-2 { animation: snowSlow 10s linear infinite 1s; }
+            .snow-3 { animation: snow 9s linear infinite 2s; }
+            .snow-4 { animation: snowSlow 11s linear infinite 3s; }
+            .snow-5 { animation: snow 8.5s linear infinite 4s; }
+            .wave-1 { animation: wave 4s ease-in-out infinite; }
+            .wave-2 { animation: wave2 5s ease-in-out infinite; }
+        `,
+        svg: `<svg viewBox="0 0 1200 400" xmlns="http://www.w3.org/2000/svg">
+            <!-- Background - cooler tone for snow -->
+            <rect width="1200" height="400" fill="#C8D5E0" rx="20"/>
+
+            <!-- Water - darker cold water -->
+            <path d="M 0 280 Q 150 270, 300 280 T 600 280 T 900 280 T 1200 280 L 1200 400 L 0 400 Z" fill="#4A6B8F"/>
+            <path class="wave-1" d="M 0 310 Q 100 300, 200 310 T 400 310 T 600 310 T 800 310 T 1000 310 T 1200 310" fill="none" stroke="#3D5A7A" stroke-width="3" opacity="0.5"/>
+            <path class="wave-2" d="M 0 340 Q 120 330, 240 340 T 480 340 T 720 340 T 960 340 T 1200 340" fill="none" stroke="#3D5A7A" stroke-width="3" opacity="0.5"/>
+
+            <!-- Ferry group with bobbing animation -->
+            <g class="ferry">
+                <path d="M 470 260 L 455 305 L 825 305 L 815 260 Z" fill="#FFFFFF"/>
+                <rect x="485" y="205" width="310" height="55" fill="#4B6EDB" rx="4"/>
+                <rect x="515" y="155" width="250" height="50" fill="#FFFFFF" rx="4"/>
+                <rect x="595" y="110" width="90" height="45" fill="#FF6B6B" rx="4"/>
+                <rect x="605" y="125" width="18" height="22" fill="#FFE66D" rx="2"/>
+                <rect x="632" y="125" width="18" height="22" fill="#FFE66D" rx="2"/>
+                <rect x="659" y="125" width="18" height="22" fill="#FFE66D" rx="2"/>
+                <rect x="635" y="95" width="8" height="15" fill="#4B6EDB"/>
+                <circle cx="639" cy="90" r="6" fill="#FFE66D"/>
+                <line x1="639" y1="84" x2="639" y2="75" stroke="#FF6B6B" stroke-width="2"/>
+                <circle cx="639" cy="75" r="4" fill="#FFE66D"/>
+                <rect x="530" y="170" width="22" height="25" fill="#4B6EDB" rx="2"/>
+                <rect x="565" y="170" width="22" height="25" fill="#4B6EDB" rx="2"/>
+                <rect x="600" y="170" width="22" height="25" fill="#4B6EDB" rx="2"/>
+                <rect x="635" y="170" width="22" height="25" fill="#4B6EDB" rx="2"/>
+                <rect x="670" y="170" width="22" height="25" fill="#4B6EDB" rx="2"/>
+                <rect x="705" y="170" width="22" height="25" fill="#4B6EDB" rx="2"/>
+                <rect x="505" y="220" width="45" height="30" fill="#FFE66D" rx="2"/>
+                <rect x="570" y="220" width="45" height="30" fill="#FFE66D" rx="2"/>
+                <rect x="635" y="220" width="45" height="30" fill="#FFE66D" rx="2"/>
+                <rect x="700" y="220" width="45" height="30" fill="#FFE66D" rx="2"/>
+                <ellipse cx="527" cy="235" rx="10" ry="7" fill="#FF6B6B"/>
+                <ellipse cx="592" cy="235" rx="10" ry="7" fill="#FFFFFF"/>
+                <ellipse cx="657" cy="235" rx="10" ry="7" fill="#FFE66D"/>
+                <rect x="705" y="135" width="32" height="20" fill="#FF6B6B" rx="3"/>
+                <ellipse cx="721" cy="135" rx="16" ry="5" fill="#FF6B6B"/>
+
+                <g transform="translate(545, 180)">
+                    <circle cx="0" cy="0" r="7" fill="#FF6B6B"/>
+                    <ellipse cx="0" cy="11" rx="6" ry="9" fill="#4B6EDB"/>
+                </g>
+                <g transform="translate(620, 180)">
+                    <circle cx="0" cy="0" r="7" fill="#FFE66D"/>
+                    <ellipse cx="0" cy="11" rx="6" ry="9" fill="#FF6B6B"/>
+                </g>
+                <g transform="translate(690, 180)">
+                    <circle cx="0" cy="0" r="7" fill="#4B6EDB"/>
+                    <ellipse cx="0" cy="11" rx="6" ry="9" fill="#FFE66D"/>
+                </g>
+            </g>
+
+            <!-- Smoke puffs - gray in snow -->
+            <circle cx="718" cy="117" r="11" fill="#B8C5D0" opacity="0.7"/>
+            <circle cx="728" cy="108" r="13" fill="#B8C5D0" opacity="0.6"/>
+            <circle cx="713" cy="103" r="9" fill="#B8C5D0" opacity="0.7"/>
+
+            <!-- Snowflakes - Layer 1 -->
+            <g class="snow-1">
+                <circle cx="80" cy="-40" r="3" fill="#FFFFFF" opacity="0.9"/>
+                <circle cx="220" cy="-30" r="3" fill="#FFFFFF" opacity="0.9"/>
+                <circle cx="350" cy="-50" r="3" fill="#FFFFFF" opacity="0.9"/>
+                <circle cx="490" cy="-60" r="3" fill="#FFFFFF" opacity="0.9"/>
+                <circle cx="630" cy="-40" r="3" fill="#FFFFFF" opacity="0.9"/>
+                <circle cx="770" cy="-50" r="3" fill="#FFFFFF" opacity="0.9"/>
+                <circle cx="910" cy="-30" r="3" fill="#FFFFFF" opacity="0.9"/>
+                <circle cx="1050" cy="-70" r="3" fill="#FFFFFF" opacity="0.9"/>
+            </g>
+
+            <!-- Snowflakes - Layer 2 -->
+            <g class="snow-2">
+                <circle cx="150" cy="-70" r="3" fill="#FFFFFF" opacity="0.9"/>
+                <circle cx="280" cy="-100" r="3" fill="#FFFFFF" opacity="0.9"/>
+                <circle cx="420" cy="-90" r="3" fill="#FFFFFF" opacity="0.9"/>
+                <circle cx="560" cy="-110" r="3" fill="#FFFFFF" opacity="0.9"/>
+                <circle cx="700" cy="-80" r="3" fill="#FFFFFF" opacity="0.9"/>
+                <circle cx="840" cy="-100" r="3" fill="#FFFFFF" opacity="0.9"/>
+                <circle cx="980" cy="-70" r="3" fill="#FFFFFF" opacity="0.9"/>
+                <circle cx="1120" cy="-90" r="3" fill="#FFFFFF" opacity="0.9"/>
+            </g>
+
+            <!-- Snowflakes - Layer 3 -->
+            <g class="snow-3">
+                <circle cx="120" cy="-120" r="3" fill="#FFFFFF" opacity="0.9"/>
+                <circle cx="260" cy="-130" r="3" fill="#FFFFFF" opacity="0.9"/>
+                <circle cx="400" cy="-140" r="3" fill="#FFFFFF" opacity="0.9"/>
+                <circle cx="540" cy="-150" r="3" fill="#FFFFFF" opacity="0.9"/>
+                <circle cx="680" cy="-140" r="3" fill="#FFFFFF" opacity="0.9"/>
+                <circle cx="820" cy="-130" r="3" fill="#FFFFFF" opacity="0.9"/>
+                <circle cx="960" cy="-120" r="3" fill="#FFFFFF" opacity="0.9"/>
+                <circle cx="1100" cy="-140" r="3" fill="#FFFFFF" opacity="0.9"/>
+            </g>
+
+            <!-- Snowflakes - Layer 4 (smaller) -->
+            <g class="snow-4">
+                <circle cx="100" cy="-80" r="2" fill="#FFFFFF" opacity="0.7"/>
+                <circle cx="200" cy="-110" r="2" fill="#FFFFFF" opacity="0.7"/>
+                <circle cx="300" cy="-70" r="2" fill="#FFFFFF" opacity="0.7"/>
+                <circle cx="400" cy="-120" r="2" fill="#FFFFFF" opacity="0.7"/>
+                <circle cx="500" cy="-90" r="2" fill="#FFFFFF" opacity="0.7"/>
+                <circle cx="600" cy="-130" r="2" fill="#FFFFFF" opacity="0.7"/>
+                <circle cx="700" cy="-100" r="2" fill="#FFFFFF" opacity="0.7"/>
+                <circle cx="800" cy="-140" r="2" fill="#FFFFFF" opacity="0.7"/>
+                <circle cx="900" cy="-110" r="2" fill="#FFFFFF" opacity="0.7"/>
+                <circle cx="1000" cy="-80" r="2" fill="#FFFFFF" opacity="0.7"/>
+                <circle cx="1100" cy="-120" r="2" fill="#FFFFFF" opacity="0.7"/>
+            </g>
+
+            <!-- Snowflakes - Layer 5 -->
+            <g class="snow-5">
+                <circle cx="50" cy="-90" r="3" fill="#FFFFFF" opacity="0.9"/>
+                <circle cx="190" cy="-60" r="3" fill="#FFFFFF" opacity="0.9"/>
+                <circle cx="330" cy="-100" r="3" fill="#FFFFFF" opacity="0.9"/>
+                <circle cx="470" cy="-80" r="3" fill="#FFFFFF" opacity="0.9"/>
+                <circle cx="610" cy="-110" r="3" fill="#FFFFFF" opacity="0.9"/>
+                <circle cx="750" cy="-90" r="3" fill="#FFFFFF" opacity="0.9"/>
+                <circle cx="890" cy="-60" r="3" fill="#FFFFFF" opacity="0.9"/>
+                <circle cx="1030" cy="-100" r="3" fill="#FFFFFF" opacity="0.9"/>
+                <circle cx="1170" cy="-80" r="3" fill="#FFFFFF" opacity="0.9"/>
+            </g>
+
+            <!-- Decorative waves - muted -->
+            <ellipse cx="200" cy="320" rx="40" ry="14" fill="#FFFFFF" opacity="0.3"/>
+            <ellipse cx="820" cy="335" rx="45" ry="16" fill="#FFFFFF" opacity="0.3"/>
+            <ellipse cx="1000" cy="315" rx="42" ry="15" fill="#FFFFFF" opacity="0.25"/>
+        </svg>`
+    },
+    windy: {
+        background: '#FFB5B5',
+        css: `
+            @keyframes bobWindy { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-5px); } }
+            @keyframes windStreak { 0% { transform: translateX(0); opacity: 0.5; } 100% { transform: translateX(200px); opacity: 0; } }
+            @keyframes blowSmoke { 0% { opacity: 0.8; transform: translate(0, 0); } 100% { opacity: 0; transform: translate(120px, -20px); } }
+            @keyframes choppyWave { 0%, 100% { d: path("M 0 310 Q 100 300, 200 310 T 400 310 T 600 310 T 800 310 T 1000 310 T 1200 310"); } 25% { d: path("M 0 310 Q 100 305, 200 310 T 400 310 T 600 310 T 800 310 T 1000 310 T 1200 310"); } 50% { d: path("M 0 310 Q 100 295, 200 310 T 400 310 T 600 310 T 800 310 T 1000 310 T 1200 310"); } 75% { d: path("M 0 310 Q 100 305, 200 310 T 400 310 T 600 310 T 800 310 T 1000 310 T 1200 310"); } }
+            @keyframes choppyWave2 { 0%, 100% { d: path("M 0 340 Q 120 330, 240 340 T 480 340 T 720 340 T 960 340 T 1200 340"); } 25% { d: path("M 0 340 Q 120 335, 240 340 T 480 340 T 720 340 T 960 340 T 1200 340"); } 50% { d: path("M 0 340 Q 120 325, 240 340 T 480 340 T 720 340 T 960 340 T 1200 340"); } 75% { d: path("M 0 340 Q 120 335, 240 340 T 480 340 T 720 340 T 960 340 T 1200 340"); } }
+            @keyframes spray { 0% { opacity: 0; transform: scale(0.5); } 50% { opacity: 0.7; } 100% { opacity: 0; transform: scale(1.5) translateY(-10px); } }
+            .ferry { animation: bobWindy 2s ease-in-out infinite; transform-origin: center; }
+            .wind-1 { animation: windStreak 2s linear infinite; }
+            .wind-2 { animation: windStreak 2.2s linear infinite 0.3s; }
+            .wind-3 { animation: windStreak 2.1s linear infinite 0.6s; }
+            .wind-4 { animation: windStreak 2.3s linear infinite 0.9s; }
+            .wind-5 { animation: windStreak 2.4s linear infinite 1.2s; }
+            .wind-6 { animation: windStreak 2s linear infinite 1.5s; }
+            .smoke-1 { animation: blowSmoke 3s ease-out infinite; }
+            .smoke-2 { animation: blowSmoke 3s ease-out 0.6s infinite; }
+            .smoke-3 { animation: blowSmoke 3s ease-out 1.2s infinite; }
+            .smoke-4 { animation: blowSmoke 3s ease-out 1.8s infinite; }
+            .smoke-5 { animation: blowSmoke 3s ease-out 2.4s infinite; }
+            .wave-1 { animation: choppyWave 2.5s ease-in-out infinite; }
+            .wave-2 { animation: choppyWave2 3s ease-in-out infinite; }
+            .spray-1 { animation: spray 1.5s ease-out infinite; }
+            .spray-2 { animation: spray 1.5s ease-out 0.5s infinite; }
+            .spray-3 { animation: spray 1.5s ease-out 1s infinite; }
+        `,
+        svg: `<svg viewBox="0 0 1200 400" xmlns="http://www.w3.org/2000/svg">
+            <!-- Background -->
+            <rect width="1200" height="400" fill="#FFB5B5" rx="20"/>
+
+            <!-- Wind lines across the sky - layer 1 -->
+            <g class="wind-1">
+                <path d="M -150 100 Q -50 95, 50 100" fill="none" stroke="#FFFFFF" stroke-width="3" opacity="0.5" stroke-linecap="round"/>
+                <path d="M -100 140 Q 20 135, 140 140" fill="none" stroke="#FFFFFF" stroke-width="3" opacity="0.5" stroke-linecap="round"/>
+                <path d="M -120 180 Q 30 175, 180 180" fill="none" stroke="#FFFFFF" stroke-width="3" opacity="0.5" stroke-linecap="round"/>
+            </g>
+
+            <!-- Wind lines - layer 2 -->
+            <g class="wind-2">
+                <path d="M 200 120 Q 320 115, 440 120" fill="none" stroke="#FFFFFF" stroke-width="3" opacity="0.5" stroke-linecap="round"/>
+                <path d="M 250 160 Q 390 155, 530 160" fill="none" stroke="#FFFFFF" stroke-width="3" opacity="0.5" stroke-linecap="round"/>
+            </g>
+
+            <!-- Wind lines - layer 3 -->
+            <g class="wind-3">
+                <path d="M 600 90 Q 720 85, 840 90" fill="none" stroke="#FFFFFF" stroke-width="3" opacity="0.5" stroke-linecap="round"/>
+                <path d="M 650 130 Q 790 125, 930 130" fill="none" stroke="#FFFFFF" stroke-width="3" opacity="0.5" stroke-linecap="round"/>
+                <path d="M 700 170 Q 820 165, 940 170" fill="none" stroke="#FFFFFF" stroke-width="3" opacity="0.5" stroke-linecap="round"/>
+            </g>
+
+            <!-- Wind lines - layer 4 -->
+            <g class="wind-4">
+                <path d="M 1000 100 Q 1100 95, 1200 100" fill="none" stroke="#FFFFFF" stroke-width="3" opacity="0.5" stroke-linecap="round"/>
+                <path d="M 1050 140 Q 1170 135, 1290 140" fill="none" stroke="#FFFFFF" stroke-width="3" opacity="0.5" stroke-linecap="round"/>
+            </g>
+
+            <!-- Wind lines - layer 5 (foreground) -->
+            <g class="wind-5">
+                <path d="M 0 240 Q 100 235, 200 240" fill="none" stroke="#FFFFFF" stroke-width="2" opacity="0.4" stroke-linecap="round"/>
+                <path d="M 400 250 Q 520 245, 640 250" fill="none" stroke="#FFFFFF" stroke-width="2" opacity="0.4" stroke-linecap="round"/>
+            </g>
+
+            <!-- Water - choppier waves -->
+            <path d="M 0 280 Q 100 265, 200 280 T 400 280 T 600 280 T 800 280 T 1000 280 T 1200 280 L 1200 400 L 0 400 Z" fill="#6B8FD9"/>
+            <path class="wave-1" d="M 0 310 Q 100 300, 200 310 T 400 310 T 600 310 T 800 310 T 1000 310 T 1200 310" fill="none" stroke="#5577C9" stroke-width="4" opacity="0.6"/>
+            <path class="wave-2" d="M 0 340 Q 120 330, 240 340 T 480 340 T 720 340 T 960 340 T 1200 340" fill="none" stroke="#5577C9" stroke-width="4" opacity="0.6"/>
+
+            <!-- Whitecaps on choppy water -->
+            <ellipse cx="150" cy="315" rx="25" ry="8" fill="#FFFFFF" opacity="0.6"/>
+            <ellipse cx="320" cy="305" rx="30" ry="10" fill="#FFFFFF" opacity="0.6"/>
+            <ellipse cx="480" cy="320" rx="28" ry="9" fill="#FFFFFF" opacity="0.6"/>
+            <ellipse cx="650" cy="310" rx="32" ry="11" fill="#FFFFFF" opacity="0.6"/>
+            <ellipse cx="850" cy="325" rx="26" ry="8" fill="#FFFFFF" opacity="0.6"/>
+            <ellipse cx="1000" cy="315" rx="30" ry="10" fill="#FFFFFF" opacity="0.6"/>
+
+            <!-- Ferry group with bobbing animation -->
+            <g class="ferry">
+                <path d="M 470 260 L 455 305 L 825 305 L 815 260 Z" fill="#FFFFFF"/>
+                <rect x="485" y="205" width="310" height="55" fill="#4B6EDB" rx="4"/>
+                <rect x="515" y="155" width="250" height="50" fill="#FFFFFF" rx="4"/>
+                <rect x="595" y="110" width="90" height="45" fill="#FF6B6B" rx="4"/>
+                <rect x="605" y="125" width="18" height="22" fill="#FFE66D" rx="2"/>
+                <rect x="632" y="125" width="18" height="22" fill="#FFE66D" rx="2"/>
+                <rect x="659" y="125" width="18" height="22" fill="#FFE66D" rx="2"/>
+                <rect x="635" y="95" width="8" height="15" fill="#4B6EDB"/>
+                <circle cx="639" cy="90" r="6" fill="#FFE66D"/>
+                <line x1="639" y1="84" x2="639" y2="75" stroke="#FF6B6B" stroke-width="2"/>
+                <circle cx="639" cy="75" r="4" fill="#FFE66D"/>
+                <rect x="530" y="170" width="22" height="25" fill="#4B6EDB" rx="2"/>
+                <rect x="565" y="170" width="22" height="25" fill="#4B6EDB" rx="2"/>
+                <rect x="600" y="170" width="22" height="25" fill="#4B6EDB" rx="2"/>
+                <rect x="635" y="170" width="22" height="25" fill="#4B6EDB" rx="2"/>
+                <rect x="670" y="170" width="22" height="25" fill="#4B6EDB" rx="2"/>
+                <rect x="705" y="170" width="22" height="25" fill="#4B6EDB" rx="2"/>
+                <rect x="505" y="220" width="45" height="30" fill="#FFE66D" rx="2"/>
+                <rect x="570" y="220" width="45" height="30" fill="#FFE66D" rx="2"/>
+                <rect x="635" y="220" width="45" height="30" fill="#FFE66D" rx="2"/>
+                <rect x="700" y="220" width="45" height="30" fill="#FFE66D" rx="2"/>
+                <ellipse cx="527" cy="235" rx="10" ry="7" fill="#FF6B6B"/>
+                <ellipse cx="592" cy="235" rx="10" ry="7" fill="#FFFFFF"/>
+                <ellipse cx="657" cy="235" rx="10" ry="7" fill="#FFE66D"/>
+                <rect x="705" y="135" width="32" height="20" fill="#FF6B6B" rx="3"/>
+                <ellipse cx="721" cy="135" rx="16" ry="5" fill="#FF6B6B"/>
+
+                <g transform="translate(545, 180)">
+                    <circle cx="0" cy="0" r="7" fill="#FF6B6B"/>
+                    <ellipse cx="0" cy="11" rx="6" ry="9" fill="#4B6EDB"/>
+                </g>
+                <g transform="translate(620, 180)">
+                    <circle cx="0" cy="0" r="7" fill="#FFE66D"/>
+                    <ellipse cx="0" cy="11" rx="6" ry="9" fill="#FF6B6B"/>
+                </g>
+                <g transform="translate(690, 180)">
+                    <circle cx="0" cy="0" r="7" fill="#4B6EDB"/>
+                    <ellipse cx="0" cy="11" rx="6" ry="9" fill="#FFE66D"/>
+                </g>
+            </g>
+
+            <!-- Smoke puffs blown sideways by wind! -->
+            <ellipse class="smoke-1" cx="738" cy="117" rx="15" ry="9" fill="#FFE66D"/>
+            <ellipse class="smoke-2" cx="758" cy="108" rx="17" ry="10" fill="#FFE66D"/>
+            <ellipse class="smoke-3" cx="773" cy="103" rx="14" ry="8" fill="#FFE66D"/>
+            <ellipse class="smoke-4" cx="788" cy="98" rx="16" ry="9" fill="#FFE66D"/>
+            <ellipse class="smoke-5" cx="805" cy="93" rx="13" ry="7" fill="#FFE66D"/>
+
+            <!-- Birds struggling in wind - tilted -->
+            <g transform="rotate(15 200 90)">
+                <path d="M 180 80 Q 190 75, 200 80" fill="none" stroke="#4B6EDB" stroke-width="3" stroke-linecap="round"/>
+                <path d="M 200 80 Q 210 75, 220 80" fill="none" stroke="#4B6EDB" stroke-width="3" stroke-linecap="round"/>
+            </g>
+            <g transform="rotate(-12 380 120)">
+                <path d="M 350 110 Q 360 105, 370 110" fill="none" stroke="#4B6EDB" stroke-width="3" stroke-linecap="round"/>
+                <path d="M 370 110 Q 380 105, 390 110" fill="none" stroke="#4B6EDB" stroke-width="3" stroke-linecap="round"/>
+            </g>
+            <g transform="rotate(20 910 110)">
+                <path d="M 890 100 Q 900 95, 910 100" fill="none" stroke="#4B6EDB" stroke-width="3" stroke-linecap="round"/>
+                <path d="M 910 100 Q 920 95, 930 100" fill="none" stroke="#4B6EDB" stroke-width="3" stroke-linecap="round"/>
+            </g>
+            <g transform="rotate(-15 1050 80)">
+                <path d="M 1020 70 Q 1030 65, 1040 70" fill="none" stroke="#4B6EDB" stroke-width="3" stroke-linecap="round"/>
+                <path d="M 1040 70 Q 1050 65, 1060 70" fill="none" stroke="#4B6EDB" stroke-width="3" stroke-linecap="round"/>
+            </g>
+
+            <!-- Spray from waves -->
+            <g class="spray-1">
+                <circle cx="180" cy="305" r="4" fill="#FFFFFF" opacity="0.7"/>
+                <circle cx="165" cy="300" r="3" fill="#FFFFFF" opacity="0.7"/>
+                <circle cx="195" cy="310" r="3" fill="#FFFFFF" opacity="0.7"/>
+            </g>
+            <g class="spray-2">
+                <circle cx="650" cy="300" r="4" fill="#FFFFFF" opacity="0.7"/>
+                <circle cx="635" cy="295" r="3" fill="#FFFFFF" opacity="0.7"/>
+                <circle cx="665" cy="305" r="3" fill="#FFFFFF" opacity="0.7"/>
+            </g>
+            <g class="spray-3">
+                <circle cx="1020" cy="310" r="4" fill="#FFFFFF" opacity="0.7"/>
+                <circle cx="1005" cy="305" r="3" fill="#FFFFFF" opacity="0.7"/>
+                <circle cx="1035" cy="315" r="3" fill="#FFFFFF" opacity="0.7"/>
+            </g>
+        </svg>`
+    },
+    night: {
+        background: '#1A1F3A',
+        css: `
+            @keyframes bob { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-3px); } }
+            @keyframes twinkle { 0%, 100% { opacity: 0.9; } 50% { opacity: 0.3; } }
+            @keyframes twinkleSlow { 0%, 100% { opacity: 0.9; } 50% { opacity: 0.5; } }
+            @keyframes blinkRed { 0%, 45%, 55%, 100% { opacity: 0.9; } 50% { opacity: 0.3; } }
+            @keyframes blinkGreen { 0%, 45%, 55%, 100% { opacity: 0.9; } 50% { opacity: 0.3; } }
+            @keyframes blinkMast { 0%, 90%, 100% { opacity: 0.9; } 95% { opacity: 0.2; } }
+            @keyframes drift { 0% { opacity: 0.6; transform: translate(0, 0); } 100% { opacity: 0; transform: translate(20px, -30px); } }
+            @keyframes wave { 0%, 100% { d: path("M 0 310 Q 100 300, 200 310 T 400 310 T 600 310 T 800 310 T 1000 310 T 1200 310"); } 50% { d: path("M 0 310 Q 100 305, 200 310 T 400 310 T 600 310 T 800 310 T 1000 310 T 1200 310"); } }
+            @keyframes wave2 { 0%, 100% { d: path("M 0 340 Q 120 330, 240 340 T 480 340 T 720 340 T 960 340 T 1200 340"); } 50% { d: path("M 0 340 Q 120 335, 240 340 T 480 340 T 720 340 T 960 340 T 1200 340"); } }
+            @keyframes glowPulse { 0%, 100% { opacity: 0.3; } 50% { opacity: 0.4; } }
+            .ferry { animation: bob 3s ease-in-out infinite; transform-origin: center; }
+            .star-1 { animation: twinkle 2s ease-in-out infinite; }
+            .star-2 { animation: twinkleSlow 3s ease-in-out 0.5s infinite; }
+            .star-3 { animation: twinkle 2.5s ease-in-out 1s infinite; }
+            .star-4 { animation: twinkleSlow 3.5s ease-in-out 1.5s infinite; }
+            .star-5 { animation: twinkle 2.8s ease-in-out 2s infinite; }
+            .nav-light-red { animation: blinkRed 2s ease-in-out infinite; }
+            .nav-light-green { animation: blinkGreen 2s ease-in-out 1s infinite; }
+            .mast-light { animation: blinkMast 3s ease-in-out infinite; }
+            .smoke-1 { animation: drift 4s ease-out infinite; }
+            .smoke-2 { animation: drift 4s ease-out 0.8s infinite; }
+            .smoke-3 { animation: drift 4s ease-out 1.6s infinite; }
+            .wave-1 { animation: wave 4s ease-in-out infinite; }
+            .wave-2 { animation: wave2 5s ease-in-out infinite; }
+            .window-glow { animation: glowPulse 3s ease-in-out infinite; }
+        `,
+        svg: `<svg viewBox="0 0 1200 400" xmlns="http://www.w3.org/2000/svg">
+            <!-- Background - dark night sky -->
+            <rect width="1200" height="400" fill="#1A1F3A" rx="20"/>
+
+            <!-- Stars scattered across the sky -->
+            <circle class="star-1" cx="80" cy="60" r="2" fill="#FFFFFF" opacity="0.9"/>
+            <circle class="star-2" cx="150" cy="90" r="2" fill="#FFFFFF" opacity="0.9"/>
+            <circle class="star-3" cx="220" cy="50" r="2" fill="#FFFFFF" opacity="0.9"/>
+            <circle class="star-4" cx="280" cy="120" r="2" fill="#FFFFFF" opacity="0.9"/>
+            <circle class="star-5" cx="350" cy="70" r="2" fill="#FFFFFF" opacity="0.9"/>
+            <circle class="star-1" cx="420" cy="110" r="2" fill="#FFFFFF" opacity="0.9"/>
+            <circle class="star-2" cx="490" cy="80" r="2" fill="#FFFFFF" opacity="0.9"/>
+            <circle class="star-3" cx="560" cy="130" r="2" fill="#FFFFFF" opacity="0.9"/>
+            <circle class="star-4" cx="630" cy="60" r="2" fill="#FFFFFF" opacity="0.9"/>
+            <circle class="star-5" cx="700" cy="100" r="2" fill="#FFFFFF" opacity="0.9"/>
+            <circle class="star-1" cx="770" cy="70" r="2" fill="#FFFFFF" opacity="0.9"/>
+            <circle class="star-2" cx="840" cy="120" r="2" fill="#FFFFFF" opacity="0.9"/>
+            <circle class="star-3" cx="910" cy="50" r="2" fill="#FFFFFF" opacity="0.9"/>
+            <circle class="star-4" cx="980" cy="90" r="2" fill="#FFFFFF" opacity="0.9"/>
+            <circle class="star-5" cx="1050" cy="110" r="2" fill="#FFFFFF" opacity="0.9"/>
+            <circle class="star-1" cx="1120" cy="70" r="2" fill="#FFFFFF" opacity="0.9"/>
+
+            <circle class="star-2" cx="120" cy="140" r="2" fill="#FFFFFF" opacity="0.9"/>
+            <circle class="star-3" cx="190" cy="170" r="2" fill="#FFFFFF" opacity="0.9"/>
+            <circle class="star-4" cx="260" cy="150" r="2" fill="#FFFFFF" opacity="0.9"/>
+            <circle class="star-5" cx="330" cy="180" r="2" fill="#FFFFFF" opacity="0.9"/>
+            <circle class="star-1" cx="400" cy="160" r="2" fill="#FFFFFF" opacity="0.9"/>
+            <circle class="star-2" cx="470" cy="190" r="2" fill="#FFFFFF" opacity="0.9"/>
+            <circle class="star-3" cx="820" cy="190" r="2" fill="#FFFFFF" opacity="0.9"/>
+            <circle class="star-4" cx="890" cy="170" r="2" fill="#FFFFFF" opacity="0.9"/>
+            <circle class="star-5" cx="960" cy="150" r="2" fill="#FFFFFF" opacity="0.9"/>
+            <circle class="star-1" cx="1030" cy="180" r="2" fill="#FFFFFF" opacity="0.9"/>
+            <circle class="star-2" cx="1100" cy="160" r="2" fill="#FFFFFF" opacity="0.9"/>
+
+            <!-- Brighter stars -->
+            <circle class="star-3" cx="200" cy="80" r="3" fill="#FFE66D" opacity="0.9"/>
+            <circle class="star-4" cx="500" cy="120" r="3" fill="#FFE66D" opacity="0.9"/>
+            <circle class="star-5" cx="800" cy="60" r="3" fill="#FFE66D" opacity="0.9"/>
+            <circle class="star-1" cx="1000" cy="130" r="3" fill="#FFE66D" opacity="0.9"/>
+
+            <!-- Moon -->
+            <circle cx="1050" cy="80" r="40" fill="#FFE66D" opacity="0.9"/>
+            <circle cx="1065" cy="75" r="35" fill="#1A1F3A" opacity="0.3"/>
+
+            <!-- Water - dark at night -->
+            <path d="M 0 280 Q 150 270, 300 280 T 600 280 T 900 280 T 1200 280 L 1200 400 L 0 400 Z" fill="#0D1B2E"/>
+            <path class="wave-1" d="M 0 310 Q 100 300, 200 310 T 400 310 T 600 310 T 800 310 T 1000 310 T 1200 310" fill="none" stroke="#1A2A3E" stroke-width="3" opacity="0.5"/>
+            <path class="wave-2" d="M 0 340 Q 120 330, 240 340 T 480 340 T 720 340 T 960 340 T 1200 340" fill="none" stroke="#1A2A3E" stroke-width="3" opacity="0.5"/>
+
+            <!-- Moon reflection on water -->
+            <ellipse cx="1050" cy="320" rx="20" ry="40" fill="#FFE66D" opacity="0.3"/>
+            <ellipse cx="1050" cy="360" rx="15" ry="20" fill="#FFE66D" opacity="0.2"/>
+
+            <!-- Ferry group with bobbing animation -->
+            <g class="ferry">
+                <path d="M 470 260 L 455 305 L 825 305 L 815 260 Z" fill="#FFFFFF"/>
+                <rect x="485" y="205" width="310" height="55" fill="#4B6EDB" rx="4"/>
+                <rect x="515" y="155" width="250" height="50" fill="#FFFFFF" rx="4"/>
+                <rect x="595" y="110" width="90" height="45" fill="#FF6B6B" rx="4"/>
+
+                <!-- Pilot house windows - GLOWING yellow at night -->
+                <rect x="605" y="125" width="18" height="22" fill="#FFE66D" rx="2"/>
+                <rect x="632" y="125" width="18" height="22" fill="#FFE66D" rx="2"/>
+                <rect x="659" y="125" width="18" height="22" fill="#FFE66D" rx="2"/>
+
+                <!-- Window glow effect -->
+                <rect class="window-glow" x="603" y="123" width="22" height="26" fill="#FFE66D" rx="2" opacity="0.3"/>
+                <rect class="window-glow" x="630" y="123" width="22" height="26" fill="#FFE66D" rx="2" opacity="0.3"/>
+                <rect class="window-glow" x="657" y="123" width="22" height="26" fill="#FFE66D" rx="2" opacity="0.3"/>
+
+                <rect x="635" y="95" width="8" height="15" fill="#4B6EDB"/>
+                <circle cx="639" cy="90" r="6" fill="#FF6B6B"/>
+                <line x1="639" y1="84" x2="639" y2="75" stroke="#FF6B6B" stroke-width="2"/>
+                <circle cx="639" cy="75" r="4" fill="#FF6B6B" opacity="0.9"/>
+
+                <!-- Red blinking light on mast -->
+                <circle class="mast-light" cx="639" cy="75" r="6" fill="#FF6B6B" opacity="0.4"/>
+
+                <!-- Upper deck windows - GLOWING -->
+                <rect x="530" y="170" width="22" height="25" fill="#FFE66D" rx="2"/>
+                <rect x="565" y="170" width="22" height="25" fill="#FFE66D" rx="2"/>
+                <rect x="600" y="170" width="22" height="25" fill="#FFE66D" rx="2"/>
+                <rect x="635" y="170" width="22" height="25" fill="#FFE66D" rx="2"/>
+                <rect x="670" y="170" width="22" height="25" fill="#FFE66D" rx="2"/>
+                <rect x="705" y="170" width="22" height="25" fill="#FFE66D" rx="2"/>
+
+                <!-- Window glow -->
+                <rect class="window-glow" x="528" y="168" width="26" height="29" fill="#FFE66D" rx="2" opacity="0.3"/>
+                <rect class="window-glow" x="563" y="168" width="26" height="29" fill="#FFE66D" rx="2" opacity="0.3"/>
+                <rect class="window-glow" x="598" y="168" width="26" height="29" fill="#FFE66D" rx="2" opacity="0.3"/>
+                <rect class="window-glow" x="633" y="168" width="26" height="29" fill="#FFE66D" rx="2" opacity="0.3"/>
+                <rect class="window-glow" x="668" y="168" width="26" height="29" fill="#FFE66D" rx="2" opacity="0.3"/>
+                <rect class="window-glow" x="703" y="168" width="26" height="29" fill="#FFE66D" rx="2" opacity="0.3"/>
+
+                <!-- Vehicle deck windows/openings - GLOWING yellow -->
+                <rect x="505" y="220" width="45" height="30" fill="#FFE66D" rx="2"/>
+                <rect x="570" y="220" width="45" height="30" fill="#FFE66D" rx="2"/>
+                <rect x="635" y="220" width="45" height="30" fill="#FFE66D" rx="2"/>
+                <rect x="700" y="220" width="45" height="30" fill="#FFE66D" rx="2"/>
+
+                <!-- Window glow -->
+                <rect class="window-glow" x="503" y="218" width="49" height="34" fill="#FFE66D" rx="2" opacity="0.3"/>
+                <rect class="window-glow" x="568" y="218" width="49" height="34" fill="#FFE66D" rx="2" opacity="0.3"/>
+                <rect class="window-glow" x="633" y="218" width="49" height="34" fill="#FFE66D" rx="2" opacity="0.3"/>
+                <rect class="window-glow" x="698" y="218" width="49" height="34" fill="#FFE66D" rx="2" opacity="0.3"/>
+
+                <ellipse cx="527" cy="235" rx="10" ry="7" fill="#3D5AA6" opacity="0.6"/>
+                <ellipse cx="592" cy="235" rx="10" ry="7" fill="#3D5AA6" opacity="0.6"/>
+                <ellipse cx="657" cy="235" rx="10" ry="7" fill="#3D5AA6" opacity="0.6"/>
+
+                <rect x="705" y="135" width="32" height="20" fill="#FF6B6B" rx="3"/>
+                <ellipse cx="721" cy="135" rx="16" ry="5" fill="#FF6B6B"/>
+
+                <g transform="translate(545, 180)" opacity="0.6">
+                    <circle cx="0" cy="0" r="7" fill="#3D5AA6"/>
+                    <ellipse cx="0" cy="11" rx="6" ry="9" fill="#2A4578"/>
+                </g>
+                <g transform="translate(620, 180)" opacity="0.6">
+                    <circle cx="0" cy="0" r="7" fill="#3D5AA6"/>
+                    <ellipse cx="0" cy="11" rx="6" ry="9" fill="#2A4578"/>
+                </g>
+                <g transform="translate(690, 180)" opacity="0.6">
+                    <circle cx="0" cy="0" r="7" fill="#3D5AA6"/>
+                    <ellipse cx="0" cy="11" rx="6" ry="9" fill="#2A4578"/>
+                </g>
+
+                <!-- Navigation lights - red (port) and green (starboard) -->
+                <circle class="nav-light-red" cx="460" cy="280" r="4" fill="#FF6B6B" opacity="0.9"/>
+                <circle class="nav-light-red" cx="460" cy="280" r="7" fill="#FF6B6B" opacity="0.3"/>
+
+                <circle class="nav-light-green" cx="820" cy="280" r="4" fill="#3FB573" opacity="0.9"/>
+                <circle class="nav-light-green" cx="820" cy="280" r="7" fill="#3FB573" opacity="0.3"/>
+            </g>
+
+            <!-- Smoke puffs - darker at night -->
+            <circle class="smoke-1" cx="718" cy="117" r="11" fill="#3D4A5C" opacity="0.6"/>
+            <circle class="smoke-2" cx="728" cy="108" r="13" fill="#3D4A5C" opacity="0.5"/>
+            <circle class="smoke-3" cx="713" cy="103" r="9" fill="#3D4A5C" opacity="0.6"/>
+
+            <!-- Decorative waves - subtle at night -->
+            <ellipse cx="200" cy="320" rx="40" ry="14" fill="#1A2A3E" opacity="0.4"/>
+            <ellipse cx="460" cy="325" rx="38" ry="13" fill="#1A2A3E" opacity="0.4"/>
+            <ellipse cx="820" cy="335" rx="45" ry="16" fill="#1A2A3E" opacity="0.4"/>
+            <ellipse cx="1000" cy="315" rx="42" ry="15" fill="#1A2A3E" opacity="0.3"/>
+            <ellipse cx="630" cy="350" rx="35" ry="12" fill="#1A2A3E" opacity="0.3"/>
+        </svg>`
+    },
+};
+
+
+function determineHeaderType(weatherData) {
+    const current = weatherData.current;
+    const isDay = current.is_day === 1;
+    const weatherCode = current.weather_code;
+    const windSpeed = current.wind_speed_10m; // in mph
+    
+    // Night time overrides all weather
+    if (!isDay) {
+        return 'night';
+    }
+    
+    // Fog (45, 48)
+    if (weatherCode === 45 || weatherCode === 48) {
+        return 'fog';
+    }
+    
+    // Snow (71-77, 85-86)
+    if ((weatherCode >= 71 && weatherCode <= 77) || 
+        weatherCode === 85 || weatherCode === 86) {
+        return 'snow';
+    }
+    
+    // Rain/Drizzle (51-67, 80-82, 95-99)
+    if ((weatherCode >= 51 && weatherCode <= 67) ||
+        (weatherCode >= 80 && weatherCode <= 82) ||
+        (weatherCode >= 95 && weatherCode <= 99)) {
+        return 'rain';
+    }
+    
+    // Windy (wind speed > 20 mph / ~17 knots)
+    if (windSpeed > 20) {
+        return 'windy';
+    }
+    
+    // Overcast (3)
+    if (weatherCode === 3) {
+        return 'overcast';
+    }
+
+    // Partly Cloudy (2)
+    if (weatherCode === 2) {
+        return 'cloudy';
+    }
+    
+    // Clear (0, 1)
+    return 'clear';
+}
+
+function updateHeaderForWeather(weatherData) {
+    const headerType = determineHeaderType(weatherData);
+    const headerData = headerSVGs[headerType];
+    
+    if (!headerData) {
+        console.error('No header data for type:', headerType);
+        return;
+    }
+    
+    // Update background color with smooth transition
+    document.body.style.background = headerData.background;
+    document.body.style.backgroundImage = 
+        `url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.3'/%3E%3C/svg%3E")`;
+    
+    // Add/remove night-mode class for text color adjustments
+    if (headerType === 'night') {
+        document.body.classList.add('night-mode');
+    } else {
+        document.body.classList.remove('night-mode');
+    }
+    
+    // Inject/update animation CSS for this header type
+    let headerStyle = document.getElementById('header-animations');
+    if (!headerStyle) {
+        headerStyle = document.createElement('style');
+        headerStyle.id = 'header-animations';
+        document.head.appendChild(headerStyle);
+    }
+    headerStyle.textContent = headerData.css || '';
+
+    // Update header SVG - use innerHTML to preserve class and attributes
+    const ferryIllustration = document.querySelector('.ferry-illustration');
+    if (ferryIllustration && headerData.svg) {
+        // Extract just the inner content of the SVG (everything between <svg> and </svg>)
+        const svgMatch = headerData.svg.match(/<svg[^>]*>(.*?)<\/svg>/s);
+        if (svgMatch && svgMatch[1]) {
+            ferryIllustration.innerHTML = svgMatch[1];
+        }
+    }
+
+    console.log(`Header updated to: ${headerType}`);
+}
+
+        // ===== END DYNAMIC WEATHER HEADER SYSTEM =====
+
+
+        function formatTime(timestamp) {
+            const date = new Date(timestamp);
+            return date.toLocaleTimeString('en-US', { 
+                hour: 'numeric', 
+                minute: '2-digit',
+                hour12: true 
+            });
+        }
+
+        function createSailingElement(sailing) {
+            if (!sailing || !sailing.departure_time) {
+                return '';
+            }
+
+            return `
+                <div class="sailing">
+                    <div class="sailing-time">${sailing.departure_time}</div>
+                    <div class="sailing-vessel">${sailing.vessel || 'Ferry'}</div>
+                </div>
+            `;
+        }
+
+        function createDirectionSection(title, sailings) {
+            const sailingsHtml = sailings && sailings.length > 0
+                ? sailings.map(createSailingElement).join('')
+                : '<div class="no-sailings">No upcoming sailings</div>';
+
+            return `
+                <div class="direction-section">
+                    <div class="direction-header">${title}</div>
+                    <div class="sailings">
+                        ${sailingsHtml}
+                    </div>
+                </div>
+            `;
+        }
+
+        function createBoatStatusHtml(boatAnalysis) {
+            if (!boatAnalysis || !boatAnalysis.boat_count) {
+                return '';
+            }
+
+            const count = boatAnalysis.boat_count;
+            const vessels = boatAnalysis.unique_vessels || [];
+            const interval = boatAnalysis.avg_interval_minutes;
+            const statusClass = count === 2 ? 'two-boat' : 'three-boat';
+
+            // Flag SVG icons
+            const redFlag = `<svg class="flag-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M4 21V4" stroke="#FF6B6B" stroke-width="2" stroke-linecap="round"/>
+                <path d="M4 4C4 4 5 3 8 3C11 3 13 5 16 5C19 5 20 4 20 4V14C20 14 19 15 16 15C13 15 11 13 8 13C5 13 4 14 4 14" fill="#FF6B6B"/>
+            </svg>`;
+
+            const greenFlag = `<svg class="flag-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M4 21V4" stroke="#4CAF50" stroke-width="2" stroke-linecap="round"/>
+                <path d="M4 4C4 4 5 3 8 3C11 3 13 5 16 5C19 5 20 4 20 4V14C20 14 19 15 16 15C13 15 11 13 8 13C5 13 4 14 4 14" fill="#4CAF50"/>
+            </svg>`;
+
+            const flagIcon = count === 2 ? redFlag : greenFlag;
+
+            let statusText = `${flagIcon}<span class="boat-count">${count}-Boat Service</span>`;
+            if (vessels.length > 0) {
+                statusText += ` • ${vessels.join(', ')}`;
+            }
+            if (interval) {
+                statusText += ` • ~${interval} min intervals`;
+            }
+
+            return `<div class="boat-status ${statusClass}">${statusText}</div>`;
+        }
+
+        function renderFerryData(data) {
+            const updateTime = document.getElementById('updateTime');
+            const content = document.getElementById('content');
+
+            // Update timestamp
+            updateTime.textContent = `Updated: ${formatTime(data.timestamp)}`;
+
+            // Build the display
+            const routes = data.routes;
+            
+            const html = `
+                <div class="routes-container">
+                    <div class="route-section">
+                        <div class="route-title">The North End</div>
+                        ${createDirectionSection(
+                            'From Vashon to Fauntleroy',
+                            routes.vashon_fauntleroy.from_vashon.sailings
+                        )}
+                        ${createDirectionSection(
+                            'From Fauntleroy to Vashon',
+                            routes.vashon_fauntleroy.from_fauntleroy.sailings
+                        )}
+                    </div>
+
+                    <div class="route-section">
+                        <div class="route-title">The South End</div>
+                        ${createDirectionSection(
+                            'From Tahlequah to Pt. Defiance',
+                            routes.tahlequah_point_defiance.from_tahlequah.sailings
+                        )}
+                        ${createDirectionSection(
+                            'From Pt. Defiance to Tahlequah',
+                            routes.tahlequah_point_defiance.from_point_defiance.sailings
+                        )}
+                    </div>
+                </div>
+                ${createBoatStatusHtml(routes.vashon_fauntleroy.boat_analysis)}
+            `;
+
+            // Update content directly - no fade animation
+            content.innerHTML = html;
+            content.classList.remove('loading');
+        }
+
+        function showError(message) {
+            const content = document.getElementById('content');
+            content.innerHTML = `
+                <div class="error">
+                    <h2>⚠️ Error</h2>
+                    <p>${message}</p>
+                    <p style="margin-top: 10px; font-size: 0.9em;">Retrying in 60 seconds...</p>
+                </div>
+            `;
+        }
+
+        async function fetchFerryData() {
+            try {
+                const response = await fetch('/api/ferries');
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                renderFerryData(data);
+            } catch (error) {
+                console.error('Error fetching ferry data:', error);
+                showError(error.message);
+            }
+        }
+
+        async function fetchWeatherData() {
+            try {
+                // Vashon Island coordinates
+                const lat = 47.4432;
+                const lon = -122.4598;
+                
+                // Open-Meteo API - includes is_day, weather code, and wind for header selection
+                const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,weather_code,wind_speed_10m,is_day&temperature_unit=fahrenheit&wind_speed_unit=mph&timezone=America/Los_Angeles`;
+                
+                const response = await fetch(url);
+                
+                if (!response.ok) {
+                    throw new Error(`Weather API error! status: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                updateWeatherDisplay(data);
+                updateHeaderForWeather(data); // Update header based on weather
+            } catch (error) {
+                console.error('Error fetching weather data:', error);
+                // Show error in weather box
+                document.getElementById('temperature').textContent = '--';
+                document.getElementById('conditions').textContent = 'Error';
+                document.getElementById('windSpeed').textContent = '--';
+            }
+        }
+
+        function updateWeatherDisplay(data) {
+            const current = data.current;
+            
+            // Temperature (already in Fahrenheit)
+            const temp = Math.round(current.temperature_2m);
+            document.getElementById('temperature').textContent = temp;
+            
+            // Weather conditions from WMO code
+            const weatherCode = current.weather_code;
+            const conditions = getWeatherDescription(weatherCode);
+            document.getElementById('conditions').textContent = conditions;
+            
+            // Wind speed - convert from mph to knots (1 mph = 0.868976 knots)
+            const windMph = current.wind_speed_10m;
+            const windKnots = Math.round(windMph * 0.868976);
+            document.getElementById('windSpeed').textContent = windKnots;
+        }
+
+        function getWeatherDescription(code) {
+            // WMO Weather interpretation codes
+            const weatherCodes = {
+                0: 'Clear',
+                1: 'Mostly Clear',
+                2: 'Partly Cloudy',
+                3: 'Overcast',
+                45: 'Foggy',
+                48: 'Foggy',
+                51: 'Light Drizzle',
+                53: 'Drizzle',
+                55: 'Heavy Drizzle',
+                56: 'Freezing Drizzle',
+                57: 'Heavy Freezing Drizzle',
+                61: 'Light Rain',
+                63: 'Rain',
+                65: 'Heavy Rain',
+                66: 'Freezing Rain',
+                67: 'Heavy Freezing Rain',
+                71: 'Light Snow',
+                73: 'Snow',
+                75: 'Heavy Snow',
+                77: 'Snow Grains',
+                80: 'Light Showers',
+                81: 'Showers',
+                82: 'Heavy Showers',
+                85: 'Light Snow Showers',
+                86: 'Snow Showers',
+                95: 'Thunderstorm',
+                96: 'Thunderstorm w/ Hail',
+                99: 'Heavy Thunderstorm'
+            };
+            
+            return weatherCodes[code] || 'Unknown';
+        }
+
+        // Initial fetch
+        fetchFerryData();
+        fetchWeatherData();
+
+        // Refresh ferry data every 60 seconds
+        refreshInterval = setInterval(fetchFerryData, 60000);
+        
+        // Refresh weather data every 5 minutes (300000 ms)
+        setInterval(fetchWeatherData, 300000);
+
+        // Handle visibility change to stop/start updates when tab is hidden
+        document.addEventListener('visibilitychange', function() {
+            if (document.hidden) {
+                clearInterval(refreshInterval);
+            } else {
+                fetchFerryData();
+                refreshInterval = setInterval(fetchFerryData, 60000);
+            }
+        });
+    </script>
+</body>
+</html>

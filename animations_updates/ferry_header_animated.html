@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ferry Header - Animated</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #f0f0f0;
+        }
+        .container {
+            max-width: 1400px;
+            width: 100%;
+        }
+        
+        /* Boat bobbing animation */
+        @keyframes bob {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-3px); }
+        }
+        
+        .ferry {
+            animation: bob 3s ease-in-out infinite;
+            transform-origin: center;
+        }
+        
+        /* Bird flapping - left wing */
+        @keyframes flapLeft {
+            0%, 100% { d: path("M 0 0 Q 10 -5, 20 0"); }
+            50% { d: path("M 0 0 Q 10 -8, 20 0"); }
+        }
+        
+        /* Bird flapping - right wing */
+        @keyframes flapRight {
+            0%, 100% { d: path("M 0 0 Q 10 -5, 20 0"); }
+            50% { d: path("M 0 0 Q 10 -8, 20 0"); }
+        }
+        
+        .bird-left-1 {
+            animation: flapLeft 0.5s ease-in-out infinite;
+        }
+        
+        .bird-right-1 {
+            animation: flapRight 0.5s ease-in-out infinite;
+        }
+        
+        .bird-left-2 {
+            animation: flapLeft 0.6s ease-in-out infinite;
+        }
+        
+        .bird-right-2 {
+            animation: flapRight 0.6s ease-in-out infinite;
+        }
+        
+        .bird-left-3 {
+            animation: flapLeft 0.55s ease-in-out infinite;
+        }
+        
+        .bird-right-3 {
+            animation: flapRight 0.55s ease-in-out infinite;
+        }
+        
+        .bird-left-4 {
+            animation: flapLeft 0.58s ease-in-out infinite;
+        }
+        
+        .bird-right-4 {
+            animation: flapRight 0.58s ease-in-out infinite;
+        }
+        
+        /* Smoke drifting */
+        @keyframes drift {
+            0% { opacity: 0.8; transform: translate(0, 0); }
+            100% { opacity: 0; transform: translate(20px, -30px); }
+        }
+        
+        .smoke-1 { animation: drift 4s ease-out infinite; }
+        .smoke-2 { animation: drift 4s ease-out 0.8s infinite; }
+        .smoke-3 { animation: drift 4s ease-out 1.6s infinite; }
+        .smoke-4 { animation: drift 4s ease-out 2.4s infinite; }
+        .smoke-5 { animation: drift 4s ease-out 3.2s infinite; }
+        
+        /* Gentle wave movement */
+        @keyframes wave {
+            0%, 100% { d: path("M 0 310 Q 100 300, 200 310 T 400 310 T 600 310 T 800 310 T 1000 310 T 1200 310"); }
+            50% { d: path("M 0 310 Q 100 305, 200 310 T 400 310 T 600 310 T 800 310 T 1000 310 T 1200 310"); }
+        }
+        
+        @keyframes wave2 {
+            0%, 100% { d: path("M 0 340 Q 120 330, 240 340 T 480 340 T 720 340 T 960 340 T 1200 340"); }
+            50% { d: path("M 0 340 Q 120 335, 240 340 T 480 340 T 720 340 T 960 340 T 1200 340"); }
+        }
+        
+        .wave-1 {
+            animation: wave 4s ease-in-out infinite;
+        }
+        
+        .wave-2 {
+            animation: wave2 5s ease-in-out infinite;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <svg viewBox="0 0 1200 400" xmlns="http://www.w3.org/2000/svg">
+            <!-- Background -->
+            <rect width="1200" height="400" fill="#FFB5B5" rx="20"/>
+            
+            <!-- Water -->
+            <path d="M 0 280 Q 150 270, 300 280 T 600 280 T 900 280 T 1200 280 L 1200 400 L 0 400 Z" fill="#6B8FD9"/>
+            <path class="wave-1" d="M 0 310 Q 100 300, 200 310 T 400 310 T 600 310 T 800 310 T 1000 310 T 1200 310" fill="none" stroke="#5577C9" stroke-width="3" opacity="0.5"/>
+            <path class="wave-2" d="M 0 340 Q 120 330, 240 340 T 480 340 T 720 340 T 960 340 T 1200 340" fill="none" stroke="#5577C9" stroke-width="3" opacity="0.5"/>
+            
+            <!-- Ferry group with bobbing animation -->
+            <g class="ferry">
+                <!-- Ferry Hull - white body with angled front -->
+                <path d="M 470 260 L 455 305 L 825 305 L 815 260 Z" fill="#FFFFFF"/>
+                
+                <!-- Vehicle deck structure - bold blue -->
+                <rect x="485" y="205" width="310" height="55" fill="#4B6EDB" rx="4"/>
+                
+                <!-- Upper passenger deck - white -->
+                <rect x="515" y="155" width="250" height="50" fill="#FFFFFF" rx="4"/>
+                
+                <!-- Bridge/Pilot house - pink/coral -->
+                <rect x="595" y="110" width="90" height="45" fill="#FF6B6B" rx="4"/>
+                
+                <!-- Pilot house windows - yellow -->
+                <rect x="605" y="125" width="18" height="22" fill="#FFE66D" rx="2"/>
+                <rect x="632" y="125" width="18" height="22" fill="#FFE66D" rx="2"/>
+                <rect x="659" y="125" width="18" height="22" fill="#FFE66D" rx="2"/>
+                
+                <!-- Radar mast - playful -->
+                <rect x="635" y="95" width="8" height="15" fill="#4B6EDB"/>
+                <circle cx="639" cy="90" r="6" fill="#FFE66D"/>
+                <line x1="639" y1="84" x2="639" y2="75" stroke="#FF6B6B" stroke-width="2"/>
+                <circle cx="639" cy="75" r="4" fill="#FFE66D"/>
+                
+                <!-- Upper deck windows - blue -->
+                <rect x="530" y="170" width="22" height="25" fill="#4B6EDB" rx="2"/>
+                <rect x="565" y="170" width="22" height="25" fill="#4B6EDB" rx="2"/>
+                <rect x="600" y="170" width="22" height="25" fill="#4B6EDB" rx="2"/>
+                <rect x="635" y="170" width="22" height="25" fill="#4B6EDB" rx="2"/>
+                <rect x="670" y="170" width="22" height="25" fill="#4B6EDB" rx="2"/>
+                <rect x="705" y="170" width="22" height="25" fill="#4B6EDB" rx="2"/>
+                
+                <!-- Vehicle deck windows/openings - yellow -->
+                <rect x="505" y="220" width="45" height="30" fill="#FFE66D" rx="2"/>
+                <rect x="570" y="220" width="45" height="30" fill="#FFE66D" rx="2"/>
+                <rect x="635" y="220" width="45" height="30" fill="#FFE66D" rx="2"/>
+                <rect x="700" y="220" width="45" height="30" fill="#FFE66D" rx="2"/>
+                
+                <!-- Stylized cars on deck - fun colors -->
+                <ellipse cx="527" cy="235" rx="10" ry="7" fill="#FF6B6B"/>
+                <ellipse cx="592" cy="235" rx="10" ry="7" fill="#FFFFFF"/>
+                <ellipse cx="657" cy="235" rx="10" ry="7" fill="#FFE66D"/>
+                
+                <!-- Smokestack - coral/pink -->
+                <rect x="705" y="135" width="32" height="20" fill="#FF6B6B" rx="3"/>
+                <ellipse cx="721" cy="135" rx="16" ry="5" fill="#FF6B6B"/>
+                
+                <!-- People on deck - colorful -->
+                <g transform="translate(545, 180)">
+                    <circle cx="0" cy="0" r="7" fill="#FF6B6B"/>
+                    <ellipse cx="0" cy="11" rx="6" ry="9" fill="#4B6EDB"/>
+                </g>
+                
+                <g transform="translate(620, 180)">
+                    <circle cx="0" cy="0" r="7" fill="#FFE66D"/>
+                    <ellipse cx="0" cy="11" rx="6" ry="9" fill="#FF6B6B"/>
+                </g>
+                
+                <g transform="translate(690, 180)">
+                    <circle cx="0" cy="0" r="7" fill="#4B6EDB"/>
+                    <ellipse cx="0" cy="11" rx="6" ry="9" fill="#FFE66D"/>
+                </g>
+            </g>
+            
+            <!-- Smoke puffs with drift animation -->
+            <circle class="smoke-1" cx="718" cy="117" r="11" fill="#FFE66D"/>
+            <circle class="smoke-2" cx="728" cy="108" r="13" fill="#FFE66D"/>
+            <circle class="smoke-3" cx="713" cy="103" r="9" fill="#FFE66D"/>
+            <circle class="smoke-4" cx="723" cy="93" r="11" fill="#FFE66D"/>
+            <circle class="smoke-5" cx="710" cy="88" r="8" fill="#FFE66D"/>
+            
+            <!-- Birds with flapping animation - Bird 1 -->
+            <g transform="translate(180, 80)">
+                <path class="bird-left-1" d="M 0 0 Q 10 -5, 20 0" fill="none" stroke="#4B6EDB" stroke-width="3" stroke-linecap="round"/>
+                <path class="bird-right-1" d="M 20 0 Q 30 -5, 40 0" fill="none" stroke="#4B6EDB" stroke-width="3" stroke-linecap="round"/>
+            </g>
+            
+            <!-- Bird 2 -->
+            <g transform="translate(350, 110)">
+                <path class="bird-left-2" d="M 0 0 Q 10 -5, 20 0" fill="none" stroke="#4B6EDB" stroke-width="3" stroke-linecap="round"/>
+                <path class="bird-right-2" d="M 20 0 Q 30 -5, 40 0" fill="none" stroke="#4B6EDB" stroke-width="3" stroke-linecap="round"/>
+            </g>
+            
+            <!-- Bird 3 -->
+            <g transform="translate(890, 100)">
+                <path class="bird-left-3" d="M 0 0 Q 10 -5, 20 0" fill="none" stroke="#4B6EDB" stroke-width="3" stroke-linecap="round"/>
+                <path class="bird-right-3" d="M 20 0 Q 30 -5, 40 0" fill="none" stroke="#4B6EDB" stroke-width="3" stroke-linecap="round"/>
+            </g>
+            
+            <!-- Bird 4 -->
+            <g transform="translate(1020, 70)">
+                <path class="bird-left-4" d="M 0 0 Q 10 -5, 20 0" fill="none" stroke="#4B6EDB" stroke-width="3" stroke-linecap="round"/>
+                <path class="bird-right-4" d="M 20 0 Q 30 -5, 40 0" fill="none" stroke="#4B6EDB" stroke-width="3" stroke-linecap="round"/>
+            </g>
+            
+            <!-- Decorative waves -->
+            <ellipse cx="200" cy="320" rx="40" ry="14" fill="#FFFFFF" opacity="0.4"/>
+            <ellipse cx="460" cy="325" rx="38" ry="13" fill="#FFFFFF" opacity="0.4"/>
+            <ellipse cx="820" cy="335" rx="45" ry="16" fill="#FFFFFF" opacity="0.4"/>
+            <ellipse cx="1000" cy="315" rx="42" ry="15" fill="#FFFFFF" opacity="0.3"/>
+            <ellipse cx="630" cy="350" rx="35" ry="12" fill="#FFFFFF" opacity="0.3"/>
+            
+            <circle cx="205" cy="310" r="7" fill="#FFFFFF" opacity="0.5"/>
+            <circle cx="190" cy="315" r="5" fill="#FFFFFF" opacity="0.5"/>
+            <circle cx="815" cy="325" r="7" fill="#FFFFFF" opacity="0.5"/>
+            <circle cx="830" cy="330" r="5" fill="#FFFFFF" opacity="0.5"/>
+            <circle cx="995" cy="305" r="6" fill="#FFFFFF" opacity="0.5"/>
+            <circle cx="1010" cy="310" r="5" fill="#FFFFFF" opacity="0.5"/>
+        </svg>
+    </div>
+</body>
+</html>
