@@ -4,1909 +4,2039 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Vashon Ferry Schedule</title>
-    <!-- Add Google Font -->
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Archivo:ital,wght@0,100..900;1,100..900&family=Cardo:ital,wght@0,400;0,700;1,400&family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Raleway:ital,wght@0,100..900;1,100..900&family=Space+Grotesk:wght@300..700&family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
 <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+    /* ===== FONT FACES ===== */
+    @font-face {
+        font-family: 'Tiempos Headline';
+        src: url('/static/fonts/test-tiempos-headline-light.woff2') format('woff2');
+        font-weight: 300;
+        font-style: normal;
+        font-display: swap;
+    }
+    @font-face {
+        font-family: 'Tiempos Headline';
+        src: url('/static/fonts/test-tiempos-headline-light-italic.woff2') format('woff2');
+        font-weight: 300;
+        font-style: italic;
+        font-display: swap;
+    }
+    @font-face {
+        font-family: 'Tiempos Headline';
+        src: url('/static/fonts/test-tiempos-headline-medium.woff2') format('woff2');
+        font-weight: 500;
+        font-style: normal;
+        font-display: swap;
+    }
+    @font-face {
+        font-family: 'Tiempos Fine';
+        src: url('/static/fonts/test-tiempos-fine-regular.woff2') format('woff2');
+        font-weight: 400;
+        font-style: normal;
+        font-display: swap;
+    }
+    @font-face {
+        font-family: 'Tiempos Fine';
+        src: url('/static/fonts/test-tiempos-fine-regular-italic.woff2') format('woff2');
+        font-weight: 400;
+        font-style: italic;
+        font-display: swap;
+    }
+    @font-face {
+        font-family: 'Tiempos Fine';
+        src: url('/static/fonts/test-tiempos-fine-light.woff2') format('woff2');
+        font-weight: 300;
+        font-style: normal;
+        font-display: swap;
+    }
+    @font-face {
+        font-family: 'Die Grotesk';
+        src: url('/static/fonts/test-die-grotesk-a-light.woff2') format('woff2');
+        font-weight: 300;
+        font-style: normal;
+        font-display: swap;
+    }
+    @font-face {
+        font-family: 'Die Grotesk';
+        src: url('/static/fonts/test-die-grotesk-a-regular.woff2') format('woff2');
+        font-weight: 400;
+        font-style: normal;
+        font-display: swap;
+    }
+    @font-face {
+        font-family: 'Die Grotesk';
+        src: url('/static/fonts/test-die-grotesk-a-medium.woff2') format('woff2');
+        font-weight: 500;
+        font-style: normal;
+        font-display: swap;
+    }
+    @font-face {
+        font-family: 'Die Grotesk';
+        src: url('/static/fonts/test-die-grotesk-a-bold.woff2') format('woff2');
+        font-weight: 700;
+        font-style: normal;
+        font-display: swap;
+    }
+
+    /* ===== CSS CUSTOM PROPERTIES ===== */
+    :root {
+        /* Colors — warm salmon/terracotta palette */
+        --color-bg: #D4A08A;
+        --color-bg-dark: #2A2A3A;
+        --color-card: #FFFFFF;
+        --color-card-alpha: rgba(255, 255, 255, 0.97);
+        --color-accent: #D4705A;
+        --color-accent-soft: #E8927E;
+        --color-text-heading: #D4705A;
+        --color-text-body: #3A3A3A;
+        --color-text-muted: #8A8A8A;
+        --color-text-light: #FFFFFF;
+        --color-weather-bar: rgba(0, 0, 0, 0.08);
+        --color-delay: #D4705A;
+        --color-on-time: #6AAF6A;
+        --color-stale-warn: #E8A84C;
+        --color-stale-error: #D4705A;
+        --color-direction-bg: #F5F0EC;
+        --color-sailing-hover: #FAF7F5;
+        --color-vessel-track: rgba(0, 0, 0, 0.06);
+        --color-vessel-dot: rgba(0, 0, 0, 0.15);
+
+        /* Typography */
+        --font-headline: 'Tiempos Headline', 'Georgia', serif;
+        --font-fine: 'Tiempos Fine', 'Georgia', serif;
+        --font-body: 'Die Grotesk', 'Helvetica Neue', sans-serif;
+        --font-size-route: clamp(1.4rem, 3vw, 2rem);
+        --font-size-time: clamp(1.1rem, 2.2vw, 1.5rem);
+        --font-size-body: clamp(0.8rem, 1.2vw, 0.95rem);
+        --font-size-small: clamp(0.7rem, 1vw, 0.82rem);
+        --font-size-tiny: clamp(0.6rem, 0.8vw, 0.72rem);
+
+        /* Spacing */
+        --space-xs: 4px;
+        --space-sm: 8px;
+        --space-md: 16px;
+        --space-lg: 24px;
+        --space-xl: 32px;
+        --space-2xl: 48px;
+
+        /* Effects */
+        --radius-card: 20px;
+        --radius-sm: 10px;
+        --radius-xs: 6px;
+        --shadow-card: 0 2px 20px rgba(0, 0, 0, 0.06);
+        --transition-fast: 150ms ease;
+        --transition-normal: 300ms ease;
+        --grain-opacity: 0.15;
+    }
+
+    /* Night mode */
+    body.night-mode {
+        --color-bg: #1E1E2E;
+        --color-card: #2A2A3A;
+        --color-card-alpha: rgba(42, 42, 58, 0.97);
+        --color-text-heading: #E8927E;
+        --color-text-body: #D0D0D0;
+        --color-text-muted: #7A7A8A;
+        --color-weather-bar: rgba(255, 255, 255, 0.06);
+        --color-direction-bg: #333345;
+        --color-sailing-hover: #3A3A4A;
+        --color-vessel-track: rgba(255, 255, 255, 0.06);
+        --color-vessel-dot: rgba(255, 255, 255, 0.15);
+        --grain-opacity: 0.08;
+    }
+
+    /* ===== BASE ===== */
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+        background: var(--color-bg);
+        color: var(--color-text-body);
+        min-height: 100vh;
+        padding: 0 var(--space-lg) var(--space-md);
+        transition: background var(--transition-normal), color var(--transition-normal);
+    }
+
+    /* Film grain */
+    body::before {
+        content: '';
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        z-index: 1000;
+        background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.3'/%3E%3C/svg%3E");
+        opacity: var(--grain-opacity);
+    }
+
+    .container {
+        max-width: 1100px;
+        margin: 0 auto;
+        position: relative;
+        z-index: 1;
+    }
+
+    /* ===== HEADER ===== */
+    header {
+        text-align: center;
+        margin-bottom: var(--space-md);
+        padding-top: 200px;
+        position: relative;
+        margin-left: calc(-1 * var(--space-lg));
+        margin-right: calc(-1 * var(--space-lg));
+    }
+
+    /* ===== 8-BIT WEATHER SCENE (Canvas) ===== */
+    #scene-canvas {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 200px;
+        z-index: 0;
+        image-rendering: pixelated;
+        image-rendering: crisp-edges;
+    }
+
+    .ferry-mascot {
+        position: absolute;
+        top: 78px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 120px;
+        height: auto;
+        z-index: 10;
+        image-rendering: pixelated;
+        image-rendering: crisp-edges;
+    }
+
+    /* Weather bar — pinned to bottom of the scene */
+    .weather-bar {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        z-index: 20;
+        font-family: var(--font-body);
+        font-weight: 400;
+        font-size: var(--font-size-small);
+        color: #FFFFFF;
+        background: #325262;
+        padding: var(--space-sm) var(--space-lg);
+        display: flex;
+        justify-content: center;
+        gap: var(--space-xl);
+    }
+
+    .weather-bar span { white-space: nowrap; }
+    .weather-label { font-weight: 500; }
+    .weather-emoji { margin-right: 4px; }
+
+    /* Update time — footer debug info */
+    .update-time {
+        font-family: var(--font-body);
+        font-weight: 300;
+        font-size: var(--font-size-tiny);
+        color: var(--color-text-muted);
+        text-align: center;
+        margin-top: var(--space-lg);
+        padding: var(--space-sm);
+        transition: color var(--transition-normal);
+    }
+
+    .update-time.stale-warn { color: var(--color-stale-warn); font-weight: 500; }
+    .update-time.stale-error { color: var(--color-stale-error); font-weight: 700; }
+
+    /* ===== ALERTS BANNER ===== */
+    .alerts-banner {
+        background: var(--color-delay);
+        color: var(--color-text-light);
+        padding: 0;
+        border-radius: var(--radius-sm);
+        margin: 0;
+        font-family: var(--font-body);
+        font-size: var(--font-size-small);
+        font-weight: 500;
+        text-align: center;
+        max-height: 0;
+        overflow: hidden;
+        opacity: 0;
+        transition: all var(--transition-normal);
+    }
+
+    .alerts-banner.visible {
+        opacity: 1;
+        max-height: 100px;
+        padding: var(--space-md) var(--space-lg);
+        margin-bottom: var(--space-md);
+    }
+    .alert-title { font-weight: 700; }
+
+    /* ===== ROUTES ===== */
+    .routes-container {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: var(--space-lg);
+        margin-bottom: var(--space-lg);
+    }
+
+    .route-card {
+        background: var(--color-card-alpha);
+        border-radius: var(--radius-card);
+        padding: var(--space-xl) var(--space-lg) var(--space-lg);
+        box-shadow: var(--shadow-card);
+    }
+
+    .route-title {
+        font-family: var(--font-fine);
+        font-weight: 400;
+        font-style: normal;
+        font-size: var(--font-size-route);
+        color: var(--color-text-heading);
+        text-align: center;
+        margin-bottom: var(--space-sm);
+        letter-spacing: -0.01em;
+    }
+
+    /* ===== DIRECTION ===== */
+    .direction-section {
+        margin-bottom: var(--space-lg);
+    }
+
+    .direction-section:last-child { margin-bottom: 0; }
+
+    .direction-header {
+        font-family: var(--font-body);
+        font-weight: 500;
+        font-size: var(--font-size-tiny);
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        color: var(--color-text-muted);
+        margin-bottom: var(--space-sm);
+        padding: 0 var(--space-xs);
+    }
+
+    /* ===== VESSEL TRACKER ===== */
+    .vessel-tracker {
+        position: relative;
+        margin: var(--space-sm) 0 var(--space-lg);
+        padding: var(--space-xs) 0;
+    }
+
+    /* Status label above the bar */
+    .vessel-tracker-label {
+        font-family: var(--font-body);
+        font-size: var(--font-size-tiny);
+        font-weight: 500;
+        color: var(--color-text-muted);
+        text-align: center;
+        margin-bottom: var(--space-xs);
+    }
+
+    .vessel-tracker-label .vessel-name {
+        color: var(--color-text-heading);
+    }
+
+    /* The track bar */
+    .vessel-track-bar {
+        position: relative;
+        height: 28px;
+        background: var(--color-vessel-track);
+        border-radius: 14px;
+        overflow: visible;
+    }
+
+    .vessel-track-line {
+        position: absolute;
+        top: 50%;
+        left: 12%;
+        right: 12%;
+        height: 2px;
+        background: var(--color-vessel-dot);
+        transform: translateY(-50%);
+        border-radius: 1px;
+    }
+
+    /* Terminal dots at each end */
+    .vessel-dot-start,
+    .vessel-dot-end {
+        position: absolute;
+        top: 50%;
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: var(--color-vessel-dot);
+        transform: translateY(-50%);
+    }
+
+    .vessel-dot-start { left: 12%; }
+    .vessel-dot-end { right: 12%; }
+
+    /* Terminal labels under each dot */
+    .vessel-terminal-label {
+        position: absolute;
+        bottom: -14px;
+        font-family: var(--font-body);
+        font-size: 0.55rem;
+        color: var(--color-text-muted);
+        white-space: nowrap;
+    }
+
+    .vessel-terminal-start { left: 6%; }
+    .vessel-terminal-end { right: 6%; text-align: right; }
+
+    .vessel-icon {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%) translateX(-50%);
+        z-index: 2;
+    }
+
+    .vessel-icon img {
+        width: 28px;
+        height: auto;
+        image-rendering: pixelated;
+        image-rendering: crisp-edges;
+    }
+
+    @media (prefers-reduced-motion: no-preference) {
+        .vessel-tracker .vessel-icon {
+            transition: left 20s linear;
         }
 
-        body {
-            background: #FFB5B5;
-            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.3'/%3E%3C/svg%3E");
-            color: #4B6EDB;
-            padding: 20px;
-            min-height: 100vh;
+        .vessel-tracker.state-en_route .vessel-icon img {
+            filter: drop-shadow(0 0 3px #FFE66D);
         }
 
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
+        .vessel-tracker.state-arriving .vessel-icon img {
+            animation: pulse-glow 1.5s ease-in-out infinite;
         }
 
-        header {
-            text-align: center;
-            margin-bottom: 30px;
-            padding-bottom: 20px;
-            border-bottom: 2px solid rgba(255, 255, 255, 0.3);
-            position: relative;
-            overflow: hidden;
-            height:200px;
+        @keyframes pulse-glow {
+            0%, 100% { filter: drop-shadow(0 0 4px #FFE66D) drop-shadow(0 0 8px #FFE66D); }
+            50% { filter: drop-shadow(0 0 10px #FFE66D) drop-shadow(0 0 16px #FF6B6B); }
         }
 
-        .ferry-illustration {
-            position: absolute;
-            left: 0;
-            right: 0;
-            top: -20px;
-            width: 100%;
-            height: auto;
-            z-index: 0;
-            pointer-events: none;
+        @keyframes idle-bob-mini {
+            0%, 100% { transform: translateY(-50%) translateX(-50%); }
+            50% { transform: translateY(calc(-50% - 2px)) translateX(-50%); }
         }
 
-        header h1,
-        header .update-time {
-            position: relative;
-            z-index: 1;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        .vessel-tracker.state-docked .vessel-icon {
+            animation: idle-bob-mini 2.5s ease-in-out infinite;
         }
+    }
 
-        h1 {
-               font-family: "Playfair Display", serif;
-  font-optical-sizing: auto;
-  font-weight: 500;
-  font-style: italic;
-            font-size: 7em;
-            margin-bottom:10px;
-   
+    .vessel-tracker.state-inactive {
+        opacity: 0.4;
+    }
+    .vessel-tracker.state-inactive .vessel-track-line {
+        background: rgba(0, 0, 0, 0.08);
+    }
+    .vessel-tracker.state-inactive .vessel-dot-start,
+    .vessel-tracker.state-inactive .vessel-dot-end {
+        background: rgba(0, 0, 0, 0.1);
+    }
+
+    /* ===== DELAY BADGE ===== */
+    .delay-badge {
+        display: inline-block;
+        font-family: var(--font-body);
+        font-size: var(--font-size-tiny);
+        font-weight: 700;
+        padding: 1px 7px;
+        border-radius: 8px;
+        margin-left: var(--space-xs);
+    }
+
+    .delay-badge.late {
+        background: var(--color-delay);
+        color: var(--color-text-light);
+    }
+
+    .delay-badge.on-time {
+        background: var(--color-on-time);
+        color: var(--color-text-light);
+    }
+
+    /* ===== SAILINGS ===== */
+    .sailings {
+        display: flex;
+        flex-direction: column;
+        gap: 0;
+        border-radius: var(--radius-xs);
+        overflow: hidden;
+    }
+
+    .sailing {
+        padding: var(--space-sm) var(--space-md);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        transition: background var(--transition-fast);
+    }
+
+    .sailing:nth-child(odd) {
+        background: rgba(0, 0, 0, 0.03);
+    }
+
+    .sailing:nth-child(even) {
+        background: rgba(0, 0, 0, 0.07);
+    }
+
+    .sailing:hover {
+        background: rgba(0, 0, 0, 0.1);
+    }
+
+    .sailing-time {
+        font-family: var(--font-fine);
+        font-weight: 400;
+        font-size: var(--font-size-time);
+        color: var(--color-text-body);
+        letter-spacing: -0.02em;
+    }
+
+    .sailing-vessel {
+        font-family: var(--font-body);
+        font-weight: 300;
+        font-size: var(--font-size-tiny);
+        color: var(--color-text-muted);
+    }
+
+    .sailing-delayed {
+        border-left: 3px solid var(--color-delay) !important;
+    }
+    .sailing-delayed .sailing-time {
+        color: var(--color-delay);
+    }
+
+    .last-sailing-badge {
+        font-family: var(--font-body);
+        font-size: 0.45em;
+        font-weight: 500;
+        color: var(--color-text-muted);
+        background: rgba(0,0,0,0.06);
+        padding: 2px 8px;
+        border-radius: 10px;
+        vertical-align: middle;
+        margin-left: 4px;
+    }
+    body.night-mode .last-sailing-badge {
+        background: rgba(255,255,255,0.1);
+        color: var(--color-highlight);
+    }
+
+    .no-sailings {
+        text-align: center;
+        padding: var(--space-lg);
+        font-family: var(--font-fine);
+        font-style: italic;
+        font-size: var(--font-size-body);
+        color: var(--color-text-muted);
+    }
+
+    /* ===== BOAT STATUS ===== */
+    .boat-status {
+        text-align: center;
+        font-family: var(--font-body);
+        font-size: var(--font-size-tiny);
+        font-weight: 400;
+        padding: var(--space-sm) var(--space-md);
+        border-radius: var(--radius-xs);
+        margin-bottom: var(--space-md);
+    }
+
+    .boat-count { font-weight: 700; }
+
+    /* Mint — healthy service (3-boat or 1-boat running) */
+    .boat-status.service-good {
+        background: #D4EDE4;
+        color: #2A5A46;
+    }
+    .boat-status.service-good .boat-count { color: #1A4A36; }
+
+    /* Yellow — degraded service (2-boat or 0-boat/out of service) */
+    .boat-status.service-degraded {
+        background: #F5E6C8;
+        color: #6A5A2A;
+    }
+    .boat-status.service-degraded .boat-count { color: #5A4A1A; }
+
+    /* ===== TERMINAL BULLETINS ===== */
+    .terminal-bulletin {
+        font-family: var(--font-body);
+        font-size: var(--font-size-tiny);
+        font-weight: 300;
+        color: var(--color-text-muted);
+        padding: var(--space-xs) var(--space-md);
+        margin-top: var(--space-sm);
+        text-align: center;
+    }
+
+    /* ===== LOADING / ERROR ===== */
+    .loading {
+        text-align: center;
+        font-family: var(--font-fine);
+        font-style: italic;
+        font-size: 1.2em;
+        color: var(--color-text-muted);
+        padding: var(--space-2xl);
+    }
+
+    @media (prefers-reduced-motion: no-preference) {
+        @keyframes pulse { 0%, 100% { opacity: 0.5; } 50% { opacity: 1; } }
+        .loading { animation: pulse 2s infinite; }
+    }
+
+    .error {
+        background: rgba(212, 112, 90, 0.1);
+        padding: var(--space-lg);
+        border-radius: var(--radius-sm);
+        text-align: center;
+        font-family: var(--font-body);
+        color: var(--color-delay);
+    }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 768px) {
+        .routes-container { grid-template-columns: 1fr; }
+        #scene-canvas { height: 170px; }
+        .ferry-mascot { width: 90px; top: 68px !important; }
+        header { padding-top: 180px; }
+        .weather-bar { gap: var(--space-md); font-size: var(--font-size-tiny); padding: var(--space-xs) var(--space-sm); }
+    }
+
+    /* ===== REDUCED MOTION ===== */
+    @media (prefers-reduced-motion: reduce) {
+        *, *::before, *::after {
+            animation-duration: 0.01ms !important;
+            animation-iteration-count: 1 !important;
+            transition-duration: 0.01ms !important;
         }
-
-        .update-time {
-            font-family: "Space Mono", monospace;
-            font-weight: 400;
-            font-style: normal;
-            font-size: 0.9em;
-            opacity: 0.8;
-            color: #000;
-            padding: 8px 12px;
-            background: #6B8FD9;
-            border-radius: 8px;
-            width:30%;
-            margin: 75px 0 0 0;
-            display: inline-block;
-            float:left;
-        }
-
-        .weather-box {
-            font-family: "Space Mono", monospace;
-            font-weight: 400;
-            font-style: normal;
-            font-size: 0.9em;
-            opacity: 0.8;
-            color: #000;
-            padding: 8px 12px;
-            background: #FFE66D;
-            border-radius: 8px;
-            width: 30%;
-            margin: 45px 0 0 0;
-            display: inline-block;
-            float: right;
-            position: relative;
-            z-index: 1;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
-        }
-
-        .weather-item {
-            margin: 4px 0;
-        }
-
-        .weather-label {
-            font-weight: 700;
-        }
-
-        .routes-container {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 30px;
-            margin-bottom: 20px;
-        }
-
-        .route-section {
-            background: rgba(255, 255, 255, 0.3);
-            backdrop-filter: blur(10px);
-            border-radius: 15px;
-            padding: 25px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
-        }
-
-        .route-title {
-             font-family: "Playfair Display", serif;
-            font-optical-sizing: auto;
-            font-weight: 200;
-            font-style: italic;
-            margin-bottom: 20px;
-            text-align: center;
-            color: #4B6EDB;
-            font-size: 40px;
-        }
-
-        .boat-status {
-            text-align: center;
-            font-family: "Space Mono", monospace;
-            font-size: 0.85em;
-            margin-top: 20px;
-            padding: 15px;
-            background: rgba(255, 255, 255, 0.3);
-            backdrop-filter: blur(10px);
-            border-radius: 15px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
-            color: #4B6EDB;
-        }
-
-        .boat-count {
-            font-weight: bold;
-            font-size: 1.1em;
-        }
-
-        .flag-icon {
-            width: 20px;
-            height: 20px;
-            vertical-align: middle;
-            margin-right: 6px;
-        }
-
-        .boat-status.two-boat {
-            border-top: 4px solid #FF6B6B;
-        }
-
-        .boat-status.three-boat {
-            border-top: 4px solid #6B8FD9;
-        }
-
-        .direction-section {
-            margin-bottom: 25px;
-        }
-
-        .direction-section:last-child {
-            margin-bottom: 0;
-        }
-
-        .direction-header {
-              font-family: "Space Mono", monospace;
-                font-weight: 400;
-            font-style: italic;
-            font-size: 1em;
-            margin-bottom: 12px;
-            padding: 8px 12px;
-            background: #6B8FD9;
-            border-radius: 8px;
-            color: #FFFFFF;
-            text-align: center;
-        }
-
-        .direction-arrow {
-            font-size: 0.9em;
-            opacity: 0.8;
-        }
-
-        .sailings {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-
-        .sailing {
-            background: rgba(255, 255, 255, 0.2);
-            padding: 15px;
-            border-radius: 10px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            transition: transform 0.2s;
-        }
-
-        .sailing:hover {
-            transform: translateX(5px);
-            background: rgba(255, 255, 255, 0.25);
-        }
-
-        .sailing-time {
-              font-family: "Space Grotesk", sans-serif;
-  font-optical-sizing: auto;
-  font-weight: 200;
-  font-style: normal;
-            font-size: 1.8em;
-            font-weight: bold;
-            color: #4B6EDB;
-        }
-
-        .sailing-vessel {
-            font-family: "Space Mono", monospace;
-  font-weight: 400;
-  font-style: normal;
-            font-size: 0.9em;
-            opacity: 0.9;
-            color: #FF6B6B;
-        }
-
-        .loading {
-            text-align: center;
-            font-size: 1.5em;
-            padding: 50px;
-            opacity: 0.7;
-        }
-
-        .error {
-            background: rgba(255, 0, 0, 0.3);
-            padding: 20px;
-            border-radius: 10px;
-            margin: 20px 0;
-            text-align: center;
-        }
-
-        .no-sailings {
-            text-align: center;
-            padding: 20px;
-            opacity: 0.7;
-            font-style: italic;
-        }
-
-
-        /* Night mode text adjustments */
-        body.night-mode .route-title {
-            color: #FFFFFF;
-        }
-
-        body.night-mode .sailing-vessel {
-            color: #FFE66D;
-        }
-
-        body.night-mode .sailing-time {
-            color: #FFFFFF;
-        }
-
-        body.night-mode .direction-header {
-            background: #3D5AA6;
-        }
-        
-         body.night-mode .boat-status.three-boat {
-            color: #FFFFFF;
-        }
-        
-        body.night-mode .boat-status.two-boat {
-            color: #FFFFFF;
-        }
-
-        @media (max-width: 768px) {
-            .routes-container {
-                grid-template-columns: 1fr;
-            }
-
-            h1 {
-                font-size: 3em;
-            }
-
-            .route-title {
-                font-size: 1.5em;
-            }
-
-            .sailing-time {
-                font-size: 1.5em;
-            }
-
-            .ferry-illustration {
-                top: -10px;
-            }
-
-            .update-time {
-                width: 45%;
-                margin: 65px 5px 0 5px;
-            }
-            .weather-box {
-                width: 45%;
-                font-size: 0.75em;
-                margin: 40px 5px 0 5px;
-            }
-
-            header {
-                height: 180px;
-            }
-        }
-
-        /* Animation for loading */
-        @keyframes pulse {
-            0%, 100% {
-                opacity: 0.6;
-            }
-            50% {
-                opacity: 1;
-            }
-        }
-
-        .loading {
-            animation: pulse 2s infinite;
-        }
-    </style>
+    }
+</style>
 </head>
 <body>
     <div class="container">
         <header>
-            <!-- Ferry Illustration Background - Full Width -->
-            <svg class="ferry-illustration" viewBox="0 0 1200 400" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
-                <!-- Water -->
-                <path d="M 0 280 Q 150 270, 300 280 T 600 280 T 900 280 T 1200 280 L 1200 400 L 0 400 Z" fill="#6B8FD9"/>
-                <path d="M 0 310 Q 100 300, 200 310 T 400 310 T 600 310 T 800 310 T 1000 310 T 1200 310" fill="none" stroke="#5577C9" stroke-width="3" opacity="0.5"/>
-                <path d="M 0 340 Q 120 330, 240 340 T 480 340 T 720 340 T 960 340 T 1200 340" fill="none" stroke="#5577C9" stroke-width="3" opacity="0.5"/>
-                
-                <!-- Ferry Hull - white body with angled front -->
-                <path d="M 470 260 L 455 305 L 825 305 L 815 260 Z" fill="#FFFFFF"/>
-                
-                <!-- Vehicle deck structure - bold blue -->
-                <rect x="485" y="205" width="310" height="55" fill="#4B6EDB" rx="4"/>
-                
-                <!-- Upper passenger deck - white -->
-                <rect x="515" y="155" width="250" height="50" fill="#FFFFFF" rx="4"/>
-                
-                <!-- Bridge/Pilot house - pink/coral -->
-                <rect x="595" y="110" width="90" height="45" fill="#FF6B6B" rx="4"/>
-                
-                <!-- Pilot house windows - yellow -->
-                <rect x="605" y="125" width="18" height="22" fill="#FFE66D" rx="2"/>
-                <rect x="632" y="125" width="18" height="22" fill="#FFE66D" rx="2"/>
-                <rect x="659" y="125" width="18" height="22" fill="#FFE66D" rx="2"/>
-                
-                <!-- Radar mast - playful -->
-                <rect x="635" y="95" width="8" height="15" fill="#4B6EDB"/>
-                <circle cx="639" cy="90" r="6" fill="#FFE66D"/>
-                <line x1="639" y1="84" x2="639" y2="75" stroke="#FF6B6B" stroke-width="2"/>
-                <circle cx="639" cy="75" r="4" fill="#FFE66D"/>
-                
-                <!-- Upper deck windows - blue -->
-                <rect x="530" y="170" width="22" height="25" fill="#4B6EDB" rx="2"/>
-                <rect x="565" y="170" width="22" height="25" fill="#4B6EDB" rx="2"/>
-                <rect x="600" y="170" width="22" height="25" fill="#4B6EDB" rx="2"/>
-                <rect x="635" y="170" width="22" height="25" fill="#4B6EDB" rx="2"/>
-                <rect x="670" y="170" width="22" height="25" fill="#4B6EDB" rx="2"/>
-                <rect x="705" y="170" width="22" height="25" fill="#4B6EDB" rx="2"/>
-                
-                <!-- Vehicle deck windows/openings - yellow -->
-                <rect x="505" y="220" width="45" height="30" fill="#FFE66D" rx="2"/>
-                <rect x="570" y="220" width="45" height="30" fill="#FFE66D" rx="2"/>
-                <rect x="635" y="220" width="45" height="30" fill="#FFE66D" rx="2"/>
-                <rect x="700" y="220" width="45" height="30" fill="#FFE66D" rx="2"/>
-                
-                <!-- Stylized cars on deck - fun colors -->
-                <ellipse cx="527" cy="235" rx="10" ry="7" fill="#FF6B6B"/>
-                <ellipse cx="592" cy="235" rx="10" ry="7" fill="#FFFFFF"/>
-                <ellipse cx="657" cy="235" rx="10" ry="7" fill="#FFE66D"/>
-                
-                <!-- Smokestack - coral/pink -->
-                <rect x="705" y="135" width="32" height="20" fill="#FF6B6B" rx="3"/>
-                <ellipse cx="721" cy="135" rx="16" ry="5" fill="#FF6B6B"/>
-                
-                <!-- Smoke puffs - yellow -->
-                <circle cx="718" cy="117" r="11" fill="#FFE66D" opacity="0.8"/>
-                <circle cx="728" cy="108" r="13" fill="#FFE66D" opacity="0.7"/>
-                <circle cx="713" cy="103" r="9" fill="#FFE66D" opacity="0.8"/>
-                <circle cx="723" cy="93" r="11" fill="#FFE66D" opacity="0.6"/>
-                <circle cx="710" cy="88" r="8" fill="#FFE66D" opacity="0.5"/>
-                
-                <!-- People on deck - colorful -->
-                <g transform="translate(545, 180)">
-                    <circle cx="0" cy="0" r="7" fill="#FF6B6B"/>
-                    <ellipse cx="0" cy="11" rx="6" ry="9" fill="#4B6EDB"/>
-                </g>
-                
-                <g transform="translate(620, 180)">
-                    <circle cx="0" cy="0" r="7" fill="#FFE66D"/>
-                    <ellipse cx="0" cy="11" rx="6" ry="9" fill="#FF6B6B"/>
-                </g>
-                
-                <g transform="translate(690, 180)">
-                    <circle cx="0" cy="0" r="7" fill="#4B6EDB"/>
-                    <ellipse cx="0" cy="11" rx="6" ry="9" fill="#FFE66D"/>
-                </g>
-                
-                <!-- Birds in sky - spread across wider canvas -->
-                <path d="M 180 80 Q 190 75, 200 80" fill="none" stroke="#4B6EDB" stroke-width="3" stroke-linecap="round"/>
-                <path d="M 200 80 Q 210 75, 220 80" fill="none" stroke="#4B6EDB" stroke-width="3" stroke-linecap="round"/>
-                
-                <path d="M 350 110 Q 360 105, 370 110" fill="none" stroke="#4B6EDB" stroke-width="3" stroke-linecap="round"/>
-                <path d="M 370 110 Q 380 105, 390 110" fill="none" stroke="#4B6EDB" stroke-width="3" stroke-linecap="round"/>
-                
-                <path d="M 890 100 Q 900 95, 910 100" fill="none" stroke="#4B6EDB" stroke-width="3" stroke-linecap="round"/>
-                <path d="M 910 100 Q 920 95, 930 100" fill="none" stroke="#4B6EDB" stroke-width="3" stroke-linecap="round"/>
-                
-                <path d="M 1020 70 Q 1030 65, 1040 70" fill="none" stroke="#4B6EDB" stroke-width="3" stroke-linecap="round"/>
-                <path d="M 1040 70 Q 1050 65, 1060 70" fill="none" stroke="#4B6EDB" stroke-width="3" stroke-linecap="round"/>
-                
-                <!-- Decorative waves/splashes - spread out -->
-                <ellipse cx="200" cy="320" rx="40" ry="14" fill="#FFFFFF" opacity="0.4"/>
-                <ellipse cx="460" cy="325" rx="38" ry="13" fill="#FFFFFF" opacity="0.4"/>
-                <ellipse cx="820" cy="335" rx="45" ry="16" fill="#FFFFFF" opacity="0.4"/>
-                <ellipse cx="1000" cy="315" rx="42" ry="15" fill="#FFFFFF" opacity="0.3"/>
-                <ellipse cx="630" cy="350" rx="35" ry="12" fill="#FFFFFF" opacity="0.3"/>
-                
-                <circle cx="205" cy="310" r="7" fill="#FFFFFF" opacity="0.5"/>
-                <circle cx="190" cy="315" r="5" fill="#FFFFFF" opacity="0.5"/>
-                <circle cx="815" cy="325" r="7" fill="#FFFFFF" opacity="0.5"/>
-                <circle cx="830" cy="330" r="5" fill="#FFFFFF" opacity="0.5"/>
-                <circle cx="995" cy="305" r="6" fill="#FFFFFF" opacity="0.5"/>
-                <circle cx="1010" cy="310" r="5" fill="#FFFFFF" opacity="0.5"/>
-            </svg>
+            <canvas id="scene-canvas"></canvas>
+            <img src="/static/ferrybuddy.png" alt="Ferry Buddy" class="ferry-mascot" id="ferryMascot">
 
-            <!--<h1>Ferry Times</h1>-->
-            <div class="update-time" id="updateTime">Loading...</div>
-            <div class="weather-box" id="weatherBox">
-                <div class="weather-item"><span class="weather-label">Temp:</span> <span id="temperature">--</span>°F</div>
-                <div class="weather-item"><span class="weather-label">Conditions:</span> <span id="conditions">--</span></div>
-                <div class="weather-item"><span class="weather-label">Wind:</span> <span id="windSpeed">--</span> knots</div>
+            <div class="weather-bar" id="weatherBar">
+                <span><span class="weather-emoji">🌡️</span> <span id="temperature">--</span>&deg;F</span>
+                <span><span class="weather-emoji cond-emoji">☁️</span> <span id="conditions">--</span></span>
+                <span><span class="weather-emoji">💨</span> <span id="windSpeed">--</span> knots</span>
             </div>
         </header>
 
-        <div id="content" class="loading">
-            Loading ferry schedules...
-        </div>
+        <div id="alertsBanner" class="alerts-banner"></div>
+
+        <div id="content" class="loading">Loading ferry schedules...</div>
+        <div class="update-time" id="updateTime">Loading...</div>
     </div>
 
     <script>
-        let refreshInterval;
+    // ===== APP STATE =====
+    const FerryApp = {
+        lastFerryData: null,
+        lastVesselData: null,
+        retryCount: 0,
+        maxRetry: 4,
+        retryDelays: [5000, 15000, 30000, 60000],
+        ferryInterval: null,
+        vesselInterval: null,
+        terminals: { fauntleroy: 9, vashon: 22, tahlequah: 21, point_defiance: 16 },
+    };
+
+    // ===== CACHE =====
+    FerryApp.Cache = {
+        store(key, data) { this['_' + key] = { data, time: Date.now() }; },
+        get(key) { const e = this['_' + key]; return e ? e.data : null; },
+        age(key) { const e = this['_' + key]; return e ? (Date.now() - e.time) / 1000 : Infinity; },
+    };
+
+    // ===== VESSEL STATE MACHINE =====
+    // The VF route is a triangle: Fauntleroy ↔ Vashon ↔ Southworth
+    // A vessel "departing Vashon" might be going to Southworth, not Fauntleroy.
+    // We need to match more broadly for the north route.
+    FerryApp.Vessel = {
+        // Southworth is part of the VF triangle
+        SOUTHWORTH: 20,
+
+        // All terminal IDs on the VF triangle
+        VF_TRIANGLE: new Set([9, 22, 20]), // Fauntleroy, Vashon, Southworth
+
+        getStateForDirection(vesselData, deptTermId, arrTermId) {
+            if (!vesselData || !vesselData.vessels) return { state: 'unknown' };
+
+            // 1. Direct match: vessel going exactly from dept → arr
+            let vessel = vesselData.vessels.find(v =>
+                !v.at_dock &&
+                v.departing_terminal_id === deptTermId &&
+                v.arriving_terminal_id === arrTermId
+            );
+
+            // 2. For VF triangle: vessel departing our terminal heading to Southworth
+            //    (still "leaving" from our perspective)
+            if (!vessel && this.VF_TRIANGLE.has(deptTermId) && this.VF_TRIANGLE.has(arrTermId)) {
+                vessel = vesselData.vessels.find(v =>
+                    !v.at_dock &&
+                    v.departing_terminal_id === deptTermId &&
+                    this.VF_TRIANGLE.has(v.arriving_terminal_id) &&
+                    v.arriving_terminal_id !== arrTermId
+                );
+                // This vessel is on the triangle but not heading directly to our arrival terminal
+                // Show it as "en route via Southworth" etc.
+                if (vessel) {
+                    return {
+                        state: 'en_route',
+                        vessel: vessel.vessel_name,
+                        delay: vessel.delay_minutes,
+                        progress: 0.2, // early in journey since it has another stop
+                        eta: null,
+                        minutesToArrival: null,
+                        via: vessel.arriving_terminal,
+                    };
+                }
+            }
+
+            // 3. Check for vessel docked at the departure terminal
+            //    When at_dock=true, departing_terminal is where the vessel physically IS.
+            //    Don't match on arriving_terminal — that's where it's going, not where it is.
+            if (!vessel) {
+                const docked = vesselData.vessels.find(v =>
+                    v.at_dock && v.departing_terminal_id === deptTermId
+                );
+                if (docked) {
+                    return { state: 'docked', vessel: docked.vessel_name, delay: docked.delay_minutes, progress: 0 };
+                }
+                return { state: 'unknown' };
+            }
+
+            if (vessel.at_dock) {
+                return { state: 'docked', vessel: vessel.vessel_name, delay: vessel.delay_minutes, progress: 0 };
+            }
+
+            // Calculate progress
+            let progress = 0.5;
+            if (vessel.left_dock && vessel.eta) {
+                const left = new Date(vessel.left_dock).getTime();
+                const eta = new Date(vessel.eta).getTime();
+                const total = eta - left;
+                if (total > 0) progress = Math.max(0, Math.min(1, (Date.now() - left) / total));
+            }
+
+            let minutesToArrival = null;
+            if (vessel.eta) minutesToArrival = (new Date(vessel.eta).getTime() - Date.now()) / 60000;
+
+            return {
+                state: minutesToArrival !== null && minutesToArrival <= 10 ? 'arriving' : 'en_route',
+                vessel: vessel.vessel_name,
+                delay: vessel.delay_minutes,
+                progress,
+                eta: vessel.eta,
+                minutesToArrival: minutesToArrival !== null ? Math.max(0, Math.round(minutesToArrival)) : null,
+            };
+        },
+    };
 
+    // ===== RENDER =====
 
-        // ===== DYNAMIC WEATHER HEADER SYSTEM =====
-        const headerSVGs = {
-    clear: {
-        background: '#FFB5B5',
-        css: `
-            @keyframes bob { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-3px); } }
-            @keyframes flapLeft { 0%, 100% { d: path("M 0 0 Q 10 -5, 20 0"); } 50% { d: path("M 0 0 Q 10 -8, 20 0"); } }
-            @keyframes flapRight { 0%, 100% { d: path("M 0 0 Q 10 -5, 20 0"); } 50% { d: path("M 0 0 Q 10 -8, 20 0"); } }
-            @keyframes drift { 0% { opacity: 0.8; transform: translate(0, 0); } 100% { opacity: 0; transform: translate(20px, -30px); } }
-            @keyframes wave { 0%, 100% { d: path("M 0 310 Q 100 300, 200 310 T 400 310 T 600 310 T 800 310 T 1000 310 T 1200 310"); } 50% { d: path("M 0 310 Q 100 305, 200 310 T 400 310 T 600 310 T 800 310 T 1000 310 T 1200 310"); } }
-            @keyframes wave2 { 0%, 100% { d: path("M 0 340 Q 120 330, 240 340 T 480 340 T 720 340 T 960 340 T 1200 340"); } 50% { d: path("M 0 340 Q 120 335, 240 340 T 480 340 T 720 340 T 960 340 T 1200 340"); } }
-            .ferry { animation: bob 3s ease-in-out infinite; transform-origin: center; }
-            .bird-left-1 { animation: flapLeft 0.5s ease-in-out infinite; }
-            .bird-right-1 { animation: flapRight 0.5s ease-in-out infinite; }
-            .bird-left-2 { animation: flapLeft 0.6s ease-in-out infinite; }
-            .bird-right-2 { animation: flapRight 0.6s ease-in-out infinite; }
-            .bird-left-3 { animation: flapLeft 0.55s ease-in-out infinite; }
-            .bird-right-3 { animation: flapRight 0.55s ease-in-out infinite; }
-            .bird-left-4 { animation: flapLeft 0.58s ease-in-out infinite; }
-            .bird-right-4 { animation: flapRight 0.58s ease-in-out infinite; }
-            .smoke-1 { animation: drift 4s ease-out infinite; }
-            .smoke-2 { animation: drift 4s ease-out 0.8s infinite; }
-            .smoke-3 { animation: drift 4s ease-out 1.6s infinite; }
-            .smoke-4 { animation: drift 4s ease-out 2.4s infinite; }
-            .smoke-5 { animation: drift 4s ease-out 3.2s infinite; }
-            .wave-1 { animation: wave 4s ease-in-out infinite; }
-            .wave-2 { animation: wave2 5s ease-in-out infinite; }
-        `,
-        svg: `<svg viewBox="0 0 1200 400" xmlns="http://www.w3.org/2000/svg">
-            <!-- Background -->
-            <rect width="1200" height="400" fill="#FFB5B5" rx="20"/>
-
-            <!-- Water -->
-            <path d="M 0 280 Q 150 270, 300 280 T 600 280 T 900 280 T 1200 280 L 1200 400 L 0 400 Z" fill="#6B8FD9"/>
-            <path class="wave-1" d="M 0 310 Q 100 300, 200 310 T 400 310 T 600 310 T 800 310 T 1000 310 T 1200 310" fill="none" stroke="#5577C9" stroke-width="3" opacity="0.5"/>
-            <path class="wave-2" d="M 0 340 Q 120 330, 240 340 T 480 340 T 720 340 T 960 340 T 1200 340" fill="none" stroke="#5577C9" stroke-width="3" opacity="0.5"/>
-
-            <!-- Ferry group with bobbing animation -->
-            <g class="ferry">
-                <!-- Ferry Hull - white body with angled front -->
-                <path d="M 470 260 L 455 305 L 825 305 L 815 260 Z" fill="#FFFFFF"/>
-
-                <!-- Vehicle deck structure - bold blue -->
-                <rect x="485" y="205" width="310" height="55" fill="#4B6EDB" rx="4"/>
-
-                <!-- Upper passenger deck - white -->
-                <rect x="515" y="155" width="250" height="50" fill="#FFFFFF" rx="4"/>
-
-                <!-- Bridge/Pilot house - pink/coral -->
-                <rect x="595" y="110" width="90" height="45" fill="#FF6B6B" rx="4"/>
-
-                <!-- Pilot house windows - yellow -->
-                <rect x="605" y="125" width="18" height="22" fill="#FFE66D" rx="2"/>
-                <rect x="632" y="125" width="18" height="22" fill="#FFE66D" rx="2"/>
-                <rect x="659" y="125" width="18" height="22" fill="#FFE66D" rx="2"/>
-
-                <!-- Radar mast - playful -->
-                <rect x="635" y="95" width="8" height="15" fill="#4B6EDB"/>
-                <circle cx="639" cy="90" r="6" fill="#FFE66D"/>
-                <line x1="639" y1="84" x2="639" y2="75" stroke="#FF6B6B" stroke-width="2"/>
-                <circle cx="639" cy="75" r="4" fill="#FFE66D"/>
-
-                <!-- Upper deck windows - blue -->
-                <rect x="530" y="170" width="22" height="25" fill="#4B6EDB" rx="2"/>
-                <rect x="565" y="170" width="22" height="25" fill="#4B6EDB" rx="2"/>
-                <rect x="600" y="170" width="22" height="25" fill="#4B6EDB" rx="2"/>
-                <rect x="635" y="170" width="22" height="25" fill="#4B6EDB" rx="2"/>
-                <rect x="670" y="170" width="22" height="25" fill="#4B6EDB" rx="2"/>
-                <rect x="705" y="170" width="22" height="25" fill="#4B6EDB" rx="2"/>
-
-                <!-- Vehicle deck windows/openings - yellow -->
-                <rect x="505" y="220" width="45" height="30" fill="#FFE66D" rx="2"/>
-                <rect x="570" y="220" width="45" height="30" fill="#FFE66D" rx="2"/>
-                <rect x="635" y="220" width="45" height="30" fill="#FFE66D" rx="2"/>
-                <rect x="700" y="220" width="45" height="30" fill="#FFE66D" rx="2"/>
-
-                <!-- Stylized cars on deck - fun colors -->
-                <ellipse cx="527" cy="235" rx="10" ry="7" fill="#FF6B6B"/>
-                <ellipse cx="592" cy="235" rx="10" ry="7" fill="#FFFFFF"/>
-                <ellipse cx="657" cy="235" rx="10" ry="7" fill="#FFE66D"/>
-
-                <!-- Smokestack - coral/pink -->
-                <rect x="705" y="135" width="32" height="20" fill="#FF6B6B" rx="3"/>
-                <ellipse cx="721" cy="135" rx="16" ry="5" fill="#FF6B6B"/>
-
-                <!-- People on deck - colorful -->
-                <g transform="translate(545, 180)">
-                    <circle cx="0" cy="0" r="7" fill="#FF6B6B"/>
-                    <ellipse cx="0" cy="11" rx="6" ry="9" fill="#4B6EDB"/>
-                </g>
-
-                <g transform="translate(620, 180)">
-                    <circle cx="0" cy="0" r="7" fill="#FFE66D"/>
-                    <ellipse cx="0" cy="11" rx="6" ry="9" fill="#FF6B6B"/>
-                </g>
-
-                <g transform="translate(690, 180)">
-                    <circle cx="0" cy="0" r="7" fill="#4B6EDB"/>
-                    <ellipse cx="0" cy="11" rx="6" ry="9" fill="#FFE66D"/>
-                </g>
-            </g>
-
-            <!-- Smoke puffs with drift animation -->
-            <circle class="smoke-1" cx="718" cy="117" r="11" fill="#FFE66D"/>
-            <circle class="smoke-2" cx="728" cy="108" r="13" fill="#FFE66D"/>
-            <circle class="smoke-3" cx="713" cy="103" r="9" fill="#FFE66D"/>
-            <circle class="smoke-4" cx="723" cy="93" r="11" fill="#FFE66D"/>
-            <circle class="smoke-5" cx="710" cy="88" r="8" fill="#FFE66D"/>
-
-            <!-- Birds with flapping animation - Bird 1 -->
-            <g transform="translate(180, 80)">
-                <path class="bird-left-1" d="M 0 0 Q 10 -5, 20 0" fill="none" stroke="#4B6EDB" stroke-width="3" stroke-linecap="round"/>
-                <path class="bird-right-1" d="M 20 0 Q 30 -5, 40 0" fill="none" stroke="#4B6EDB" stroke-width="3" stroke-linecap="round"/>
-            </g>
-
-            <!-- Bird 2 -->
-            <g transform="translate(350, 110)">
-                <path class="bird-left-2" d="M 0 0 Q 10 -5, 20 0" fill="none" stroke="#4B6EDB" stroke-width="3" stroke-linecap="round"/>
-                <path class="bird-right-2" d="M 20 0 Q 30 -5, 40 0" fill="none" stroke="#4B6EDB" stroke-width="3" stroke-linecap="round"/>
-            </g>
-
-            <!-- Bird 3 -->
-            <g transform="translate(890, 100)">
-                <path class="bird-left-3" d="M 0 0 Q 10 -5, 20 0" fill="none" stroke="#4B6EDB" stroke-width="3" stroke-linecap="round"/>
-                <path class="bird-right-3" d="M 20 0 Q 30 -5, 40 0" fill="none" stroke="#4B6EDB" stroke-width="3" stroke-linecap="round"/>
-            </g>
-
-            <!-- Bird 4 -->
-            <g transform="translate(1020, 70)">
-                <path class="bird-left-4" d="M 0 0 Q 10 -5, 20 0" fill="none" stroke="#4B6EDB" stroke-width="3" stroke-linecap="round"/>
-                <path class="bird-right-4" d="M 20 0 Q 30 -5, 40 0" fill="none" stroke="#4B6EDB" stroke-width="3" stroke-linecap="round"/>
-            </g>
-
-            <!-- Decorative waves -->
-            <ellipse cx="200" cy="320" rx="40" ry="14" fill="#FFFFFF" opacity="0.4"/>
-            <ellipse cx="460" cy="325" rx="38" ry="13" fill="#FFFFFF" opacity="0.4"/>
-            <ellipse cx="820" cy="335" rx="45" ry="16" fill="#FFFFFF" opacity="0.4"/>
-            <ellipse cx="1000" cy="315" rx="42" ry="15" fill="#FFFFFF" opacity="0.3"/>
-            <ellipse cx="630" cy="350" rx="35" ry="12" fill="#FFFFFF" opacity="0.3"/>
-
-            <circle cx="205" cy="310" r="7" fill="#FFFFFF" opacity="0.5"/>
-            <circle cx="190" cy="315" r="5" fill="#FFFFFF" opacity="0.5"/>
-            <circle cx="815" cy="325" r="7" fill="#FFFFFF" opacity="0.5"/>
-            <circle cx="830" cy="330" r="5" fill="#FFFFFF" opacity="0.5"/>
-            <circle cx="995" cy="305" r="6" fill="#FFFFFF" opacity="0.5"/>
-            <circle cx="1010" cy="310" r="5" fill="#FFFFFF" opacity="0.5"/>
-        </svg>`
-    },
-    cloudy: {
-        background: '#D9ACAC',
-        css: `
-            @keyframes bob { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-3px); } }
-            @keyframes driftCloud { 0% { transform: translateX(0); } 100% { transform: translateX(50px); } }
-            @keyframes driftCloudSlow { 0% { transform: translateX(0); } 100% { transform: translateX(30px); } }
-            @keyframes drift { 0% { opacity: 0.8; transform: translate(0, 0); } 100% { opacity: 0; transform: translate(20px, -30px); } }
-            @keyframes wave { 0%, 100% { d: path("M 0 310 Q 100 300, 200 310 T 400 310 T 600 310 T 800 310 T 1000 310 T 1200 310"); } 50% { d: path("M 0 310 Q 100 305, 200 310 T 400 310 T 600 310 T 800 310 T 1000 310 T 1200 310"); } }
-            @keyframes wave2 { 0%, 100% { d: path("M 0 340 Q 120 330, 240 340 T 480 340 T 720 340 T 960 340 T 1200 340"); } 50% { d: path("M 0 340 Q 120 335, 240 340 T 480 340 T 720 340 T 960 340 T 1200 340"); } }
-            .ferry { animation: bob 3s ease-in-out infinite; transform-origin: center; }
-            .cloud-1 { animation: driftCloud 40s linear infinite; }
-            .cloud-2 { animation: driftCloudSlow 50s linear infinite; }
-            .cloud-3 { animation: driftCloud 45s linear infinite; }
-            .cloud-4 { animation: driftCloudSlow 55s linear infinite; }
-            .cloud-5 { animation: driftCloud 42s linear infinite; }
-            .smoke-1 { animation: drift 4s ease-out infinite; }
-            .smoke-2 { animation: drift 4s ease-out 0.8s infinite; }
-            .smoke-3 { animation: drift 4s ease-out 1.6s infinite; }
-            .smoke-4 { animation: drift 4s ease-out 2.4s infinite; }
-            .smoke-5 { animation: drift 4s ease-out 3.2s infinite; }
-            .wave-1 { animation: wave 4s ease-in-out infinite; }
-            .wave-2 { animation: wave2 5s ease-in-out infinite; }
-        `,
-        svg: `<svg viewBox="0 0 1200 400" xmlns="http://www.w3.org/2000/svg">
-            <!-- Background - slightly muted pink -->
-            <rect width="1200" height="400" fill="#D9ACAC" rx="20"/>
-
-            <!-- Fluffy clouds -->
-            <g opacity="0.85">
-                <!-- Cloud 1 -->
-                <g class="cloud-1">
-                    <circle cx="120" cy="80" r="30" fill="#FFFFFF"/>
-                    <circle cx="150" cy="75" r="35" fill="#FFFFFF"/>
-                    <circle cx="180" cy="80" r="28" fill="#FFFFFF"/>
-                    <circle cx="145" cy="95" r="32" fill="#FFFFFF"/>
-                </g>
-
-                <!-- Cloud 2 -->
-                <g class="cloud-2">
-                    <circle cx="320" cy="110" r="28" fill="#FFFFFF"/>
-                    <circle cx="350" cy="105" r="32" fill="#FFFFFF"/>
-                    <circle cx="375" cy="110" r="26" fill="#FFFFFF"/>
-                    <circle cx="345" cy="125" r="30" fill="#FFFFFF"/>
-                </g>
-
-                <!-- Cloud 3 -->
-                <g class="cloud-3">
-                    <circle cx="850" cy="90" r="32" fill="#FFFFFF"/>
-                    <circle cx="880" cy="85" r="38" fill="#FFFFFF"/>
-                    <circle cx="915" cy="90" r="30" fill="#FFFFFF"/>
-                    <circle cx="880" cy="110" r="35" fill="#FFFFFF"/>
-                </g>
-
-                <!-- Cloud 4 -->
-                <g class="cloud-4">
-                    <circle cx="1050" cy="120" r="26" fill="#FFFFFF"/>
-                    <circle cx="1075" cy="115" r="30" fill="#FFFFFF"/>
-                    <circle cx="1100" cy="120" r="28" fill="#FFFFFF"/>
-                    <circle cx="1075" cy="135" r="28" fill="#FFFFFF"/>
-                </g>
-
-                <!-- Cloud 5 - smaller -->
-                <g class="cloud-5">
-                    <circle cx="580" cy="70" r="22" fill="#FFFFFF"/>
-                    <circle cx="600" cy="68" r="25" fill="#FFFFFF"/>
-                    <circle cx="620" cy="72" r="20" fill="#FFFFFF"/>
-                </g>
-            </g>
-
-            <!-- Water -->
-            <path d="M 0 280 Q 150 270, 300 280 T 600 280 T 900 280 T 1200 280 L 1200 400 L 0 400 Z" fill="#6B8FD9"/>
-            <path class="wave-1" d="M 0 310 Q 100 300, 200 310 T 400 310 T 600 310 T 800 310 T 1000 310 T 1200 310" fill="none" stroke="#5577C9" stroke-width="3" opacity="0.5"/>
-            <path class="wave-2" d="M 0 340 Q 120 330, 240 340 T 480 340 T 720 340 T 960 340 T 1200 340" fill="none" stroke="#5577C9" stroke-width="3" opacity="0.5"/>
-
-            <!-- Ferry group with bobbing animation -->
-            <g class="ferry">
-                <path d="M 470 260 L 455 305 L 825 305 L 815 260 Z" fill="#FFFFFF"/>
-                <rect x="485" y="205" width="310" height="55" fill="#4B6EDB" rx="4"/>
-                <rect x="515" y="155" width="250" height="50" fill="#FFFFFF" rx="4"/>
-                <rect x="595" y="110" width="90" height="45" fill="#FF6B6B" rx="4"/>
-                <rect x="605" y="125" width="18" height="22" fill="#FFE66D" rx="2"/>
-                <rect x="632" y="125" width="18" height="22" fill="#FFE66D" rx="2"/>
-                <rect x="659" y="125" width="18" height="22" fill="#FFE66D" rx="2"/>
-                <rect x="635" y="95" width="8" height="15" fill="#4B6EDB"/>
-                <circle cx="639" cy="90" r="6" fill="#FFE66D"/>
-                <line x1="639" y1="84" x2="639" y2="75" stroke="#FF6B6B" stroke-width="2"/>
-                <circle cx="639" cy="75" r="4" fill="#FFE66D"/>
-                <rect x="530" y="170" width="22" height="25" fill="#4B6EDB" rx="2"/>
-                <rect x="565" y="170" width="22" height="25" fill="#4B6EDB" rx="2"/>
-                <rect x="600" y="170" width="22" height="25" fill="#4B6EDB" rx="2"/>
-                <rect x="635" y="170" width="22" height="25" fill="#4B6EDB" rx="2"/>
-                <rect x="670" y="170" width="22" height="25" fill="#4B6EDB" rx="2"/>
-                <rect x="705" y="170" width="22" height="25" fill="#4B6EDB" rx="2"/>
-                <rect x="505" y="220" width="45" height="30" fill="#FFE66D" rx="2"/>
-                <rect x="570" y="220" width="45" height="30" fill="#FFE66D" rx="2"/>
-                <rect x="635" y="220" width="45" height="30" fill="#FFE66D" rx="2"/>
-                <rect x="700" y="220" width="45" height="30" fill="#FFE66D" rx="2"/>
-                <ellipse cx="527" cy="235" rx="10" ry="7" fill="#FF6B6B"/>
-                <ellipse cx="592" cy="235" rx="10" ry="7" fill="#FFFFFF"/>
-                <ellipse cx="657" cy="235" rx="10" ry="7" fill="#FFE66D"/>
-                <rect x="705" y="135" width="32" height="20" fill="#FF6B6B" rx="3"/>
-                <ellipse cx="721" cy="135" rx="16" ry="5" fill="#FF6B6B"/>
-
-                <g transform="translate(545, 180)">
-                    <circle cx="0" cy="0" r="7" fill="#FF6B6B"/>
-                    <ellipse cx="0" cy="11" rx="6" ry="9" fill="#4B6EDB"/>
-                </g>
-                <g transform="translate(620, 180)">
-                    <circle cx="0" cy="0" r="7" fill="#FFE66D"/>
-                    <ellipse cx="0" cy="11" rx="6" ry="9" fill="#FF6B6B"/>
-                </g>
-                <g transform="translate(690, 180)">
-                    <circle cx="0" cy="0" r="7" fill="#4B6EDB"/>
-                    <ellipse cx="0" cy="11" rx="6" ry="9" fill="#FFE66D"/>
-                </g>
-            </g>
-
-            <!-- Smoke puffs - yellow -->
-            <circle class="smoke-1" cx="718" cy="117" r="11" fill="#FFE66D" opacity="0.8"/>
-            <circle class="smoke-2" cx="728" cy="108" r="13" fill="#FFE66D" opacity="0.7"/>
-            <circle class="smoke-3" cx="713" cy="103" r="9" fill="#FFE66D" opacity="0.8"/>
-            <circle class="smoke-4" cx="723" cy="93" r="11" fill="#FFE66D" opacity="0.6"/>
-            <circle class="smoke-5" cx="710" cy="88" r="8" fill="#FFE66D" opacity="0.5"/>
-
-            <!-- Birds in sky -->
-            <path d="M 250 160 Q 260 155, 270 160" fill="none" stroke="#4B6EDB" stroke-width="3" stroke-linecap="round"/>
-            <path d="M 270 160 Q 280 155, 290 160" fill="none" stroke="#4B6EDB" stroke-width="3" stroke-linecap="round"/>
-
-            <path d="M 750 140 Q 760 135, 770 140" fill="none" stroke="#4B6EDB" stroke-width="3" stroke-linecap="round"/>
-            <path d="M 770 140 Q 780 135, 790 140" fill="none" stroke="#4B6EDB" stroke-width="3" stroke-linecap="round"/>
-
-            <!-- Decorative waves -->
-            <ellipse cx="200" cy="320" rx="40" ry="14" fill="#FFFFFF" opacity="0.4"/>
-            <ellipse cx="460" cy="325" rx="38" ry="13" fill="#FFFFFF" opacity="0.4"/>
-            <ellipse cx="820" cy="335" rx="45" ry="16" fill="#FFFFFF" opacity="0.4"/>
-            <ellipse cx="1000" cy="315" rx="42" ry="15" fill="#FFFFFF" opacity="0.3"/>
-            <ellipse cx="630" cy="350" rx="35" ry="12" fill="#FFFFFF" opacity="0.3"/>
-
-            <circle cx="205" cy="310" r="7" fill="#FFFFFF" opacity="0.5"/>
-            <circle cx="190" cy="315" r="5" fill="#FFFFFF" opacity="0.5"/>
-            <circle cx="815" cy="325" r="7" fill="#FFFFFF" opacity="0.5"/>
-            <circle cx="830" cy="330" r="5" fill="#FFFFFF" opacity="0.5"/>
-        </svg>`
-    },
-    overcast: {
-        background: '#B5B5B5',
-        css: `
-            @keyframes bob { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-3px); } }
-            @keyframes driftOvercast { 0% { transform: translateX(0); opacity: 0.3; } 50% { opacity: 0.25; } 100% { transform: translateX(20px); opacity: 0.3; } }
-            @keyframes driftOvercastSlow { 0% { transform: translateX(0); opacity: 0.2; } 50% { opacity: 0.15; } 100% { transform: translateX(-15px); opacity: 0.2; } }
-            @keyframes drift { 0% { opacity: 0.7; transform: translate(0, 0); } 100% { opacity: 0; transform: translate(20px, -30px); } }
-            @keyframes wave { 0%, 100% { d: path("M 0 310 Q 100 300, 200 310 T 400 310 T 600 310 T 800 310 T 1000 310 T 1200 310"); } 50% { d: path("M 0 310 Q 100 305, 200 310 T 400 310 T 600 310 T 800 310 T 1000 310 T 1200 310"); } }
-            @keyframes wave2 { 0%, 100% { d: path("M 0 340 Q 120 330, 240 340 T 480 340 T 720 340 T 960 340 T 1200 340"); } 50% { d: path("M 0 340 Q 120 335, 240 340 T 480 340 T 720 340 T 960 340 T 1200 340"); } }
-            .ferry { animation: bob 3s ease-in-out infinite; transform-origin: center; }
-            .overcast-1 { animation: driftOvercast 60s linear infinite; }
-            .overcast-2 { animation: driftOvercastSlow 70s linear infinite; }
-            .overcast-3 { animation: driftOvercast 65s linear infinite; }
-            .overcast-4 { animation: driftOvercastSlow 75s linear infinite; }
-            .overcast-5 { animation: driftOvercast 68s linear infinite; }
-            .smoke-1 { animation: drift 4s ease-out infinite; }
-            .smoke-2 { animation: drift 4s ease-out 0.8s infinite; }
-            .smoke-3 { animation: drift 4s ease-out 1.6s infinite; }
-            .smoke-4 { animation: drift 4s ease-out 2.4s infinite; }
-            .smoke-5 { animation: drift 4s ease-out 3.2s infinite; }
-            .wave-1 { animation: wave 4s ease-in-out infinite; }
-            .wave-2 { animation: wave2 5s ease-in-out infinite; }
-        `,
-        svg: `<svg viewBox="0 0 1200 400" xmlns="http://www.w3.org/2000/svg">
-            <!-- Background - uniform gray overcast sky -->
-            <rect width="1200" height="400" fill="#B5B5B5" rx="20"/>
-
-            <!-- Subtle variations in the overcast - very light patches with gentle movement -->
-            <ellipse class="overcast-1" cx="300" cy="120" rx="250" ry="100" fill="#C0C0C0" opacity="0.3"/>
-            <ellipse class="overcast-2" cx="700" cy="150" rx="280" ry="110" fill="#C0C0C0" opacity="0.25"/>
-            <ellipse class="overcast-3" cx="1000" cy="100" rx="220" ry="90" fill="#C0C0C0" opacity="0.3"/>
-            <ellipse class="overcast-4" cx="150" cy="180" rx="200" ry="80" fill="#ABABAB" opacity="0.2"/>
-            <ellipse class="overcast-5" cx="900" cy="200" rx="240" ry="95" fill="#ABABAB" opacity="0.2"/>
-
-            <!-- Water - darker gray-blue -->
-            <path d="M 0 280 Q 150 270, 300 280 T 600 280 T 900 280 T 1200 280 L 1200 400 L 0 400 Z" fill="#5A6B7A"/>
-            <path class="wave-1" d="M 0 310 Q 100 300, 200 310 T 400 310 T 600 310 T 800 310 T 1000 310 T 1200 310" fill="none" stroke="#4A5A68" stroke-width="3" opacity="0.5"/>
-            <path class="wave-2" d="M 0 340 Q 120 330, 240 340 T 480 340 T 720 340 T 960 340 T 1200 340" fill="none" stroke="#4A5A68" stroke-width="3" opacity="0.5"/>
-
-            <!-- Ferry group with bobbing animation -->
-            <g class="ferry">
-                <path d="M 470 260 L 455 305 L 825 305 L 815 260 Z" fill="#FFFFFF"/>
-                <rect x="485" y="205" width="310" height="55" fill="#4B6EDB" rx="4"/>
-                <rect x="515" y="155" width="250" height="50" fill="#FFFFFF" rx="4"/>
-                <rect x="595" y="110" width="90" height="45" fill="#FF6B6B" rx="4"/>
-                <rect x="605" y="125" width="18" height="22" fill="#FFE66D" rx="2"/>
-                <rect x="632" y="125" width="18" height="22" fill="#FFE66D" rx="2"/>
-                <rect x="659" y="125" width="18" height="22" fill="#FFE66D" rx="2"/>
-                <rect x="635" y="95" width="8" height="15" fill="#4B6EDB"/>
-                <circle cx="639" cy="90" r="6" fill="#FFE66D"/>
-                <line x1="639" y1="84" x2="639" y2="75" stroke="#FF6B6B" stroke-width="2"/>
-                <circle cx="639" cy="75" r="4" fill="#FFE66D"/>
-                <rect x="530" y="170" width="22" height="25" fill="#4B6EDB" rx="2"/>
-                <rect x="565" y="170" width="22" height="25" fill="#4B6EDB" rx="2"/>
-                <rect x="600" y="170" width="22" height="25" fill="#4B6EDB" rx="2"/>
-                <rect x="635" y="170" width="22" height="25" fill="#4B6EDB" rx="2"/>
-                <rect x="670" y="170" width="22" height="25" fill="#4B6EDB" rx="2"/>
-                <rect x="705" y="170" width="22" height="25" fill="#4B6EDB" rx="2"/>
-                <rect x="505" y="220" width="45" height="30" fill="#FFE66D" rx="2"/>
-                <rect x="570" y="220" width="45" height="30" fill="#FFE66D" rx="2"/>
-                <rect x="635" y="220" width="45" height="30" fill="#FFE66D" rx="2"/>
-                <rect x="700" y="220" width="45" height="30" fill="#FFE66D" rx="2"/>
-                <ellipse cx="527" cy="235" rx="10" ry="7" fill="#FF6B6B"/>
-                <ellipse cx="592" cy="235" rx="10" ry="7" fill="#FFFFFF"/>
-                <ellipse cx="657" cy="235" rx="10" ry="7" fill="#FFE66D"/>
-                <rect x="705" y="135" width="32" height="20" fill="#FF6B6B" rx="3"/>
-                <ellipse cx="721" cy="135" rx="16" ry="5" fill="#FF6B6B"/>
-
-                <g transform="translate(545, 180)">
-                    <circle cx="0" cy="0" r="7" fill="#FF6B6B"/>
-                    <ellipse cx="0" cy="11" rx="6" ry="9" fill="#4B6EDB"/>
-                </g>
-                <g transform="translate(620, 180)">
-                    <circle cx="0" cy="0" r="7" fill="#FFE66D"/>
-                    <ellipse cx="0" cy="11" rx="6" ry="9" fill="#FF6B6B"/>
-                </g>
-                <g transform="translate(690, 180)">
-                    <circle cx="0" cy="0" r="7" fill="#4B6EDB"/>
-                    <ellipse cx="0" cy="11" rx="6" ry="9" fill="#FFE66D"/>
-                </g>
-            </g>
-
-            <!-- Smoke puffs - gray tones blending with overcast -->
-            <circle class="smoke-1" cx="718" cy="117" r="11" fill="#9A9A9A" opacity="0.7"/>
-            <circle class="smoke-2" cx="728" cy="108" r="13" fill="#9A9A9A" opacity="0.6"/>
-            <circle class="smoke-3" cx="713" cy="103" r="9" fill="#9A9A9A" opacity="0.7"/>
-            <circle class="smoke-4" cx="723" cy="93" r="11" fill="#9A9A9A" opacity="0.6"/>
-            <circle class="smoke-5" cx="710" cy="88" r="8" fill="#9A9A9A" opacity="0.5"/>
-
-            <!-- Birds barely visible against gray sky -->
-            <path d="M 180 80 Q 190 75, 200 80" fill="none" stroke="#7A7A7A" stroke-width="3" stroke-linecap="round" opacity="0.6"/>
-            <path d="M 200 80 Q 210 75, 220 80" fill="none" stroke="#7A7A7A" stroke-width="3" stroke-linecap="round" opacity="0.6"/>
-            <path d="M 890 100 Q 900 95, 910 100" fill="none" stroke="#7A7A7A" stroke-width="3" stroke-linecap="round" opacity="0.6"/>
-            <path d="M 910 100 Q 920 95, 930 100" fill="none" stroke="#7A7A7A" stroke-width="3" stroke-linecap="round" opacity="0.6"/>
-            <path d="M 1020 70 Q 1030 65, 1040 70" fill="none" stroke="#7A7A7A" stroke-width="3" stroke-linecap="round" opacity="0.6"/>
-            <path d="M 1040 70 Q 1050 65, 1060 70" fill="none" stroke="#7A7A7A" stroke-width="3" stroke-linecap="round" opacity="0.6"/>
-
-            <!-- Decorative waves - muted -->
-            <ellipse cx="200" cy="320" rx="40" ry="14" fill="#FFFFFF" opacity="0.3"/>
-            <ellipse cx="460" cy="325" rx="38" ry="13" fill="#FFFFFF" opacity="0.3"/>
-            <ellipse cx="820" cy="335" rx="45" ry="16" fill="#FFFFFF" opacity="0.3"/>
-            <ellipse cx="1000" cy="315" rx="42" ry="15" fill="#FFFFFF" opacity="0.25"/>
-            <ellipse cx="630" cy="350" rx="35" ry="12" fill="#FFFFFF" opacity="0.25"/>
-
-            <circle cx="205" cy="310" r="7" fill="#FFFFFF" opacity="0.4"/>
-            <circle cx="190" cy="315" r="5" fill="#FFFFFF" opacity="0.4"/>
-            <circle cx="815" cy="325" r="7" fill="#FFFFFF" opacity="0.4"/>
-            <circle cx="830" cy="330" r="5" fill="#FFFFFF" opacity="0.4"/>
-        </svg>`
-    },
-    fog: {
-        background: '#E8D5D5',
-        css: `
-            @keyframes bob { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-3px); } }
-            @keyframes driftFog1 { 0% { transform: translateX(0); opacity: 0.4; } 50% { opacity: 0.35; } 100% { transform: translateX(50px); opacity: 0.4; } }
-            @keyframes driftFog2 { 0% { transform: translateX(0); opacity: 0.35; } 50% { opacity: 0.4; } 100% { transform: translateX(-40px); opacity: 0.35; } }
-            @keyframes driftFog3 { 0% { transform: translateX(0); opacity: 0.4; } 50% { opacity: 0.45; } 100% { transform: translateX(30px); opacity: 0.4; } }
-            @keyframes wave { 0%, 100% { d: path("M 0 310 Q 100 300, 200 310 T 400 310 T 600 310 T 800 310 T 1000 310 T 1200 310"); } 50% { d: path("M 0 310 Q 100 305, 200 310 T 400 310 T 600 310 T 800 310 T 1000 310 T 1200 310"); } }
-            @keyframes wave2 { 0%, 100% { d: path("M 0 340 Q 120 330, 240 340 T 480 340 T 720 340 T 960 340 T 1200 340"); } 50% { d: path("M 0 340 Q 120 335, 240 340 T 480 340 T 720 340 T 960 340 T 1200 340"); } }
-            .ferry { animation: bob 3s ease-in-out infinite; transform-origin: center; }
-            .fog-1 { animation: driftFog1 20s ease-in-out infinite; }
-            .fog-2 { animation: driftFog2 25s ease-in-out infinite; }
-            .fog-3 { animation: driftFog1 22s ease-in-out infinite; }
-            .fog-4 { animation: driftFog2 18s ease-in-out infinite; }
-            .fog-5 { animation: driftFog3 24s ease-in-out infinite; }
-            .fog-6 { animation: driftFog1 21s ease-in-out infinite; }
-            .fog-7 { animation: driftFog2 23s ease-in-out infinite; }
-            .wave-1 { animation: wave 4s ease-in-out infinite; }
-            .wave-2 { animation: wave2 5s ease-in-out infinite; }
-        `,
-        svg: `<svg viewBox="0 0 1200 400" xmlns="http://www.w3.org/2000/svg">
-            <!-- Background - more muted for fog -->
-            <rect width="1200" height="400" fill="#E8D5D5" rx="20"/>
-
-            <!-- Water - more muted -->
-            <path d="M 0 280 Q 150 270, 300 280 T 600 280 T 900 280 T 1200 280 L 1200 400 L 0 400 Z" fill="#8B9DB8"/>
-            <path class="wave-1" d="M 0 310 Q 100 300, 200 310 T 400 310 T 600 310 T 800 310 T 1000 310 T 1200 310" fill="none" stroke="#7A8CA7" stroke-width="3" opacity="0.3"/>
-            <path class="wave-2" d="M 0 340 Q 120 330, 240 340 T 480 340 T 720 340 T 960 340 T 1200 340" fill="none" stroke="#7A8CA7" stroke-width="3" opacity="0.3"/>
-
-            <!-- Fog layers in background -->
-            <ellipse class="fog-1" cx="150" cy="200" rx="180" ry="80" fill="#FFFFFF" opacity="0.4"/>
-            <ellipse class="fog-2" cx="400" cy="240" rx="220" ry="90" fill="#FFFFFF" opacity="0.35"/>
-            <ellipse class="fog-3" cx="900" cy="220" rx="200" ry="85" fill="#FFFFFF" opacity="0.4"/>
-            <ellipse class="fog-4" cx="1050" cy="180" rx="160" ry="70" fill="#FFFFFF" opacity="0.35"/>
-
-            <!-- Ferry group with bobbing animation -->
-            <g class="ferry">
-                <path d="M 470 260 L 455 305 L 825 305 L 815 260 Z" fill="#FFFFFF" opacity="0.85"/>
-                <rect x="485" y="205" width="310" height="55" fill="#4B6EDB" rx="4" opacity="0.85"/>
-                <rect x="515" y="155" width="250" height="50" fill="#FFFFFF" rx="4" opacity="0.85"/>
-                <rect x="595" y="110" width="90" height="45" fill="#FF6B6B" rx="4" opacity="0.85"/>
-                <rect x="605" y="125" width="18" height="22" fill="#FFE66D" rx="2" opacity="0.85"/>
-                <rect x="632" y="125" width="18" height="22" fill="#FFE66D" rx="2" opacity="0.85"/>
-                <rect x="659" y="125" width="18" height="22" fill="#FFE66D" rx="2" opacity="0.85"/>
-                <rect x="635" y="95" width="8" height="15" fill="#4B6EDB" opacity="0.85"/>
-                <circle cx="639" cy="90" r="6" fill="#FFE66D" opacity="0.85"/>
-                <line x1="639" y1="84" x2="639" y2="75" stroke="#FF6B6B" stroke-width="2" opacity="0.85"/>
-                <circle cx="639" cy="75" r="4" fill="#FFE66D" opacity="0.85"/>
-                <rect x="530" y="170" width="22" height="25" fill="#4B6EDB" rx="2" opacity="0.85"/>
-                <rect x="565" y="170" width="22" height="25" fill="#4B6EDB" rx="2" opacity="0.85"/>
-                <rect x="600" y="170" width="22" height="25" fill="#4B6EDB" rx="2" opacity="0.85"/>
-                <rect x="635" y="170" width="22" height="25" fill="#4B6EDB" rx="2" opacity="0.85"/>
-                <rect x="670" y="170" width="22" height="25" fill="#4B6EDB" rx="2" opacity="0.85"/>
-                <rect x="705" y="170" width="22" height="25" fill="#4B6EDB" rx="2" opacity="0.85"/>
-                <rect x="505" y="220" width="45" height="30" fill="#FFE66D" rx="2" opacity="0.85"/>
-                <rect x="570" y="220" width="45" height="30" fill="#FFE66D" rx="2" opacity="0.85"/>
-                <rect x="635" y="220" width="45" height="30" fill="#FFE66D" rx="2" opacity="0.85"/>
-                <rect x="700" y="220" width="45" height="30" fill="#FFE66D" rx="2" opacity="0.85"/>
-                <ellipse cx="527" cy="235" rx="10" ry="7" fill="#FF6B6B" opacity="0.85"/>
-                <ellipse cx="592" cy="235" rx="10" ry="7" fill="#FFFFFF" opacity="0.85"/>
-                <ellipse cx="657" cy="235" rx="10" ry="7" fill="#FFE66D" opacity="0.85"/>
-                <rect x="705" y="135" width="32" height="20" fill="#FF6B6B" rx="3" opacity="0.85"/>
-                <ellipse cx="721" cy="135" rx="16" ry="5" fill="#FF6B6B" opacity="0.85"/>
-
-                <g transform="translate(545, 180)" opacity="0.85">
-                    <circle cx="0" cy="0" r="7" fill="#FF6B6B"/>
-                    <ellipse cx="0" cy="11" rx="6" ry="9" fill="#4B6EDB"/>
-                </g>
-                <g transform="translate(620, 180)" opacity="0.85">
-                    <circle cx="0" cy="0" r="7" fill="#FFE66D"/>
-                    <ellipse cx="0" cy="11" rx="6" ry="9" fill="#FF6B6B"/>
-                </g>
-                <g transform="translate(690, 180)" opacity="0.85">
-                    <circle cx="0" cy="0" r="7" fill="#4B6EDB"/>
-                    <ellipse cx="0" cy="11" rx="6" ry="9" fill="#FFE66D"/>
-                </g>
-            </g>
-
-            <!-- Smoke barely visible in fog -->
-            <circle cx="718" cy="117" r="11" fill="#FFFFFF" opacity="0.5"/>
-            <circle cx="728" cy="108" r="13" fill="#FFFFFF" opacity="0.4"/>
-            <circle cx="713" cy="103" r="9" fill="#FFFFFF" opacity="0.5"/>
-            <circle cx="723" cy="93" r="11" fill="#FFFFFF" opacity="0.4"/>
-            <circle cx="710" cy="88" r="8" fill="#FFFFFF" opacity="0.3"/>
-
-            <!-- More fog layers in front -->
-            <ellipse class="fog-5" cx="300" cy="280" rx="250" ry="100" fill="#FFFFFF" opacity="0.5"/>
-            <ellipse class="fog-6" cx="700" cy="260" rx="200" ry="95" fill="#FFFFFF" opacity="0.45"/>
-            <ellipse class="fog-7" cx="1000" cy="290" rx="180" ry="85" fill="#FFFFFF" opacity="0.5"/>
-
-            <!-- Decorative waves - very subtle -->
-            <ellipse cx="200" cy="320" rx="40" ry="14" fill="#FFFFFF" opacity="0.2"/>
-            <ellipse cx="820" cy="335" rx="45" ry="16" fill="#FFFFFF" opacity="0.2"/>
-            <ellipse cx="1000" cy="315" rx="42" ry="15" fill="#FFFFFF" opacity="0.15"/>
-        </svg>`
-    },
-    rain: {
-        background: '#B8A0A0',
-        css: `
-            @keyframes bob { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-4px); } }
-            @keyframes rain { 0% { transform: translateY(0); opacity: 0.5; } 100% { transform: translateY(400px); opacity: 0.3; } }
-            @keyframes choppyWave { 0%, 100% { d: path("M 0 310 Q 100 300, 200 310 T 400 310 T 600 310 T 800 310 T 1000 310 T 1200 310"); } 50% { d: path("M 0 310 Q 100 295, 200 310 T 400 310 T 600 310 T 800 310 T 1000 310 T 1200 310"); } }
-            @keyframes choppyWave2 { 0%, 100% { d: path("M 0 340 Q 120 330, 240 340 T 480 340 T 720 340 T 960 340 T 1200 340"); } 50% { d: path("M 0 340 Q 120 325, 240 340 T 480 340 T 720 340 T 960 340 T 1200 340"); } }
-            @keyframes splash { 0% { r: 0; opacity: 0.6; } 100% { r: 6; opacity: 0; } }
-            .ferry { animation: bob 2.5s ease-in-out infinite; transform-origin: center; }
-            .rain-drops { animation: rain 1.5s linear infinite; }
-            .rain-drops-2 { animation: rain 1.3s linear infinite 0.3s; }
-            .wave-1 { animation: choppyWave 3s ease-in-out infinite; }
-            .wave-2 { animation: choppyWave2 3.5s ease-in-out infinite; }
-            .splash-1 { animation: splash 0.8s ease-out infinite; }
-            .splash-2 { animation: splash 0.8s ease-out 0.2s infinite; }
-            .splash-3 { animation: splash 0.8s ease-out 0.4s infinite; }
-            .splash-4 { animation: splash 0.8s ease-out 0.6s infinite; }
-        `,
-        svg: `<svg viewBox="0 0 1200 400" xmlns="http://www.w3.org/2000/svg">
-            <!-- Background - darker for rain -->
-            <rect width="1200" height="400" fill="#B8A0A0" rx="20"/>
-
-            <!-- Water - darker and more turbulent -->
-            <path d="M 0 280 Q 150 270, 300 280 T 600 280 T 900 280 T 1200 280 L 1200 400 L 0 400 Z" fill="#4A6B8F"/>
-            <path class="wave-1" d="M 0 310 Q 100 300, 200 310 T 400 310 T 600 310 T 800 310 T 1000 310 T 1200 310" fill="none" stroke="#3D5A7A" stroke-width="3" opacity="0.7"/>
-            <path class="wave-2" d="M 0 340 Q 120 330, 240 340 T 480 340 T 720 340 T 960 340 T 1200 340" fill="none" stroke="#3D5A7A" stroke-width="3" opacity="0.7"/>
-
-            <!-- Ferry group with bobbing animation -->
-            <g class="ferry">
-                <path d="M 470 260 L 455 305 L 825 305 L 815 260 Z" fill="#FFFFFF"/>
-                <rect x="485" y="205" width="310" height="55" fill="#4B6EDB" rx="4"/>
-                <rect x="515" y="155" width="250" height="50" fill="#FFFFFF" rx="4"/>
-                <rect x="595" y="110" width="90" height="45" fill="#FF6B6B" rx="4"/>
-                <rect x="605" y="125" width="18" height="22" fill="#FFE66D" rx="2"/>
-                <rect x="632" y="125" width="18" height="22" fill="#FFE66D" rx="2"/>
-                <rect x="659" y="125" width="18" height="22" fill="#FFE66D" rx="2"/>
-                <rect x="635" y="95" width="8" height="15" fill="#4B6EDB"/>
-                <circle cx="639" cy="90" r="6" fill="#FFE66D"/>
-                <line x1="639" y1="84" x2="639" y2="75" stroke="#FF6B6B" stroke-width="2"/>
-                <circle cx="639" cy="75" r="4" fill="#FFE66D"/>
-                <rect x="530" y="170" width="22" height="25" fill="#4B6EDB" rx="2"/>
-                <rect x="565" y="170" width="22" height="25" fill="#4B6EDB" rx="2"/>
-                <rect x="600" y="170" width="22" height="25" fill="#4B6EDB" rx="2"/>
-                <rect x="635" y="170" width="22" height="25" fill="#4B6EDB" rx="2"/>
-                <rect x="670" y="170" width="22" height="25" fill="#4B6EDB" rx="2"/>
-                <rect x="705" y="170" width="22" height="25" fill="#4B6EDB" rx="2"/>
-                <rect x="505" y="220" width="45" height="30" fill="#FFE66D" rx="2"/>
-                <rect x="570" y="220" width="45" height="30" fill="#FFE66D" rx="2"/>
-                <rect x="635" y="220" width="45" height="30" fill="#FFE66D" rx="2"/>
-                <rect x="700" y="220" width="45" height="30" fill="#FFE66D" rx="2"/>
-                <ellipse cx="527" cy="235" rx="10" ry="7" fill="#FF6B6B"/>
-                <ellipse cx="592" cy="235" rx="10" ry="7" fill="#FFFFFF"/>
-                <ellipse cx="657" cy="235" rx="10" ry="7" fill="#FFE66D"/>
-                <rect x="705" y="135" width="32" height="20" fill="#FF6B6B" rx="3"/>
-                <ellipse cx="721" cy="135" rx="16" ry="5" fill="#FF6B6B"/>
-
-                <g transform="translate(545, 180)">
-                    <circle cx="0" cy="0" r="7" fill="#FF6B6B"/>
-                    <ellipse cx="0" cy="11" rx="6" ry="9" fill="#4B6EDB"/>
-                </g>
-                <g transform="translate(620, 180)">
-                    <circle cx="0" cy="0" r="7" fill="#FFE66D"/>
-                    <ellipse cx="0" cy="11" rx="6" ry="9" fill="#FF6B6B"/>
-                </g>
-                <g transform="translate(690, 180)">
-                    <circle cx="0" cy="0" r="7" fill="#4B6EDB"/>
-                    <ellipse cx="0" cy="11" rx="6" ry="9" fill="#FFE66D"/>
-                </g>
-            </g>
-
-            <!-- Smoke puffs - darker in rain -->
-            <circle cx="718" cy="117" r="11" fill="#9BA8B5" opacity="0.6"/>
-            <circle cx="728" cy="108" r="13" fill="#9BA8B5" opacity="0.5"/>
-            <circle cx="713" cy="103" r="9" fill="#9BA8B5" opacity="0.6"/>
-
-            <!-- Rain streaks - first layer -->
-            <g class="rain-drops">
-                <line x1="50" y1="-80" x2="45" y2="0" stroke="#7A8CA7" stroke-width="2" opacity="0.5"/>
-                <line x1="120" y1="-90" x2="115" y2="-10" stroke="#7A8CA7" stroke-width="2" opacity="0.5"/>
-                <line x1="180" y1="-70" x2="175" y2="10" stroke="#7A8CA7" stroke-width="2" opacity="0.5"/>
-                <line x1="240" y1="-85" x2="235" y2="-5" stroke="#7A8CA7" stroke-width="2" opacity="0.5"/>
-                <line x1="300" y1="-95" x2="295" y2="-15" stroke="#7A8CA7" stroke-width="2" opacity="0.5"/>
-                <line x1="360" y1="-75" x2="355" y2="5" stroke="#7A8CA7" stroke-width="2" opacity="0.5"/>
-                <line x1="420" y1="-80" x2="415" y2="0" stroke="#7A8CA7" stroke-width="2" opacity="0.5"/>
-                <line x1="480" y1="-90" x2="475" y2="-10" stroke="#7A8CA7" stroke-width="2" opacity="0.5"/>
-                <line x1="540" y1="-70" x2="535" y2="10" stroke="#7A8CA7" stroke-width="2" opacity="0.5"/>
-                <line x1="600" y1="-85" x2="595" y2="-5" stroke="#7A8CA7" stroke-width="2" opacity="0.5"/>
-                <line x1="660" y1="-95" x2="655" y2="-15" stroke="#7A8CA7" stroke-width="2" opacity="0.5"/>
-                <line x1="720" y1="-75" x2="715" y2="5" stroke="#7A8CA7" stroke-width="2" opacity="0.5"/>
-                <line x1="780" y1="-80" x2="775" y2="0" stroke="#7A8CA7" stroke-width="2" opacity="0.5"/>
-                <line x1="840" y1="-90" x2="835" y2="-10" stroke="#7A8CA7" stroke-width="2" opacity="0.5"/>
-                <line x1="900" y1="-70" x2="895" y2="10" stroke="#7A8CA7" stroke-width="2" opacity="0.5"/>
-                <line x1="960" y1="-85" x2="955" y2="-5" stroke="#7A8CA7" stroke-width="2" opacity="0.5"/>
-                <line x1="1020" y1="-95" x2="1015" y2="-15" stroke="#7A8CA7" stroke-width="2" opacity="0.5"/>
-                <line x1="1080" y1="-75" x2="1075" y2="5" stroke="#7A8CA7" stroke-width="2" opacity="0.5"/>
-                <line x1="1140" y1="-80" x2="1135" y2="0" stroke="#7A8CA7" stroke-width="2" opacity="0.5"/>
-            </g>
-
-            <!-- Rain streaks - second layer offset -->
-            <g class="rain-drops-2">
-                <line x1="85" y1="-50" x2="80" y2="30" stroke="#7A8CA7" stroke-width="2" opacity="0.5"/>
-                <line x1="155" y1="-60" x2="150" y2="20" stroke="#7A8CA7" stroke-width="2" opacity="0.5"/>
-                <line x1="210" y1="-40" x2="205" y2="40" stroke="#7A8CA7" stroke-width="2" opacity="0.5"/>
-                <line x1="270" y1="-55" x2="265" y2="25" stroke="#7A8CA7" stroke-width="2" opacity="0.5"/>
-                <line x1="330" y1="-65" x2="325" y2="15" stroke="#7A8CA7" stroke-width="2" opacity="0.5"/>
-                <line x1="390" y1="-45" x2="385" y2="35" stroke="#7A8CA7" stroke-width="2" opacity="0.5"/>
-                <line x1="450" y1="-50" x2="445" y2="30" stroke="#7A8CA7" stroke-width="2" opacity="0.5"/>
-                <line x1="510" y1="-60" x2="505" y2="20" stroke="#7A8CA7" stroke-width="2" opacity="0.5"/>
-                <line x1="570" y1="-40" x2="565" y2="40" stroke="#7A8CA7" stroke-width="2" opacity="0.5"/>
-                <line x1="630" y1="-55" x2="625" y2="25" stroke="#7A8CA7" stroke-width="2" opacity="0.5"/>
-                <line x1="690" y1="-65" x2="685" y2="15" stroke="#7A8CA7" stroke-width="2" opacity="0.5"/>
-                <line x1="750" y1="-45" x2="745" y2="35" stroke="#7A8CA7" stroke-width="2" opacity="0.5"/>
-                <line x1="810" y1="-50" x2="805" y2="30" stroke="#7A8CA7" stroke-width="2" opacity="0.5"/>
-                <line x1="870" y1="-60" x2="865" y2="20" stroke="#7A8CA7" stroke-width="2" opacity="0.5"/>
-                <line x1="930" y1="-40" x2="925" y2="40" stroke="#7A8CA7" stroke-width="2" opacity="0.5"/>
-                <line x1="990" y1="-55" x2="985" y2="25" stroke="#7A8CA7" stroke-width="2" opacity="0.5"/>
-                <line x1="1050" y1="-65" x2="1045" y2="15" stroke="#7A8CA7" stroke-width="2" opacity="0.5"/>
-                <line x1="1110" y1="-45" x2="1105" y2="35" stroke="#7A8CA7" stroke-width="2" opacity="0.5"/>
-            </g>
-
-            <!-- Rain splashes on water -->
-            <circle class="splash-1" cx="200" cy="320" r="4" fill="#FFFFFF" opacity="0.6"/>
-            <circle class="splash-2" cx="350" cy="315" r="3" fill="#FFFFFF" opacity="0.6"/>
-            <circle class="splash-3" cx="520" cy="325" r="4" fill="#FFFFFF" opacity="0.6"/>
-            <circle class="splash-4" cx="680" cy="318" r="3" fill="#FFFFFF" opacity="0.6"/>
-            <circle class="splash-1" cx="820" cy="335" r="4" fill="#FFFFFF" opacity="0.6"/>
-            <circle class="splash-2" cx="950" cy="322" r="3" fill="#FFFFFF" opacity="0.6"/>
-            <circle class="splash-3" cx="1100" cy="330" r="4" fill="#FFFFFF" opacity="0.6"/>
-        </svg>`
-    },
-    snow: {
-        background: '#C8D5E0',
-        css: `
-            @keyframes bob { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-3px); } }
-            @keyframes snow { 0% { transform: translateY(0); opacity: 0.9; } 100% { transform: translateY(400px); opacity: 0.7; } }
-            @keyframes snowSlow { 0% { transform: translateY(0); opacity: 0.7; } 100% { transform: translateY(400px); opacity: 0.5; } }
-            @keyframes wave { 0%, 100% { d: path("M 0 310 Q 100 300, 200 310 T 400 310 T 600 310 T 800 310 T 1000 310 T 1200 310"); } 50% { d: path("M 0 310 Q 100 305, 200 310 T 400 310 T 600 310 T 800 310 T 1000 310 T 1200 310"); } }
-            @keyframes wave2 { 0%, 100% { d: path("M 0 340 Q 120 330, 240 340 T 480 340 T 720 340 T 960 340 T 1200 340"); } 50% { d: path("M 0 340 Q 120 335, 240 340 T 480 340 T 720 340 T 960 340 T 1200 340"); } }
-            .ferry { animation: bob 3s ease-in-out infinite; transform-origin: center; }
-            .snow-1 { animation: snow 8s linear infinite; }
-            .snow-2 { animation: snowSlow 10s linear infinite 1s; }
-            .snow-3 { animation: snow 9s linear infinite 2s; }
-            .snow-4 { animation: snowSlow 11s linear infinite 3s; }
-            .snow-5 { animation: snow 8.5s linear infinite 4s; }
-            .wave-1 { animation: wave 4s ease-in-out infinite; }
-            .wave-2 { animation: wave2 5s ease-in-out infinite; }
-        `,
-        svg: `<svg viewBox="0 0 1200 400" xmlns="http://www.w3.org/2000/svg">
-            <!-- Background - cooler tone for snow -->
-            <rect width="1200" height="400" fill="#C8D5E0" rx="20"/>
-
-            <!-- Water - darker cold water -->
-            <path d="M 0 280 Q 150 270, 300 280 T 600 280 T 900 280 T 1200 280 L 1200 400 L 0 400 Z" fill="#4A6B8F"/>
-            <path class="wave-1" d="M 0 310 Q 100 300, 200 310 T 400 310 T 600 310 T 800 310 T 1000 310 T 1200 310" fill="none" stroke="#3D5A7A" stroke-width="3" opacity="0.5"/>
-            <path class="wave-2" d="M 0 340 Q 120 330, 240 340 T 480 340 T 720 340 T 960 340 T 1200 340" fill="none" stroke="#3D5A7A" stroke-width="3" opacity="0.5"/>
-
-            <!-- Ferry group with bobbing animation -->
-            <g class="ferry">
-                <path d="M 470 260 L 455 305 L 825 305 L 815 260 Z" fill="#FFFFFF"/>
-                <rect x="485" y="205" width="310" height="55" fill="#4B6EDB" rx="4"/>
-                <rect x="515" y="155" width="250" height="50" fill="#FFFFFF" rx="4"/>
-                <rect x="595" y="110" width="90" height="45" fill="#FF6B6B" rx="4"/>
-                <rect x="605" y="125" width="18" height="22" fill="#FFE66D" rx="2"/>
-                <rect x="632" y="125" width="18" height="22" fill="#FFE66D" rx="2"/>
-                <rect x="659" y="125" width="18" height="22" fill="#FFE66D" rx="2"/>
-                <rect x="635" y="95" width="8" height="15" fill="#4B6EDB"/>
-                <circle cx="639" cy="90" r="6" fill="#FFE66D"/>
-                <line x1="639" y1="84" x2="639" y2="75" stroke="#FF6B6B" stroke-width="2"/>
-                <circle cx="639" cy="75" r="4" fill="#FFE66D"/>
-                <rect x="530" y="170" width="22" height="25" fill="#4B6EDB" rx="2"/>
-                <rect x="565" y="170" width="22" height="25" fill="#4B6EDB" rx="2"/>
-                <rect x="600" y="170" width="22" height="25" fill="#4B6EDB" rx="2"/>
-                <rect x="635" y="170" width="22" height="25" fill="#4B6EDB" rx="2"/>
-                <rect x="670" y="170" width="22" height="25" fill="#4B6EDB" rx="2"/>
-                <rect x="705" y="170" width="22" height="25" fill="#4B6EDB" rx="2"/>
-                <rect x="505" y="220" width="45" height="30" fill="#FFE66D" rx="2"/>
-                <rect x="570" y="220" width="45" height="30" fill="#FFE66D" rx="2"/>
-                <rect x="635" y="220" width="45" height="30" fill="#FFE66D" rx="2"/>
-                <rect x="700" y="220" width="45" height="30" fill="#FFE66D" rx="2"/>
-                <ellipse cx="527" cy="235" rx="10" ry="7" fill="#FF6B6B"/>
-                <ellipse cx="592" cy="235" rx="10" ry="7" fill="#FFFFFF"/>
-                <ellipse cx="657" cy="235" rx="10" ry="7" fill="#FFE66D"/>
-                <rect x="705" y="135" width="32" height="20" fill="#FF6B6B" rx="3"/>
-                <ellipse cx="721" cy="135" rx="16" ry="5" fill="#FF6B6B"/>
-
-                <g transform="translate(545, 180)">
-                    <circle cx="0" cy="0" r="7" fill="#FF6B6B"/>
-                    <ellipse cx="0" cy="11" rx="6" ry="9" fill="#4B6EDB"/>
-                </g>
-                <g transform="translate(620, 180)">
-                    <circle cx="0" cy="0" r="7" fill="#FFE66D"/>
-                    <ellipse cx="0" cy="11" rx="6" ry="9" fill="#FF6B6B"/>
-                </g>
-                <g transform="translate(690, 180)">
-                    <circle cx="0" cy="0" r="7" fill="#4B6EDB"/>
-                    <ellipse cx="0" cy="11" rx="6" ry="9" fill="#FFE66D"/>
-                </g>
-            </g>
-
-            <!-- Smoke puffs - gray in snow -->
-            <circle cx="718" cy="117" r="11" fill="#B8C5D0" opacity="0.7"/>
-            <circle cx="728" cy="108" r="13" fill="#B8C5D0" opacity="0.6"/>
-            <circle cx="713" cy="103" r="9" fill="#B8C5D0" opacity="0.7"/>
-
-            <!-- Snowflakes - Layer 1 -->
-            <g class="snow-1">
-                <circle cx="80" cy="-40" r="3" fill="#FFFFFF" opacity="0.9"/>
-                <circle cx="220" cy="-30" r="3" fill="#FFFFFF" opacity="0.9"/>
-                <circle cx="350" cy="-50" r="3" fill="#FFFFFF" opacity="0.9"/>
-                <circle cx="490" cy="-60" r="3" fill="#FFFFFF" opacity="0.9"/>
-                <circle cx="630" cy="-40" r="3" fill="#FFFFFF" opacity="0.9"/>
-                <circle cx="770" cy="-50" r="3" fill="#FFFFFF" opacity="0.9"/>
-                <circle cx="910" cy="-30" r="3" fill="#FFFFFF" opacity="0.9"/>
-                <circle cx="1050" cy="-70" r="3" fill="#FFFFFF" opacity="0.9"/>
-            </g>
-
-            <!-- Snowflakes - Layer 2 -->
-            <g class="snow-2">
-                <circle cx="150" cy="-70" r="3" fill="#FFFFFF" opacity="0.9"/>
-                <circle cx="280" cy="-100" r="3" fill="#FFFFFF" opacity="0.9"/>
-                <circle cx="420" cy="-90" r="3" fill="#FFFFFF" opacity="0.9"/>
-                <circle cx="560" cy="-110" r="3" fill="#FFFFFF" opacity="0.9"/>
-                <circle cx="700" cy="-80" r="3" fill="#FFFFFF" opacity="0.9"/>
-                <circle cx="840" cy="-100" r="3" fill="#FFFFFF" opacity="0.9"/>
-                <circle cx="980" cy="-70" r="3" fill="#FFFFFF" opacity="0.9"/>
-                <circle cx="1120" cy="-90" r="3" fill="#FFFFFF" opacity="0.9"/>
-            </g>
-
-            <!-- Snowflakes - Layer 3 -->
-            <g class="snow-3">
-                <circle cx="120" cy="-120" r="3" fill="#FFFFFF" opacity="0.9"/>
-                <circle cx="260" cy="-130" r="3" fill="#FFFFFF" opacity="0.9"/>
-                <circle cx="400" cy="-140" r="3" fill="#FFFFFF" opacity="0.9"/>
-                <circle cx="540" cy="-150" r="3" fill="#FFFFFF" opacity="0.9"/>
-                <circle cx="680" cy="-140" r="3" fill="#FFFFFF" opacity="0.9"/>
-                <circle cx="820" cy="-130" r="3" fill="#FFFFFF" opacity="0.9"/>
-                <circle cx="960" cy="-120" r="3" fill="#FFFFFF" opacity="0.9"/>
-                <circle cx="1100" cy="-140" r="3" fill="#FFFFFF" opacity="0.9"/>
-            </g>
-
-            <!-- Snowflakes - Layer 4 (smaller) -->
-            <g class="snow-4">
-                <circle cx="100" cy="-80" r="2" fill="#FFFFFF" opacity="0.7"/>
-                <circle cx="200" cy="-110" r="2" fill="#FFFFFF" opacity="0.7"/>
-                <circle cx="300" cy="-70" r="2" fill="#FFFFFF" opacity="0.7"/>
-                <circle cx="400" cy="-120" r="2" fill="#FFFFFF" opacity="0.7"/>
-                <circle cx="500" cy="-90" r="2" fill="#FFFFFF" opacity="0.7"/>
-                <circle cx="600" cy="-130" r="2" fill="#FFFFFF" opacity="0.7"/>
-                <circle cx="700" cy="-100" r="2" fill="#FFFFFF" opacity="0.7"/>
-                <circle cx="800" cy="-140" r="2" fill="#FFFFFF" opacity="0.7"/>
-                <circle cx="900" cy="-110" r="2" fill="#FFFFFF" opacity="0.7"/>
-                <circle cx="1000" cy="-80" r="2" fill="#FFFFFF" opacity="0.7"/>
-                <circle cx="1100" cy="-120" r="2" fill="#FFFFFF" opacity="0.7"/>
-            </g>
-
-            <!-- Snowflakes - Layer 5 -->
-            <g class="snow-5">
-                <circle cx="50" cy="-90" r="3" fill="#FFFFFF" opacity="0.9"/>
-                <circle cx="190" cy="-60" r="3" fill="#FFFFFF" opacity="0.9"/>
-                <circle cx="330" cy="-100" r="3" fill="#FFFFFF" opacity="0.9"/>
-                <circle cx="470" cy="-80" r="3" fill="#FFFFFF" opacity="0.9"/>
-                <circle cx="610" cy="-110" r="3" fill="#FFFFFF" opacity="0.9"/>
-                <circle cx="750" cy="-90" r="3" fill="#FFFFFF" opacity="0.9"/>
-                <circle cx="890" cy="-60" r="3" fill="#FFFFFF" opacity="0.9"/>
-                <circle cx="1030" cy="-100" r="3" fill="#FFFFFF" opacity="0.9"/>
-                <circle cx="1170" cy="-80" r="3" fill="#FFFFFF" opacity="0.9"/>
-            </g>
-
-            <!-- Decorative waves - muted -->
-            <ellipse cx="200" cy="320" rx="40" ry="14" fill="#FFFFFF" opacity="0.3"/>
-            <ellipse cx="820" cy="335" rx="45" ry="16" fill="#FFFFFF" opacity="0.3"/>
-            <ellipse cx="1000" cy="315" rx="42" ry="15" fill="#FFFFFF" opacity="0.25"/>
-        </svg>`
-    },
-    windy: {
-        background: '#FFB5B5',
-        css: `
-            @keyframes bobWindy { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-5px); } }
-            @keyframes windStreak { 0% { transform: translateX(0); opacity: 0.5; } 100% { transform: translateX(200px); opacity: 0; } }
-            @keyframes blowSmoke { 0% { opacity: 0.8; transform: translate(0, 0); } 100% { opacity: 0; transform: translate(120px, -20px); } }
-            @keyframes choppyWave { 0%, 100% { d: path("M 0 310 Q 100 300, 200 310 T 400 310 T 600 310 T 800 310 T 1000 310 T 1200 310"); } 25% { d: path("M 0 310 Q 100 305, 200 310 T 400 310 T 600 310 T 800 310 T 1000 310 T 1200 310"); } 50% { d: path("M 0 310 Q 100 295, 200 310 T 400 310 T 600 310 T 800 310 T 1000 310 T 1200 310"); } 75% { d: path("M 0 310 Q 100 305, 200 310 T 400 310 T 600 310 T 800 310 T 1000 310 T 1200 310"); } }
-            @keyframes choppyWave2 { 0%, 100% { d: path("M 0 340 Q 120 330, 240 340 T 480 340 T 720 340 T 960 340 T 1200 340"); } 25% { d: path("M 0 340 Q 120 335, 240 340 T 480 340 T 720 340 T 960 340 T 1200 340"); } 50% { d: path("M 0 340 Q 120 325, 240 340 T 480 340 T 720 340 T 960 340 T 1200 340"); } 75% { d: path("M 0 340 Q 120 335, 240 340 T 480 340 T 720 340 T 960 340 T 1200 340"); } }
-            @keyframes spray { 0% { opacity: 0; transform: scale(0.5); } 50% { opacity: 0.7; } 100% { opacity: 0; transform: scale(1.5) translateY(-10px); } }
-            .ferry { animation: bobWindy 2s ease-in-out infinite; transform-origin: center; }
-            .wind-1 { animation: windStreak 2s linear infinite; }
-            .wind-2 { animation: windStreak 2.2s linear infinite 0.3s; }
-            .wind-3 { animation: windStreak 2.1s linear infinite 0.6s; }
-            .wind-4 { animation: windStreak 2.3s linear infinite 0.9s; }
-            .wind-5 { animation: windStreak 2.4s linear infinite 1.2s; }
-            .wind-6 { animation: windStreak 2s linear infinite 1.5s; }
-            .smoke-1 { animation: blowSmoke 3s ease-out infinite; }
-            .smoke-2 { animation: blowSmoke 3s ease-out 0.6s infinite; }
-            .smoke-3 { animation: blowSmoke 3s ease-out 1.2s infinite; }
-            .smoke-4 { animation: blowSmoke 3s ease-out 1.8s infinite; }
-            .smoke-5 { animation: blowSmoke 3s ease-out 2.4s infinite; }
-            .wave-1 { animation: choppyWave 2.5s ease-in-out infinite; }
-            .wave-2 { animation: choppyWave2 3s ease-in-out infinite; }
-            .spray-1 { animation: spray 1.5s ease-out infinite; }
-            .spray-2 { animation: spray 1.5s ease-out 0.5s infinite; }
-            .spray-3 { animation: spray 1.5s ease-out 1s infinite; }
-        `,
-        svg: `<svg viewBox="0 0 1200 400" xmlns="http://www.w3.org/2000/svg">
-            <!-- Background -->
-            <rect width="1200" height="400" fill="#FFB5B5" rx="20"/>
-
-            <!-- Wind lines across the sky - layer 1 -->
-            <g class="wind-1">
-                <path d="M -150 100 Q -50 95, 50 100" fill="none" stroke="#FFFFFF" stroke-width="3" opacity="0.5" stroke-linecap="round"/>
-                <path d="M -100 140 Q 20 135, 140 140" fill="none" stroke="#FFFFFF" stroke-width="3" opacity="0.5" stroke-linecap="round"/>
-                <path d="M -120 180 Q 30 175, 180 180" fill="none" stroke="#FFFFFF" stroke-width="3" opacity="0.5" stroke-linecap="round"/>
-            </g>
-
-            <!-- Wind lines - layer 2 -->
-            <g class="wind-2">
-                <path d="M 200 120 Q 320 115, 440 120" fill="none" stroke="#FFFFFF" stroke-width="3" opacity="0.5" stroke-linecap="round"/>
-                <path d="M 250 160 Q 390 155, 530 160" fill="none" stroke="#FFFFFF" stroke-width="3" opacity="0.5" stroke-linecap="round"/>
-            </g>
-
-            <!-- Wind lines - layer 3 -->
-            <g class="wind-3">
-                <path d="M 600 90 Q 720 85, 840 90" fill="none" stroke="#FFFFFF" stroke-width="3" opacity="0.5" stroke-linecap="round"/>
-                <path d="M 650 130 Q 790 125, 930 130" fill="none" stroke="#FFFFFF" stroke-width="3" opacity="0.5" stroke-linecap="round"/>
-                <path d="M 700 170 Q 820 165, 940 170" fill="none" stroke="#FFFFFF" stroke-width="3" opacity="0.5" stroke-linecap="round"/>
-            </g>
-
-            <!-- Wind lines - layer 4 -->
-            <g class="wind-4">
-                <path d="M 1000 100 Q 1100 95, 1200 100" fill="none" stroke="#FFFFFF" stroke-width="3" opacity="0.5" stroke-linecap="round"/>
-                <path d="M 1050 140 Q 1170 135, 1290 140" fill="none" stroke="#FFFFFF" stroke-width="3" opacity="0.5" stroke-linecap="round"/>
-            </g>
-
-            <!-- Wind lines - layer 5 (foreground) -->
-            <g class="wind-5">
-                <path d="M 0 240 Q 100 235, 200 240" fill="none" stroke="#FFFFFF" stroke-width="2" opacity="0.4" stroke-linecap="round"/>
-                <path d="M 400 250 Q 520 245, 640 250" fill="none" stroke="#FFFFFF" stroke-width="2" opacity="0.4" stroke-linecap="round"/>
-            </g>
-
-            <!-- Water - choppier waves -->
-            <path d="M 0 280 Q 100 265, 200 280 T 400 280 T 600 280 T 800 280 T 1000 280 T 1200 280 L 1200 400 L 0 400 Z" fill="#6B8FD9"/>
-            <path class="wave-1" d="M 0 310 Q 100 300, 200 310 T 400 310 T 600 310 T 800 310 T 1000 310 T 1200 310" fill="none" stroke="#5577C9" stroke-width="4" opacity="0.6"/>
-            <path class="wave-2" d="M 0 340 Q 120 330, 240 340 T 480 340 T 720 340 T 960 340 T 1200 340" fill="none" stroke="#5577C9" stroke-width="4" opacity="0.6"/>
-
-            <!-- Whitecaps on choppy water -->
-            <ellipse cx="150" cy="315" rx="25" ry="8" fill="#FFFFFF" opacity="0.6"/>
-            <ellipse cx="320" cy="305" rx="30" ry="10" fill="#FFFFFF" opacity="0.6"/>
-            <ellipse cx="480" cy="320" rx="28" ry="9" fill="#FFFFFF" opacity="0.6"/>
-            <ellipse cx="650" cy="310" rx="32" ry="11" fill="#FFFFFF" opacity="0.6"/>
-            <ellipse cx="850" cy="325" rx="26" ry="8" fill="#FFFFFF" opacity="0.6"/>
-            <ellipse cx="1000" cy="315" rx="30" ry="10" fill="#FFFFFF" opacity="0.6"/>
-
-            <!-- Ferry group with bobbing animation -->
-            <g class="ferry">
-                <path d="M 470 260 L 455 305 L 825 305 L 815 260 Z" fill="#FFFFFF"/>
-                <rect x="485" y="205" width="310" height="55" fill="#4B6EDB" rx="4"/>
-                <rect x="515" y="155" width="250" height="50" fill="#FFFFFF" rx="4"/>
-                <rect x="595" y="110" width="90" height="45" fill="#FF6B6B" rx="4"/>
-                <rect x="605" y="125" width="18" height="22" fill="#FFE66D" rx="2"/>
-                <rect x="632" y="125" width="18" height="22" fill="#FFE66D" rx="2"/>
-                <rect x="659" y="125" width="18" height="22" fill="#FFE66D" rx="2"/>
-                <rect x="635" y="95" width="8" height="15" fill="#4B6EDB"/>
-                <circle cx="639" cy="90" r="6" fill="#FFE66D"/>
-                <line x1="639" y1="84" x2="639" y2="75" stroke="#FF6B6B" stroke-width="2"/>
-                <circle cx="639" cy="75" r="4" fill="#FFE66D"/>
-                <rect x="530" y="170" width="22" height="25" fill="#4B6EDB" rx="2"/>
-                <rect x="565" y="170" width="22" height="25" fill="#4B6EDB" rx="2"/>
-                <rect x="600" y="170" width="22" height="25" fill="#4B6EDB" rx="2"/>
-                <rect x="635" y="170" width="22" height="25" fill="#4B6EDB" rx="2"/>
-                <rect x="670" y="170" width="22" height="25" fill="#4B6EDB" rx="2"/>
-                <rect x="705" y="170" width="22" height="25" fill="#4B6EDB" rx="2"/>
-                <rect x="505" y="220" width="45" height="30" fill="#FFE66D" rx="2"/>
-                <rect x="570" y="220" width="45" height="30" fill="#FFE66D" rx="2"/>
-                <rect x="635" y="220" width="45" height="30" fill="#FFE66D" rx="2"/>
-                <rect x="700" y="220" width="45" height="30" fill="#FFE66D" rx="2"/>
-                <ellipse cx="527" cy="235" rx="10" ry="7" fill="#FF6B6B"/>
-                <ellipse cx="592" cy="235" rx="10" ry="7" fill="#FFFFFF"/>
-                <ellipse cx="657" cy="235" rx="10" ry="7" fill="#FFE66D"/>
-                <rect x="705" y="135" width="32" height="20" fill="#FF6B6B" rx="3"/>
-                <ellipse cx="721" cy="135" rx="16" ry="5" fill="#FF6B6B"/>
-
-                <g transform="translate(545, 180)">
-                    <circle cx="0" cy="0" r="7" fill="#FF6B6B"/>
-                    <ellipse cx="0" cy="11" rx="6" ry="9" fill="#4B6EDB"/>
-                </g>
-                <g transform="translate(620, 180)">
-                    <circle cx="0" cy="0" r="7" fill="#FFE66D"/>
-                    <ellipse cx="0" cy="11" rx="6" ry="9" fill="#FF6B6B"/>
-                </g>
-                <g transform="translate(690, 180)">
-                    <circle cx="0" cy="0" r="7" fill="#4B6EDB"/>
-                    <ellipse cx="0" cy="11" rx="6" ry="9" fill="#FFE66D"/>
-                </g>
-            </g>
-
-            <!-- Smoke puffs blown sideways by wind! -->
-            <ellipse class="smoke-1" cx="738" cy="117" rx="15" ry="9" fill="#FFE66D"/>
-            <ellipse class="smoke-2" cx="758" cy="108" rx="17" ry="10" fill="#FFE66D"/>
-            <ellipse class="smoke-3" cx="773" cy="103" rx="14" ry="8" fill="#FFE66D"/>
-            <ellipse class="smoke-4" cx="788" cy="98" rx="16" ry="9" fill="#FFE66D"/>
-            <ellipse class="smoke-5" cx="805" cy="93" rx="13" ry="7" fill="#FFE66D"/>
-
-            <!-- Birds struggling in wind - tilted -->
-            <g transform="rotate(15 200 90)">
-                <path d="M 180 80 Q 190 75, 200 80" fill="none" stroke="#4B6EDB" stroke-width="3" stroke-linecap="round"/>
-                <path d="M 200 80 Q 210 75, 220 80" fill="none" stroke="#4B6EDB" stroke-width="3" stroke-linecap="round"/>
-            </g>
-            <g transform="rotate(-12 380 120)">
-                <path d="M 350 110 Q 360 105, 370 110" fill="none" stroke="#4B6EDB" stroke-width="3" stroke-linecap="round"/>
-                <path d="M 370 110 Q 380 105, 390 110" fill="none" stroke="#4B6EDB" stroke-width="3" stroke-linecap="round"/>
-            </g>
-            <g transform="rotate(20 910 110)">
-                <path d="M 890 100 Q 900 95, 910 100" fill="none" stroke="#4B6EDB" stroke-width="3" stroke-linecap="round"/>
-                <path d="M 910 100 Q 920 95, 930 100" fill="none" stroke="#4B6EDB" stroke-width="3" stroke-linecap="round"/>
-            </g>
-            <g transform="rotate(-15 1050 80)">
-                <path d="M 1020 70 Q 1030 65, 1040 70" fill="none" stroke="#4B6EDB" stroke-width="3" stroke-linecap="round"/>
-                <path d="M 1040 70 Q 1050 65, 1060 70" fill="none" stroke="#4B6EDB" stroke-width="3" stroke-linecap="round"/>
-            </g>
-
-            <!-- Spray from waves -->
-            <g class="spray-1">
-                <circle cx="180" cy="305" r="4" fill="#FFFFFF" opacity="0.7"/>
-                <circle cx="165" cy="300" r="3" fill="#FFFFFF" opacity="0.7"/>
-                <circle cx="195" cy="310" r="3" fill="#FFFFFF" opacity="0.7"/>
-            </g>
-            <g class="spray-2">
-                <circle cx="650" cy="300" r="4" fill="#FFFFFF" opacity="0.7"/>
-                <circle cx="635" cy="295" r="3" fill="#FFFFFF" opacity="0.7"/>
-                <circle cx="665" cy="305" r="3" fill="#FFFFFF" opacity="0.7"/>
-            </g>
-            <g class="spray-3">
-                <circle cx="1020" cy="310" r="4" fill="#FFFFFF" opacity="0.7"/>
-                <circle cx="1005" cy="305" r="3" fill="#FFFFFF" opacity="0.7"/>
-                <circle cx="1035" cy="315" r="3" fill="#FFFFFF" opacity="0.7"/>
-            </g>
-        </svg>`
-    },
-    night: {
-        background: '#1A1F3A',
-        css: `
-            @keyframes bob { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-3px); } }
-            @keyframes twinkle { 0%, 100% { opacity: 0.9; } 50% { opacity: 0.3; } }
-            @keyframes twinkleSlow { 0%, 100% { opacity: 0.9; } 50% { opacity: 0.5; } }
-            @keyframes blinkRed { 0%, 45%, 55%, 100% { opacity: 0.9; } 50% { opacity: 0.3; } }
-            @keyframes blinkGreen { 0%, 45%, 55%, 100% { opacity: 0.9; } 50% { opacity: 0.3; } }
-            @keyframes blinkMast { 0%, 90%, 100% { opacity: 0.9; } 95% { opacity: 0.2; } }
-            @keyframes drift { 0% { opacity: 0.6; transform: translate(0, 0); } 100% { opacity: 0; transform: translate(20px, -30px); } }
-            @keyframes wave { 0%, 100% { d: path("M 0 310 Q 100 300, 200 310 T 400 310 T 600 310 T 800 310 T 1000 310 T 1200 310"); } 50% { d: path("M 0 310 Q 100 305, 200 310 T 400 310 T 600 310 T 800 310 T 1000 310 T 1200 310"); } }
-            @keyframes wave2 { 0%, 100% { d: path("M 0 340 Q 120 330, 240 340 T 480 340 T 720 340 T 960 340 T 1200 340"); } 50% { d: path("M 0 340 Q 120 335, 240 340 T 480 340 T 720 340 T 960 340 T 1200 340"); } }
-            @keyframes glowPulse { 0%, 100% { opacity: 0.3; } 50% { opacity: 0.4; } }
-            .ferry { animation: bob 3s ease-in-out infinite; transform-origin: center; }
-            .star-1 { animation: twinkle 2s ease-in-out infinite; }
-            .star-2 { animation: twinkleSlow 3s ease-in-out 0.5s infinite; }
-            .star-3 { animation: twinkle 2.5s ease-in-out 1s infinite; }
-            .star-4 { animation: twinkleSlow 3.5s ease-in-out 1.5s infinite; }
-            .star-5 { animation: twinkle 2.8s ease-in-out 2s infinite; }
-            .nav-light-red { animation: blinkRed 2s ease-in-out infinite; }
-            .nav-light-green { animation: blinkGreen 2s ease-in-out 1s infinite; }
-            .mast-light { animation: blinkMast 3s ease-in-out infinite; }
-            .smoke-1 { animation: drift 4s ease-out infinite; }
-            .smoke-2 { animation: drift 4s ease-out 0.8s infinite; }
-            .smoke-3 { animation: drift 4s ease-out 1.6s infinite; }
-            .wave-1 { animation: wave 4s ease-in-out infinite; }
-            .wave-2 { animation: wave2 5s ease-in-out infinite; }
-            .window-glow { animation: glowPulse 3s ease-in-out infinite; }
-        `,
-        svg: `<svg viewBox="0 0 1200 400" xmlns="http://www.w3.org/2000/svg">
-            <!-- Background - dark night sky -->
-            <rect width="1200" height="400" fill="#1A1F3A" rx="20"/>
-
-            <!-- Stars scattered across the sky -->
-            <circle class="star-1" cx="80" cy="60" r="2" fill="#FFFFFF" opacity="0.9"/>
-            <circle class="star-2" cx="150" cy="90" r="2" fill="#FFFFFF" opacity="0.9"/>
-            <circle class="star-3" cx="220" cy="50" r="2" fill="#FFFFFF" opacity="0.9"/>
-            <circle class="star-4" cx="280" cy="120" r="2" fill="#FFFFFF" opacity="0.9"/>
-            <circle class="star-5" cx="350" cy="70" r="2" fill="#FFFFFF" opacity="0.9"/>
-            <circle class="star-1" cx="420" cy="110" r="2" fill="#FFFFFF" opacity="0.9"/>
-            <circle class="star-2" cx="490" cy="80" r="2" fill="#FFFFFF" opacity="0.9"/>
-            <circle class="star-3" cx="560" cy="130" r="2" fill="#FFFFFF" opacity="0.9"/>
-            <circle class="star-4" cx="630" cy="60" r="2" fill="#FFFFFF" opacity="0.9"/>
-            <circle class="star-5" cx="700" cy="100" r="2" fill="#FFFFFF" opacity="0.9"/>
-            <circle class="star-1" cx="770" cy="70" r="2" fill="#FFFFFF" opacity="0.9"/>
-            <circle class="star-2" cx="840" cy="120" r="2" fill="#FFFFFF" opacity="0.9"/>
-            <circle class="star-3" cx="910" cy="50" r="2" fill="#FFFFFF" opacity="0.9"/>
-            <circle class="star-4" cx="980" cy="90" r="2" fill="#FFFFFF" opacity="0.9"/>
-            <circle class="star-5" cx="1050" cy="110" r="2" fill="#FFFFFF" opacity="0.9"/>
-            <circle class="star-1" cx="1120" cy="70" r="2" fill="#FFFFFF" opacity="0.9"/>
-
-            <circle class="star-2" cx="120" cy="140" r="2" fill="#FFFFFF" opacity="0.9"/>
-            <circle class="star-3" cx="190" cy="170" r="2" fill="#FFFFFF" opacity="0.9"/>
-            <circle class="star-4" cx="260" cy="150" r="2" fill="#FFFFFF" opacity="0.9"/>
-            <circle class="star-5" cx="330" cy="180" r="2" fill="#FFFFFF" opacity="0.9"/>
-            <circle class="star-1" cx="400" cy="160" r="2" fill="#FFFFFF" opacity="0.9"/>
-            <circle class="star-2" cx="470" cy="190" r="2" fill="#FFFFFF" opacity="0.9"/>
-            <circle class="star-3" cx="820" cy="190" r="2" fill="#FFFFFF" opacity="0.9"/>
-            <circle class="star-4" cx="890" cy="170" r="2" fill="#FFFFFF" opacity="0.9"/>
-            <circle class="star-5" cx="960" cy="150" r="2" fill="#FFFFFF" opacity="0.9"/>
-            <circle class="star-1" cx="1030" cy="180" r="2" fill="#FFFFFF" opacity="0.9"/>
-            <circle class="star-2" cx="1100" cy="160" r="2" fill="#FFFFFF" opacity="0.9"/>
-
-            <!-- Brighter stars -->
-            <circle class="star-3" cx="200" cy="80" r="3" fill="#FFE66D" opacity="0.9"/>
-            <circle class="star-4" cx="500" cy="120" r="3" fill="#FFE66D" opacity="0.9"/>
-            <circle class="star-5" cx="800" cy="60" r="3" fill="#FFE66D" opacity="0.9"/>
-            <circle class="star-1" cx="1000" cy="130" r="3" fill="#FFE66D" opacity="0.9"/>
-
-            <!-- Moon -->
-            <circle cx="1050" cy="80" r="40" fill="#FFE66D" opacity="0.9"/>
-            <circle cx="1065" cy="75" r="35" fill="#1A1F3A" opacity="0.3"/>
-
-            <!-- Water - dark at night -->
-            <path d="M 0 280 Q 150 270, 300 280 T 600 280 T 900 280 T 1200 280 L 1200 400 L 0 400 Z" fill="#0D1B2E"/>
-            <path class="wave-1" d="M 0 310 Q 100 300, 200 310 T 400 310 T 600 310 T 800 310 T 1000 310 T 1200 310" fill="none" stroke="#1A2A3E" stroke-width="3" opacity="0.5"/>
-            <path class="wave-2" d="M 0 340 Q 120 330, 240 340 T 480 340 T 720 340 T 960 340 T 1200 340" fill="none" stroke="#1A2A3E" stroke-width="3" opacity="0.5"/>
-
-            <!-- Moon reflection on water -->
-            <ellipse cx="1050" cy="320" rx="20" ry="40" fill="#FFE66D" opacity="0.3"/>
-            <ellipse cx="1050" cy="360" rx="15" ry="20" fill="#FFE66D" opacity="0.2"/>
-
-            <!-- Ferry group with bobbing animation -->
-            <g class="ferry">
-                <path d="M 470 260 L 455 305 L 825 305 L 815 260 Z" fill="#FFFFFF"/>
-                <rect x="485" y="205" width="310" height="55" fill="#4B6EDB" rx="4"/>
-                <rect x="515" y="155" width="250" height="50" fill="#FFFFFF" rx="4"/>
-                <rect x="595" y="110" width="90" height="45" fill="#FF6B6B" rx="4"/>
-
-                <!-- Pilot house windows - GLOWING yellow at night -->
-                <rect x="605" y="125" width="18" height="22" fill="#FFE66D" rx="2"/>
-                <rect x="632" y="125" width="18" height="22" fill="#FFE66D" rx="2"/>
-                <rect x="659" y="125" width="18" height="22" fill="#FFE66D" rx="2"/>
-
-                <!-- Window glow effect -->
-                <rect class="window-glow" x="603" y="123" width="22" height="26" fill="#FFE66D" rx="2" opacity="0.3"/>
-                <rect class="window-glow" x="630" y="123" width="22" height="26" fill="#FFE66D" rx="2" opacity="0.3"/>
-                <rect class="window-glow" x="657" y="123" width="22" height="26" fill="#FFE66D" rx="2" opacity="0.3"/>
-
-                <rect x="635" y="95" width="8" height="15" fill="#4B6EDB"/>
-                <circle cx="639" cy="90" r="6" fill="#FF6B6B"/>
-                <line x1="639" y1="84" x2="639" y2="75" stroke="#FF6B6B" stroke-width="2"/>
-                <circle cx="639" cy="75" r="4" fill="#FF6B6B" opacity="0.9"/>
-
-                <!-- Red blinking light on mast -->
-                <circle class="mast-light" cx="639" cy="75" r="6" fill="#FF6B6B" opacity="0.4"/>
-
-                <!-- Upper deck windows - GLOWING -->
-                <rect x="530" y="170" width="22" height="25" fill="#FFE66D" rx="2"/>
-                <rect x="565" y="170" width="22" height="25" fill="#FFE66D" rx="2"/>
-                <rect x="600" y="170" width="22" height="25" fill="#FFE66D" rx="2"/>
-                <rect x="635" y="170" width="22" height="25" fill="#FFE66D" rx="2"/>
-                <rect x="670" y="170" width="22" height="25" fill="#FFE66D" rx="2"/>
-                <rect x="705" y="170" width="22" height="25" fill="#FFE66D" rx="2"/>
-
-                <!-- Window glow -->
-                <rect class="window-glow" x="528" y="168" width="26" height="29" fill="#FFE66D" rx="2" opacity="0.3"/>
-                <rect class="window-glow" x="563" y="168" width="26" height="29" fill="#FFE66D" rx="2" opacity="0.3"/>
-                <rect class="window-glow" x="598" y="168" width="26" height="29" fill="#FFE66D" rx="2" opacity="0.3"/>
-                <rect class="window-glow" x="633" y="168" width="26" height="29" fill="#FFE66D" rx="2" opacity="0.3"/>
-                <rect class="window-glow" x="668" y="168" width="26" height="29" fill="#FFE66D" rx="2" opacity="0.3"/>
-                <rect class="window-glow" x="703" y="168" width="26" height="29" fill="#FFE66D" rx="2" opacity="0.3"/>
-
-                <!-- Vehicle deck windows/openings - GLOWING yellow -->
-                <rect x="505" y="220" width="45" height="30" fill="#FFE66D" rx="2"/>
-                <rect x="570" y="220" width="45" height="30" fill="#FFE66D" rx="2"/>
-                <rect x="635" y="220" width="45" height="30" fill="#FFE66D" rx="2"/>
-                <rect x="700" y="220" width="45" height="30" fill="#FFE66D" rx="2"/>
-
-                <!-- Window glow -->
-                <rect class="window-glow" x="503" y="218" width="49" height="34" fill="#FFE66D" rx="2" opacity="0.3"/>
-                <rect class="window-glow" x="568" y="218" width="49" height="34" fill="#FFE66D" rx="2" opacity="0.3"/>
-                <rect class="window-glow" x="633" y="218" width="49" height="34" fill="#FFE66D" rx="2" opacity="0.3"/>
-                <rect class="window-glow" x="698" y="218" width="49" height="34" fill="#FFE66D" rx="2" opacity="0.3"/>
-
-                <ellipse cx="527" cy="235" rx="10" ry="7" fill="#3D5AA6" opacity="0.6"/>
-                <ellipse cx="592" cy="235" rx="10" ry="7" fill="#3D5AA6" opacity="0.6"/>
-                <ellipse cx="657" cy="235" rx="10" ry="7" fill="#3D5AA6" opacity="0.6"/>
-
-                <rect x="705" y="135" width="32" height="20" fill="#FF6B6B" rx="3"/>
-                <ellipse cx="721" cy="135" rx="16" ry="5" fill="#FF6B6B"/>
-
-                <g transform="translate(545, 180)" opacity="0.6">
-                    <circle cx="0" cy="0" r="7" fill="#3D5AA6"/>
-                    <ellipse cx="0" cy="11" rx="6" ry="9" fill="#2A4578"/>
-                </g>
-                <g transform="translate(620, 180)" opacity="0.6">
-                    <circle cx="0" cy="0" r="7" fill="#3D5AA6"/>
-                    <ellipse cx="0" cy="11" rx="6" ry="9" fill="#2A4578"/>
-                </g>
-                <g transform="translate(690, 180)" opacity="0.6">
-                    <circle cx="0" cy="0" r="7" fill="#3D5AA6"/>
-                    <ellipse cx="0" cy="11" rx="6" ry="9" fill="#2A4578"/>
-                </g>
-
-                <!-- Navigation lights - red (port) and green (starboard) -->
-                <circle class="nav-light-red" cx="460" cy="280" r="4" fill="#FF6B6B" opacity="0.9"/>
-                <circle class="nav-light-red" cx="460" cy="280" r="7" fill="#FF6B6B" opacity="0.3"/>
-
-                <circle class="nav-light-green" cx="820" cy="280" r="4" fill="#3FB573" opacity="0.9"/>
-                <circle class="nav-light-green" cx="820" cy="280" r="7" fill="#3FB573" opacity="0.3"/>
-            </g>
-
-            <!-- Smoke puffs - darker at night -->
-            <circle class="smoke-1" cx="718" cy="117" r="11" fill="#3D4A5C" opacity="0.6"/>
-            <circle class="smoke-2" cx="728" cy="108" r="13" fill="#3D4A5C" opacity="0.5"/>
-            <circle class="smoke-3" cx="713" cy="103" r="9" fill="#3D4A5C" opacity="0.6"/>
-
-            <!-- Decorative waves - subtle at night -->
-            <ellipse cx="200" cy="320" rx="40" ry="14" fill="#1A2A3E" opacity="0.4"/>
-            <ellipse cx="460" cy="325" rx="38" ry="13" fill="#1A2A3E" opacity="0.4"/>
-            <ellipse cx="820" cy="335" rx="45" ry="16" fill="#1A2A3E" opacity="0.4"/>
-            <ellipse cx="1000" cy="315" rx="42" ry="15" fill="#1A2A3E" opacity="0.3"/>
-            <ellipse cx="630" cy="350" rx="35" ry="12" fill="#1A2A3E" opacity="0.3"/>
-        </svg>`
-    },
-};
-
-
-function determineHeaderType(weatherData) {
-    const current = weatherData.current;
-    const isDay = current.is_day === 1;
-    const weatherCode = current.weather_code;
-    const windSpeed = current.wind_speed_10m; // in mph
-    
-    // Night time overrides all weather
-    if (!isDay) {
-        return 'night';
+    function formatTime(ts) {
+        return new Date(ts).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true });
     }
-    
-    // Fog (45, 48)
-    if (weatherCode === 45 || weatherCode === 48) {
-        return 'fog';
+
+    function relativeTime(iso) {
+        if (!iso) return '';
+        const diff = (Date.now() - new Date(iso).getTime()) / 1000;
+        if (diff < 60) return 'just now';
+        if (diff < 120) return '1 min ago';
+        return Math.round(diff / 60) + ' min ago';
     }
-    
-    // Snow (71-77, 85-86)
-    if ((weatherCode >= 71 && weatherCode <= 77) || 
-        weatherCode === 85 || weatherCode === 86) {
-        return 'snow';
+
+    // Terminals on the right side of the bar (ferry needs to face right = flip sprite)
+    const RIGHT_FACING_TERMINALS = ['Vashon', 'Tahlequah'];
+
+    function createVesselTracker(vs, fromTerminal, toTerminal) {
+        if (!vs || vs.state === 'unknown') return '';
+        const pct = 12 + (vs.progress || 0) * 76;
+        const flip = RIGHT_FACING_TERMINALS.includes(toTerminal) ? ' style="transform: scaleX(-1)"' : '';
+        let label = '';
+        let badge = '';
+
+        if (vs.state === 'en_route') {
+            label = vs.vessel ? `<span class="vessel-name">${vs.vessel}</span> en route` : 'En route';
+            if (vs.via) label += ` via ${vs.via}`;
+            if (vs.minutesToArrival !== null) label += ` · ~${vs.minutesToArrival} min`;
+        } else if (vs.state === 'arriving') {
+            label = vs.vessel ? `<span class="vessel-name">${vs.vessel}</span> arriving soon` : 'Arriving soon';
+            if (vs.minutesToArrival !== null) label += ` · ~${vs.minutesToArrival} min`;
+        } else if (vs.state === 'docked') {
+            label = vs.vessel ? `<span class="vessel-name">${vs.vessel}</span> at dock` : 'At dock';
+        }
+
+        if (vs.delay && vs.delay > 0) {
+            badge = ` <span class="delay-badge late">~${vs.delay}m late</span>`;
+        }
+
+        return `
+            <div class="vessel-tracker state-${vs.state}">
+                <div class="vessel-tracker-label">${label}${badge}</div>
+                <div class="vessel-track-bar">
+                    <div class="vessel-track-line"></div>
+                    <div class="vessel-dot-start"></div>
+                    <div class="vessel-dot-end"></div>
+                    <div class="vessel-icon" style="left: ${pct}%"><img src="/static/ferrybuddy.png" alt=""${flip}></div>
+                    <span class="vessel-terminal-label vessel-terminal-start">${fromTerminal}</span>
+                    <span class="vessel-terminal-label vessel-terminal-end">${toTerminal}</span>
+                </div>
+            </div>`;
     }
-    
-    // Rain/Drizzle (51-67, 80-82, 95-99)
-    if ((weatherCode >= 51 && weatherCode <= 67) ||
-        (weatherCode >= 80 && weatherCode <= 82) ||
-        (weatherCode >= 95 && weatherCode <= 99)) {
-        return 'rain';
+
+    function createSailing(s, vesselData, deptTerminalId) {
+        if (!s || !s.departure_time) return '';
+
+        // Check if this is a past-scheduled sailing that's delayed
+        let delayed = false;
+        if (s.scheduled_past) {
+            // Check vessel data — is the vessel still at THIS departing terminal?
+            // Must match both vessel name AND the correct dock location.
+            if (vesselData && vesselData.vessels) {
+                const v = vesselData.vessels.find(v =>
+                    v.vessel_name === s.vessel &&
+                    v.at_dock &&
+                    (v.departing_terminal_id === deptTerminalId || v.arriving_terminal_id === deptTerminalId)
+                );
+                if (v) {
+                    delayed = true; // still at THIS dock past scheduled time
+                } else {
+                    return ''; // already departed or at a different terminal, don't show
+                }
+            } else {
+                delayed = true; // assume delayed if we can't check
+            }
+        }
+
+        const delayClass = delayed ? ' sailing-delayed' : '';
+        const lastClass = s.last_sailing ? ' sailing-last' : '';
+        const delayBadge = delayed ? '<span class="delay-badge late">DELAYED</span>' : '';
+        const lastBadge = s.last_sailing ? '<span class="last-sailing-badge">🌙 Last sailing</span>' : '';
+
+        return `<div class="sailing${delayClass}${lastClass}">
+            <div class="sailing-time">${s.departure_time} ${delayBadge} ${lastBadge}</div>
+            <div class="sailing-vessel">${s.vessel || 'Ferry'}</div>
+        </div>`;
     }
-    
-    // Windy (wind speed > 20 mph / ~17 knots)
-    if (windSpeed > 20) {
-        return 'windy';
+
+    // Get single boat info for south route (direction, progress, etc.)
+    function getSingleBoatTrackerInfo(vesselData) {
+        if (!vesselData || !vesselData.vessels) return null;
+        const T = FerryApp.terminals;
+        const vessel = vesselData.vessels.find(v =>
+            v.departing_terminal_id === T.tahlequah || v.arriving_terminal_id === T.tahlequah ||
+            v.departing_terminal_id === T.point_defiance || v.arriving_terminal_id === T.point_defiance
+        );
+        if (!vessel) return null;
+
+        const goingToPtDef = vessel.arriving_terminal_id === T.point_defiance;
+        let headingRight = goingToPtDef;
+
+        if (vessel.at_dock) {
+            headingRight = vessel.departing_terminal_id === T.tahlequah;
+        }
+
+        return { vessel, headingRight };
     }
-    
-    // Overcast (3)
-    if (weatherCode === 3) {
+
+    // Single tracker for a 1-boat route. Tahlequah always left, Pt. Defiance always right.
+    // The vessel state comes from whichever direction it's currently on.
+    function createSingleBoatTracker(vesselData) {
+        if (!vesselData || !vesselData.vessels) return '';
+
+        const T = FerryApp.terminals;
+        const vessel = vesselData.vessels.find(v =>
+            v.departing_terminal_id === T.tahlequah || v.arriving_terminal_id === T.tahlequah ||
+            v.departing_terminal_id === T.point_defiance || v.arriving_terminal_id === T.point_defiance
+        );
+        if (!vessel) return '';
+
+        let progress = 0;
+        let state = 'docked';
+        let headingRight = false; // heading toward Pt. Defiance (right side)
+
+        // Determine direction: is the vessel heading toward Pt. Defiance or Tahlequah?
+        const goingToPtDef = vessel.arriving_terminal_id === T.point_defiance;
+        headingRight = goingToPtDef;
+
+        if (vessel.at_dock) {
+            state = 'docked';
+            // If docked and departing from Tahlequah → position at left
+            // If docked and departing from Pt Defiance → position at right
+            if (vessel.departing_terminal_id === T.tahlequah) {
+                progress = 0;
+                headingRight = true; // about to head right
+            } else {
+                progress = 1;
+                headingRight = false; // about to head left
+            }
+        } else {
+            // En route — calculate progress
+            if (vessel.left_dock && vessel.eta) {
+                const left = new Date(vessel.left_dock).getTime();
+                const eta = new Date(vessel.eta).getTime();
+                const total = eta - left;
+                if (total > 0) progress = Math.max(0, Math.min(1, (Date.now() - left) / total));
+            } else {
+                progress = 0.5;
+            }
+
+            // If heading to Tahlequah (left), invert progress so 0=left, 1=right
+            if (!goingToPtDef) progress = 1 - progress;
+
+            let minsToArrival = null;
+            if (vessel.eta) minsToArrival = (new Date(vessel.eta).getTime() - Date.now()) / 60000;
+            state = (minsToArrival !== null && minsToArrival <= 10) ? 'arriving' : 'en_route';
+        }
+
+        const pct = 12 + progress * 76;
+        const flip = headingRight ? ' style="transform: scaleX(-1)"' : '';
+
+        let label = '';
+        let badge = '';
+        const dir = headingRight ? '→ Pt. Defiance' : '→ Tahlequah';
+
+        if (state === 'docked') {
+            const where = progress < 0.5 ? 'Tahlequah' : 'Pt. Defiance';
+            label = `<span class="vessel-name">${vessel.vessel_name}</span> at dock · ${where}`;
+        } else {
+            label = `<span class="vessel-name">${vessel.vessel_name}</span> ${dir}`;
+            if (vessel.eta) {
+                const mins = Math.max(0, Math.round((new Date(vessel.eta).getTime() - Date.now()) / 60000));
+                label += ` · ~${mins} min`;
+            }
+        }
+
+        if (vessel.delay_minutes && vessel.delay_minutes > 0) {
+            badge = ` <span class="delay-badge late">~${vessel.delay_minutes}m late</span>`;
+        }
+
+        return `
+            <div class="vessel-tracker state-${state}">
+                <div class="vessel-tracker-label">${label}${badge}</div>
+                <div class="vessel-track-bar">
+                    <div class="vessel-track-line"></div>
+                    <div class="vessel-dot-start"></div>
+                    <div class="vessel-dot-end"></div>
+                    <div class="vessel-icon" style="left: ${pct}%"><img src="/static/ferrybuddy.png" alt=""${flip}></div>
+                    <span class="vessel-terminal-label vessel-terminal-start">Tahlequah</span>
+                    <span class="vessel-terminal-label vessel-terminal-end">Pt. Defiance</span>
+                </div>
+            </div>`;
+    }
+
+    // Map display names to terminal IDs for delay checking
+    const TERMINAL_NAME_TO_ID = {
+        'Vashon': 22, 'Fauntleroy': 9, 'Tahlequah': 21, 'Pt. Defiance': 16,
+    };
+
+    function createPlaceholderTracker(fromTerminal, toTerminal) {
+        return `
+            <div class="vessel-tracker state-inactive">
+                <div class="vessel-tracker-label" style="opacity:0">&nbsp;</div>
+                <div class="vessel-track-bar">
+                    <div class="vessel-track-line"></div>
+                    <div class="vessel-dot-start"></div>
+                    <div class="vessel-dot-end"></div>
+                    <span class="vessel-terminal-label vessel-terminal-start">${fromTerminal}</span>
+                    <span class="vessel-terminal-label vessel-terminal-end">${toTerminal}</span>
+                </div>
+            </div>`;
+    }
+
+    function createDirection(title, sailings, vs, fromTerminal, toTerminal, opts) {
+        const vd = FerryApp.lastVesselData;
+        const deptId = TERMINAL_NAME_TO_ID[fromTerminal];
+        const rendered = sailings && sailings.length > 0
+            ? sailings.map(s => createSailing(s, vd, deptId)).filter(Boolean)
+            : [];
+        const html = rendered.length > 0
+            ? rendered.slice(0, 3).join('')
+            : '<div class="no-sailings">No upcoming sailings</div>';
+        const tracker = opts && opts.customTracker != null
+            ? opts.customTracker
+            : opts && opts.placeholder
+                ? createPlaceholderTracker(fromTerminal, toTerminal)
+                : createVesselTracker(vs, fromTerminal, toTerminal);
+        return `
+            <div class="direction-section">
+                <div class="direction-header">${title}</div>
+                ${tracker}
+                <div class="sailings">${html}</div>
+            </div>`;
+    }
+
+    function createBoatStatus(ba, fallbackVesselName) {
+        // For North route: use boat analysis data
+        if (ba && ba.boat_count) {
+            const cls = (ba.boat_count === 1 || ba.boat_count === 3) ? 'service-good' : 'service-degraded';
+            const vessels = ba.unique_vessels || [];
+            let text = `<span class="boat-count">${ba.boat_count}-Boat Service</span>`;
+            if (vessels.length) text += ` &middot; ${vessels.join(', ')}`;
+            if (ba.avg_interval_minutes) text += ` &middot; ~${ba.avg_interval_minutes}m intervals`;
+            return `<div class="boat-status ${cls}">${text}</div>`;
+        }
+        // For South route: show vessel name, or out of service
+        if (fallbackVesselName) {
+            return `<div class="boat-status service-good"><span class="boat-count">1-Boat Service</span> &middot; ${fallbackVesselName}</div>`;
+        }
+        // No vessel found — possibly out of service
+        return `<div class="boat-status service-degraded"><span class="boat-count">Out of Service</span></div>`;
+    }
+
+    function renderAlerts(alerts) {
+        const el = document.getElementById('alertsBanner');
+        if (!alerts || !alerts.length) { el.classList.remove('visible'); return; }
+        el.innerHTML = alerts.map(a => `<div class="alert-item"><span class="alert-title">${a.title || 'Alert'}</span></div>`).join('');
+        el.classList.add('visible');
+    }
+
+    function renderBulletins(bulletins, tids) {
+        if (!bulletins) return '';
+        let html = '';
+        for (const tid of tids) {
+            for (const b of (bulletins[String(tid)] || [])) {
+                if (b.title) html += `<div class="terminal-bulletin">${b.title}</div>`;
+            }
+        }
+        return html;
+    }
+
+    function renderFerryData(data) {
+        const updateEl = document.getElementById('updateTime');
+        const content = document.getElementById('content');
+
+        // Staleness
+        const age = data.fetched_at ? (Date.now() - new Date(data.fetched_at).getTime()) / 1000 : 0;
+        updateEl.textContent = data.stale || age > 90
+            ? `Updated ${relativeTime(data.fetched_at)}`
+            : `Updated ${formatTime(data.timestamp)}`;
+        updateEl.classList.toggle('stale-warn', age > 90 && age <= 300);
+        updateEl.classList.toggle('stale-error', age > 300);
+
+        renderAlerts(data.alerts);
+
+        const vd = FerryApp.lastVesselData;
+        const T = FerryApp.terminals;
+        const vsVF = FerryApp.Vessel.getStateForDirection(vd, T.vashon, T.fauntleroy);
+        const vsFV = FerryApp.Vessel.getStateForDirection(vd, T.fauntleroy, T.vashon);
+        const vsTP = FerryApp.Vessel.getStateForDirection(vd, T.tahlequah, T.point_defiance);
+        const vsPT = FerryApp.Vessel.getStateForDirection(vd, T.point_defiance, T.tahlequah);
+
+        const r = data.routes;
+
+        // Get south route vessel name from first available sailing
+        const southVessel = (r.tahlequah_point_defiance.from_tahlequah.sailings?.[0]?.vessel)
+            || (r.tahlequah_point_defiance.from_point_defiance.sailings?.[0]?.vessel)
+            || null;
+
+        content.innerHTML = `
+            <div class="routes-container">
+                <div class="route-card">
+                    <div class="route-title">North Terminal</div>
+                    ${createBoatStatus(r.vashon_fauntleroy.boat_analysis)}
+                    ${createDirection('Vashon to Fauntleroy', r.vashon_fauntleroy.from_vashon.sailings, vsVF, 'Vashon', 'Fauntleroy')}
+                    ${createDirection('Fauntleroy to Vashon', r.vashon_fauntleroy.from_fauntleroy.sailings, vsFV, 'Fauntleroy', 'Vashon')}
+                    ${renderBulletins(data.bulletins, [T.fauntleroy, T.vashon])}
+                </div>
+                <div class="route-card">
+                    <div class="route-title">South Terminal</div>
+                    ${createBoatStatus(null, southVessel)}
+                    ${(() => {
+                        const tracker = getSingleBoatTrackerInfo(vd);
+                        const trackerHtml = createSingleBoatTracker(vd);
+                        const placeholderHtml = createPlaceholderTracker('Tahlequah', 'Pt. Defiance');
+                        // If heading to Pt Defiance, active tracker goes on first direction
+                        const goingToPtDef = tracker && tracker.headingRight;
+                        const topTracker = goingToPtDef ? trackerHtml : placeholderHtml;
+                        const bottomTracker = goingToPtDef ? placeholderHtml : trackerHtml;
+                        return createDirection('Tahlequah to Pt. Defiance', r.tahlequah_point_defiance.from_tahlequah.sailings, null, 'Tahlequah', 'Pt. Defiance', {customTracker: topTracker})
+                             + createDirection('Pt. Defiance to Tahlequah', r.tahlequah_point_defiance.from_point_defiance.sailings, null, 'Pt. Defiance', 'Tahlequah', {customTracker: bottomTracker});
+                    })()}
+                    ${renderBulletins(data.bulletins, [T.tahlequah, T.point_defiance])}
+                </div>
+            </div>`;
+        content.classList.remove('loading');
+    }
+
+    function showError(msg) {
+        if (FerryApp.lastFerryData) { renderFerryData(FerryApp.lastFerryData); return; }
+        document.getElementById('content').innerHTML = `<div class="error"><p>${msg}</p><p style="margin-top:8px;font-size:0.9em">Retrying...</p></div>`;
+    }
+
+    // ===== FETCHING =====
+
+    async function fetchFerryData() {
+        if (!navigator.onLine) { if (FerryApp.lastFerryData) renderFerryData(FerryApp.lastFerryData); return; }
+        try {
+            const resp = await fetch('/api/ferries');
+            if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+            const data = await resp.json();
+            FerryApp.lastFerryData = data;
+            FerryApp.Cache.store('ferries', data);
+            FerryApp.retryCount = 0;
+            renderFerryData(data);
+        } catch (e) {
+            console.error('Ferry fetch error:', e);
+            if (FerryApp.lastFerryData) renderFerryData(FerryApp.lastFerryData); else showError(e.message);
+            if (FerryApp.retryCount < FerryApp.maxRetry) {
+                setTimeout(fetchFerryData, FerryApp.retryDelays[FerryApp.retryCount] || 60000);
+                FerryApp.retryCount++;
+            }
+        }
+    }
+
+    async function fetchVesselData() {
+        if (!navigator.onLine) return;
+        try {
+            const resp = await fetch('/api/vessels');
+            if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+            FerryApp.lastVesselData = await resp.json();
+            FerryApp.Cache.store('vessels', FerryApp.lastVesselData);
+            if (FerryApp.lastFerryData) renderFerryData(FerryApp.lastFerryData);
+        } catch (e) { console.error('Vessel fetch error:', e); }
+    }
+
+    // ===== WEATHER =====
+
+    async function fetchWeatherData() {
+        try {
+            const resp = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=47.4432&longitude=-122.4598&current=temperature_2m,weather_code,wind_speed_10m,is_day&temperature_unit=fahrenheit&wind_speed_unit=mph&timezone=America/Los_Angeles`);
+            if (!resp.ok) throw new Error(`Weather ${resp.status}`);
+            const data = await resp.json();
+            const c = data.current;
+            document.getElementById('temperature').textContent = Math.round(c.temperature_2m);
+            document.getElementById('conditions').textContent = getWeatherDesc(c.weather_code);
+            // Update the conditions emoji dynamically
+            const condEmoji = document.querySelector('#weatherBar .cond-emoji');
+            if (condEmoji) condEmoji.textContent = getWeatherEmoji(c.weather_code, c.is_day);
+            document.getElementById('windSpeed').textContent = Math.round(c.wind_speed_10m * 0.868976);
+
+            // Determine canvas scene
+            const scene = determineScene(c.weather_code, c.is_day, c.wind_speed_10m);
+            if (FerryApp.setWeatherScene) FerryApp.setWeatherScene(scene);
+        } catch (e) {
+            console.error('Weather error:', e);
+        }
+    }
+
+    function determineScene(code, isDay, windSpeed) {
+        const isNight = isDay !== 1;
+        const isRain = (code >= 51 && code <= 67) || (code >= 80 && code <= 82) || code >= 95;
+        const isSnow = (code >= 71 && code <= 77) || code === 85 || code === 86;
+        const isFog = code === 45 || code === 48;
+        const isCloudy = code === 2 || code === 3;
+        const isClear = code === 0 || code === 1;
+        const isWindy = windSpeed > 20; // mph
+
+        // Night variants
+        if (isNight && isRain) return 'night_rain';
+        if (isNight && isCloudy) return 'night_cloudy';
+        if (isNight) return 'night_clear';
+
+        // Day variants — check specific conditions first
+        if (isFog) return 'fog';
+        if (isSnow) return 'snow';
+        if (isRain) return 'rain';
+        if (isWindy) return 'windy';
+        if (isClear) return 'clear';
+        if (isCloudy) return 'overcast';
+
         return 'overcast';
     }
 
-    // Partly Cloudy (2)
-    if (weatherCode === 2) {
-        return 'cloudy';
+    function getWeatherDesc(code) {
+        const m = { 0:'Clear', 1:'Mostly Clear', 2:'Partly Cloudy', 3:'Overcast', 45:'Foggy', 48:'Foggy', 51:'Light Drizzle', 53:'Drizzle', 55:'Heavy Drizzle', 61:'Light Rain', 63:'Rain', 65:'Heavy Rain', 71:'Light Snow', 73:'Snow', 75:'Heavy Snow', 80:'Light Showers', 81:'Showers', 82:'Heavy Showers', 95:'Thunderstorm' };
+        return m[code] || 'Unknown';
     }
-    
-    // Clear (0, 1)
-    return 'clear';
-}
 
-function updateHeaderForWeather(weatherData) {
-    const headerType = determineHeaderType(weatherData);
-    const headerData = headerSVGs[headerType];
-    
-    if (!headerData) {
-        console.error('No header data for type:', headerType);
-        return;
+    function getWeatherEmoji(code, isDay) {
+        if (code === 0 || code === 1) return isDay ? '☀️' : '🌙';
+        if (code === 2) return isDay ? '⛅' : '☁️';
+        if (code === 3) return '☁️';
+        if (code === 45 || code === 48) return '🌫️';
+        if (code >= 51 && code <= 55) return '🌧️';
+        if (code >= 61 && code <= 67) return '🌧️';
+        if (code >= 71 && code <= 77) return '❄️';
+        if (code >= 80 && code <= 82) return '🌦️';
+        if (code >= 85 && code <= 86) return '🌨️';
+        if (code >= 95) return '⛈️';
+        return '🌤️';
     }
-    
-    // Update background color with smooth transition
-    document.body.style.background = headerData.background;
-    document.body.style.backgroundImage = 
-        `url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.3'/%3E%3C/svg%3E")`;
-    
-    // Add/remove night-mode class for text color adjustments
-    if (headerType === 'night') {
-        document.body.classList.add('night-mode');
-    } else {
-        document.body.classList.remove('night-mode');
-    }
-    
-    // Inject/update animation CSS for this header type
-    let headerStyle = document.getElementById('header-animations');
-    if (!headerStyle) {
-        headerStyle = document.createElement('style');
-        headerStyle.id = 'header-animations';
-        document.head.appendChild(headerStyle);
-    }
-    headerStyle.textContent = headerData.css || '';
 
-    // Update header SVG - use innerHTML to preserve class and attributes
-    const ferryIllustration = document.querySelector('.ferry-illustration');
-    if (ferryIllustration && headerData.svg) {
-        // Extract just the inner content of the SVG (everything between <svg> and </svg>)
-        const svgMatch = headerData.svg.match(/<svg[^>]*>(.*?)<\/svg>/s);
-        if (svgMatch && svgMatch[1]) {
-            ferryIllustration.innerHTML = svgMatch[1];
+    // ===== 8-BIT CANVAS WEATHER SCENE SYSTEM =====
+    (function() {
+        const C = document.getElementById('scene-canvas');
+        const X = C.getContext('2d');
+        const W = 400, H = 200;
+        const WT = 105; // waterline y
+        C.width = W;
+        C.height = H;
+        let frame = 0;
+        let currentScene = 'rain'; // default until weather loads
+
+        // ── Helpers ──
+        function px(x, y, w, h, c) {
+            X.fillStyle = c;
+            X.fillRect(Math.floor(x), Math.floor(y), w, h || 1);
         }
-    }
+        function pxa(x, y, w, h, c, a) {
+            X.globalAlpha = a;
+            X.fillStyle = c;
+            X.fillRect(Math.floor(x), Math.floor(y), w, h || 1);
+            X.globalAlpha = 1;
+        }
+        function circle(cx, cy, r, c, a) {
+            if (a !== undefined) X.globalAlpha = a;
+            X.fillStyle = c;
+            X.beginPath();
+            X.arc(Math.floor(cx), Math.floor(cy), r, 0, Math.PI * 2);
+            X.fill();
+            if (a !== undefined) X.globalAlpha = 1;
+        }
 
-    console.log(`Header updated to: ${headerType}`);
-}
+        // ═══════════════════════════════════════
+        // SKY PALETTES
+        // ═══════════════════════════════════════
+        const SKY = {
+            clear: [
+                [0, 20, '#4A8AB0'], [20, 40, '#5A96BA'], [40, 60, '#6AA2C4'],
+                [60, 80, '#7AAECC'], [80, WT, '#8ABCD6'],
+            ],
+            overcast: [
+                [0, 30, '#8A9298'], [30, 55, '#8E969C'], [55, 75, '#929AA0'],
+                [75, 90, '#969EA4'], [90, WT, '#9AA2A8'],
+            ],
+            windy: [
+                [0, 20, '#6A8AA0'], [20, 40, '#7494A8'], [40, 60, '#7E9EB0'],
+                [60, 80, '#88A8B8'], [80, WT, '#90B0C0'],
+            ],
+            snow: [
+                [0, 20, '#8A949C'], [20, 40, '#909AA2'], [40, 60, '#96A0A8'],
+                [60, 80, '#9CA6AE'], [80, WT, '#A2ACB4'],
+            ],
+            fog: [
+                [0, 30, '#A0A8AE'], [30, 55, '#A4ACB2'], [55, 75, '#A8B0B6'],
+                [75, 90, '#ACB4BA'], [90, WT, '#B0B8BE'],
+            ],
+            rain: [
+                [0, 30, '#7A8E96'], [30, 55, '#808F98'], [55, 75, '#8A9AA2'],
+                [75, 90, '#90A0A8'], [90, WT, '#96A6AE'],
+            ],
+            night_clear: [
+                [0, 20, '#0A0E1A'], [20, 40, '#0E1424'], [40, 60, '#12192E'],
+                [60, 80, '#161E38'], [80, WT, '#1A2342'],
+            ],
+            night_cloudy: [
+                [0, 20, '#14182A'], [20, 40, '#1A1E32'], [40, 60, '#20243A'],
+                [60, 80, '#262A42'], [80, WT, '#2C3048'],
+            ],
+            night_rain: [
+                [0, 20, '#0C1018'], [20, 40, '#101420'], [40, 60, '#141828'],
+                [60, 80, '#181C30'], [80, WT, '#1C2038'],
+            ],
+        };
 
-        // ===== END DYNAMIC WEATHER HEADER SYSTEM =====
+        // ═══════════════════════════════════════
+        // WATER PALETTES
+        // ═══════════════════════════════════════
+        const WATER = {
+            clear: [
+                [WT, WT+10, '#4A90B0'], [WT+10, WT+25, '#4488A8'],
+                [WT+25, WT+45, '#3E80A0'], [WT+45, WT+70, '#387898'], [WT+70, H, '#327090'],
+            ],
+            overcast: [
+                [WT, WT+10, '#4E7888'], [WT+10, WT+25, '#487080'],
+                [WT+25, WT+45, '#426878'], [WT+45, WT+70, '#3C6070'], [WT+70, H, '#365868'],
+            ],
+            windy: [
+                [WT, WT+10, '#3A6E88'], [WT+10, WT+25, '#346680'],
+                [WT+25, WT+45, '#2E5E78'], [WT+45, WT+70, '#285670'], [WT+70, H, '#224E68'],
+            ],
+            snow: [
+                [WT, WT+10, '#4A6878'], [WT+10, WT+25, '#446070'],
+                [WT+25, WT+45, '#3E5868'], [WT+45, WT+70, '#385060'], [WT+70, H, '#324858'],
+            ],
+            fog: [
+                [WT, WT+10, '#6A8090'], [WT+10, WT+25, '#647888'],
+                [WT+25, WT+45, '#5E7080'], [WT+45, WT+70, '#586878'], [WT+70, H, '#526070'],
+            ],
+            rain: [
+                [WT, WT+10, '#4A7282'], [WT+10, WT+25, '#446A7A'],
+                [WT+25, WT+45, '#3E6272'], [WT+45, WT+70, '#385A6A'], [WT+70, H, '#325262'],
+            ],
+            night_clear: [
+                [WT, WT+10, '#0E1E30'], [WT+10, WT+25, '#0C1A2A'],
+                [WT+25, WT+45, '#0A1624'], [WT+45, WT+70, '#08121E'], [WT+70, H, '#060E18'],
+            ],
+            night_cloudy: [
+                [WT, WT+10, '#141E2E'], [WT+10, WT+25, '#121A28'],
+                [WT+25, WT+45, '#101622'], [WT+45, WT+70, '#0E121C'], [WT+70, H, '#0C0E16'],
+            ],
+            night_rain: [
+                [WT, WT+10, '#101828'], [WT+10, WT+25, '#0E1422'],
+                [WT+25, WT+45, '#0C101C'], [WT+45, WT+70, '#0A0C16'], [WT+70, H, '#080A10'],
+            ],
+        };
 
+        // ═══════════════════════════════════════
+        // ISLAND PALETTES (by scene)
+        // ═══════════════════════════════════════
+        const ISLAND_COLORS = {
+            clear: { tree: '#2E6E3A', base: '#3E7E4A', dark: '#226230' },
+            overcast: { tree: '#3A5844', base: '#4A6854', dark: '#2E4C38' },
+            windy: { tree: '#2E5A3E', base: '#3E6A4E', dark: '#224E32' },
+            snow: { tree: '#3A5248', base: '#4A6258', dark: '#2E4640' },
+            fog: { tree: '#5A6A60', base: '#6A7A70', dark: '#4E5E54' },
+            rain: { tree: '#3A5A42', base: '#4A6A52', dark: '#2E4E38' },
+            night_clear: { tree: '#0E2218', base: '#142A1E', dark: '#0A1A12' },
+            night_cloudy: { tree: '#121E18', base: '#18261E', dark: '#0E1A14' },
+            night_rain: { tree: '#0C1810', base: '#102016', dark: '#081410' },
+        };
 
-        function formatTime(timestamp) {
-            const date = new Date(timestamp);
-            return date.toLocaleTimeString('en-US', { 
-                hour: 'numeric', 
-                minute: '2-digit',
-                hour12: true 
+        // ═══════════════════════════════════════
+        // SHARED: ISLANDS
+        // ═══════════════════════════════════════
+        const islandDefs = [
+            { baseY: 104, peaks: [{ x: 20, h: 14, wL: 14, wR: 12 }, { x: 35, h: 10, wL: 10, wR: 16 }] },
+            { baseY: 103, peaks: [{ x: 75, h: 18, wL: 18, wR: 14 }, { x: 95, h: 14, wL: 12, wR: 20 }, { x: 115, h: 10, wL: 10, wR: 12 }] },
+            { baseY: 105, peaks: [{ x: 180, h: 8, wL: 10, wR: 14 }] },
+            { baseY: 103, peaks: [{ x: 275, h: 16, wL: 16, wR: 12 }, { x: 295, h: 12, wL: 10, wR: 18 }] },
+            { baseY: 104, peaks: [{ x: 340, h: 20, wL: 14, wR: 16 }, { x: 365, h: 14, wL: 12, wR: 20 }, { x: 390, h: 10, wL: 10, wR: 12 }] },
+        ];
+
+        function drawIslands(colors) {
+            const c = colors || ISLAND_COLORS[currentScene] || ISLAND_COLORS.rain;
+            islandDefs.forEach(isl => {
+                const hmap = new Float32Array(W).fill(isl.baseY);
+                isl.peaks.forEach(pk => {
+                    for (let x = pk.x - pk.wL; x < pk.x; x++) {
+                        if (x < 0 || x >= W) continue;
+                        const t = (x - (pk.x - pk.wL)) / pk.wL;
+                        let h = isl.baseY - pk.h * t;
+                        const jag = ((Math.floor(x / 3) * 7 + pk.x * 3) % 5) - 2;
+                        hmap[x] = Math.min(hmap[x], Math.floor(h + jag));
+                    }
+                    for (let x = pk.x; x <= pk.x + pk.wR; x++) {
+                        if (x < 0 || x >= W) continue;
+                        const t = (x - pk.x) / pk.wR;
+                        let h = (isl.baseY - pk.h) + pk.h * t;
+                        const jag = ((Math.floor(x / 3) * 11 + pk.x * 7) % 5) - 2;
+                        hmap[x] = Math.min(hmap[x], Math.floor(h + jag));
+                    }
+                });
+                for (let x = 0; x < W; x++) {
+                    const top = Math.floor(hmap[x]);
+                    if (top >= isl.baseY) continue;
+                    const h = isl.baseY - top;
+                    for (let y = top; y < isl.baseY; y++) {
+                        const th = ((x * 7 + y * 13) % 11);
+                        px(x, y, 1, 1, th < 3 ? c.dark : th < 7 ? c.tree : c.base);
+                    }
+                    if (x % 4 === 0 && h > 4) {
+                        const spike = 2 + ((x * 3) % 3);
+                        px(x, top - spike, 1, spike, c.dark);
+                        if (x + 1 < W) px(x + 1, top - spike + 1, 1, spike - 1, c.tree);
+                    }
+                }
             });
         }
 
-        function createSailingElement(sailing) {
-            if (!sailing || !sailing.departure_time) {
-                return '';
+        // ═══════════════════════════════════════
+        // SHARED: SKY + WATER drawing
+        // ═══════════════════════════════════════
+        function drawBandedSky(bands) {
+            (bands || SKY[currentScene] || SKY.rain).forEach(([y0, y1, c]) => px(0, y0, W, y1 - y0, c));
+        }
+        function drawBandedWater(bands, shimmerColor, shimmerAlpha) {
+            (bands || WATER[currentScene] || WATER.rain).forEach(([y0, y1, c]) => px(0, y0, W, y1 - y0, c));
+            const sc = shimmerColor || '#6A9AAA';
+            const sa = shimmerAlpha || 0.08;
+            for (let y = WT; y < WT + 30; y += 3) {
+                const phase = frame * 0.04 + y * 0.5;
+                const x1 = Math.floor((Math.sin(phase) * 0.5 + 0.5) * W);
+                const len = 4 + Math.floor(Math.sin(phase * 0.7) * 2);
+                const fade = Math.max(0, sa - (y - WT) * 0.002);
+                if (fade > 0.01) pxa(x1 % W, y, Math.abs(len), 1, sc, fade);
             }
-
-            return `
-                <div class="sailing">
-                    <div class="sailing-time">${sailing.departure_time}</div>
-                    <div class="sailing-vessel">${sailing.vessel || 'Ferry'}</div>
-                </div>
-            `;
         }
 
-        function createDirectionSection(title, sailings) {
-            const sailingsHtml = sailings && sailings.length > 0
-                ? sailings.map(createSailingElement).join('')
-                : '<div class="no-sailings">No upcoming sailings</div>';
-
-            return `
-                <div class="direction-section">
-                    <div class="direction-header">${title}</div>
-                    <div class="sailings">
-                        ${sailingsHtml}
-                    </div>
-                </div>
-            `;
+        // ═══════════════════════════════════════
+        // SHARED: SMOKE
+        // ═══════════════════════════════════════
+        const smokePuffs = [];
+        function spawnSmoke(lightColor, darkColor) {
+            const bob = Math.sin(frame * 0.06) * 2;
+            smokePuffs.push({
+                x: W / 2, y: 72 + bob, size: 2, alpha: 0.8,
+                vx: 0.1 + Math.random() * 0.15, vy: -0.4 - Math.random() * 0.3,
+                life: 0, maxLife: 30 + Math.random() * 20,
+                lc: lightColor || '#C0C8CC', dc: darkColor || '#A0A8AC',
+            });
         }
-
-        function createBoatStatusHtml(boatAnalysis) {
-            if (!boatAnalysis || !boatAnalysis.boat_count) {
-                return '';
+        function drawSmoke(lightColor, darkColor) {
+            if (frame % 4 === 0) spawnSmoke(lightColor, darkColor);
+            for (let i = smokePuffs.length - 1; i >= 0; i--) {
+                const p = smokePuffs[i];
+                p.x += p.vx; p.y += p.vy; p.size += 0.08; p.life++;
+                const t = p.life / p.maxLife;
+                p.alpha = 0.7 * (1 - t);
+                if (p.life > p.maxLife) { smokePuffs.splice(i, 1); continue; }
+                const s = Math.floor(p.size);
+                pxa(Math.floor(p.x) - s, Math.floor(p.y) - s, s * 2, s * 2, t < 0.3 ? p.lc : p.dc, p.alpha);
             }
-
-            const count = boatAnalysis.boat_count;
-            const vessels = boatAnalysis.unique_vessels || [];
-            const interval = boatAnalysis.avg_interval_minutes;
-            const statusClass = count === 2 ? 'two-boat' : 'three-boat';
-
-            // Flag SVG icons
-            const redFlag = `<svg class="flag-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M4 21V4" stroke="#FF6B6B" stroke-width="2" stroke-linecap="round"/>
-                <path d="M4 4C4 4 5 3 8 3C11 3 13 5 16 5C19 5 20 4 20 4V14C20 14 19 15 16 15C13 15 11 13 8 13C5 13 4 14 4 14" fill="#FF6B6B"/>
-            </svg>`;
-
-            const greenFlag = `<svg class="flag-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M4 21V4" stroke="#4CAF50" stroke-width="2" stroke-linecap="round"/>
-                <path d="M4 4C4 4 5 3 8 3C11 3 13 5 16 5C19 5 20 4 20 4V14C20 14 19 15 16 15C13 15 11 13 8 13C5 13 4 14 4 14" fill="#4CAF50"/>
-            </svg>`;
-
-            const flagIcon = count === 2 ? redFlag : greenFlag;
-
-            let statusText = `${flagIcon}<span class="boat-count">${count}-Boat Service</span>`;
-            if (vessels.length > 0) {
-                statusText += ` • ${vessels.join(', ')}`;
-            }
-            if (interval) {
-                statusText += ` • ~${interval} min intervals`;
-            }
-
-            return `<div class="boat-status ${statusClass}">${statusText}</div>`;
         }
 
-        function renderFerryData(data) {
-            const updateTime = document.getElementById('updateTime');
-            const content = document.getElementById('content');
-
-            // Update timestamp
-            updateTime.textContent = `Updated: ${formatTime(data.timestamp)}`;
-
-            // Build the display
-            const routes = data.routes;
-            
-            const html = `
-                <div class="routes-container">
-                    <div class="route-section">
-                        <div class="route-title">The North End</div>
-                        ${createDirectionSection(
-                            'From Vashon to Fauntleroy',
-                            routes.vashon_fauntleroy.from_vashon.sailings
-                        )}
-                        ${createDirectionSection(
-                            'From Fauntleroy to Vashon',
-                            routes.vashon_fauntleroy.from_fauntleroy.sailings
-                        )}
-                    </div>
-
-                    <div class="route-section">
-                        <div class="route-title">The South End</div>
-                        ${createDirectionSection(
-                            'From Tahlequah to Pt. Defiance',
-                            routes.tahlequah_point_defiance.from_tahlequah.sailings
-                        )}
-                        ${createDirectionSection(
-                            'From Pt. Defiance to Tahlequah',
-                            routes.tahlequah_point_defiance.from_point_defiance.sailings
-                        )}
-                    </div>
-                </div>
-                ${createBoatStatusHtml(routes.vashon_fauntleroy.boat_analysis)}
-            `;
-
-            // Update content directly - no fade animation
-            content.innerHTML = html;
-            content.classList.remove('loading');
+        // ═══════════════════════════════════════
+        // SHARED: FERRY BOB
+        // ═══════════════════════════════════════
+        const mascot = document.getElementById('ferryMascot');
+        function bobFerry() {
+            if (mascot) mascot.style.top = (78 + Math.sin(frame * 0.06) * 2) + 'px';
         }
 
-        function showError(message) {
-            const content = document.getElementById('content');
-            content.innerHTML = `
-                <div class="error">
-                    <h2>⚠️ Error</h2>
-                    <p>${message}</p>
-                    <p style="margin-top: 10px; font-size: 0.9em;">Retrying in 60 seconds...</p>
-                </div>
-            `;
+        // ═══════════════════════════════════════
+        // RAIN PARTICLES (shared by rain + night_rain)
+        // ═══════════════════════════════════════
+        const drops = [];
+        for (let i = 0; i < 60; i++) {
+            drops.push({ x: Math.random() * W, y: Math.random() * 120 - 20, speed: 3.5 + Math.random() * 2, len: 3 + Math.floor(Math.random() * 3) });
         }
-
-        async function fetchFerryData() {
-            try {
-                const response = await fetch('/api/ferries');
-                
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
+        const splashes = [];
+        for (let i = 0; i < 50; i++) {
+            splashes.push({ x: Math.random() * W, y: 107 + Math.random() * (H - 115), timer: Math.random() * 40, maxTimer: 20 + Math.random() * 25 });
+        }
+        function drawRainParticles(dropColor, dropAlpha, splashColor) {
+            const dc = dropColor || '#9AB0BA';
+            const da = dropAlpha || 0.3;
+            const sc = splashColor || '#8AB8C8';
+            drops.forEach(d => {
+                pxa(Math.floor(d.x), Math.floor(d.y), 1, d.len, dc, da);
+                d.y += d.speed;
+                if (d.y > WT) { d.y = -d.len - Math.random() * 40; d.x = Math.random() * W; }
+            });
+            splashes.forEach(s => {
+                s.timer++;
+                if (s.timer > s.maxTimer) { s.timer = 0; s.x = Math.random() * W; s.y = 107 + Math.random() * (H - 115); s.maxTimer = 18 + Math.random() * 22; }
+                const t = s.timer / s.maxTimer;
+                if (t < 0.5) {
+                    const r = Math.floor(1 + t * 5);
+                    const a = 0.35 * (1 - t * 2);
+                    pxa(Math.floor(s.x) - r, Math.floor(s.y), r * 2, 1, sc, a);
+                    if (t > 0.15) { const r2 = Math.floor(r * 0.5); pxa(Math.floor(s.x) - r2, Math.floor(s.y) + 1, r2 * 2, 1, sc, a * 0.5); }
                 }
-                
-                const data = await response.json();
-                renderFerryData(data);
-            } catch (error) {
-                console.error('Error fetching ferry data:', error);
-                showError(error.message);
-            }
+            });
         }
 
-        async function fetchWeatherData() {
-            try {
-                // Vashon Island coordinates
-                const lat = 47.4432;
-                const lon = -122.4598;
-                
-                // Open-Meteo API - includes is_day, weather code, and wind for header selection
-                const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,weather_code,wind_speed_10m,is_day&temperature_unit=fahrenheit&wind_speed_unit=mph&timezone=America/Los_Angeles`;
-                
-                const response = await fetch(url);
-                
-                if (!response.ok) {
-                    throw new Error(`Weather API error! status: ${response.status}`);
+        // ═══════════════════════════════════════
+        // STARS (for night scenes)
+        // ═══════════════════════════════════════
+        const stars = [];
+        for (let i = 0; i < 80; i++) {
+            stars.push({
+                x: Math.floor(Math.random() * W),
+                y: Math.floor(Math.random() * (WT - 10)),
+                size: Math.random() > 0.85 ? 2 : 1,
+                brightness: 0.4 + Math.random() * 0.6,
+                twinkleSpeed: 0.02 + Math.random() * 0.04,
+                twinklePhase: Math.random() * Math.PI * 2,
+                color: Math.random() > 0.9 ? '#FFE8AA' : Math.random() > 0.8 ? '#AACCFF' : '#FFFFFF',
+            });
+        }
+        function drawStars(visibility) {
+            const v = visibility !== undefined ? visibility : 1;
+            stars.forEach(s => {
+                const twinkle = 0.5 + 0.5 * Math.sin(frame * s.twinkleSpeed + s.twinklePhase);
+                const a = s.brightness * twinkle * v;
+                if (a > 0.05) pxa(s.x, s.y, s.size, s.size, s.color, a);
+            });
+        }
+
+        // ═══════════════════════════════════════
+        // MOON
+        // ═══════════════════════════════════════
+        // Filled pixel circle helper — symmetric, no scanline artifacts
+        function fillCircle(cx, cy, r, color, alpha) {
+            // Use r² comparison for clean symmetry
+            const r2 = r * r;
+            for (let dy = -r; dy <= r; dy++) {
+                // Calculate width at this row using round (not floor) for symmetry
+                const rw = Math.round(Math.sqrt(r2 - dy * dy));
+                if (rw > 0) {
+                    if (alpha !== undefined) pxa(cx - rw, cy + dy, rw * 2 + 1, 1, color, alpha);
+                    else px(cx - rw, cy + dy, rw * 2 + 1, 1, color);
                 }
-                
-                const data = await response.json();
-                updateWeatherDisplay(data);
-                updateHeaderForWeather(data); // Update header based on weather
-            } catch (error) {
-                console.error('Error fetching weather data:', error);
-                // Show error in weather box
-                document.getElementById('temperature').textContent = '--';
-                document.getElementById('conditions').textContent = 'Error';
-                document.getElementById('windSpeed').textContent = '--';
             }
         }
 
-        function updateWeatherDisplay(data) {
-            const current = data.current;
-            
-            // Temperature (already in Fahrenheit)
-            const temp = Math.round(current.temperature_2m);
-            document.getElementById('temperature').textContent = temp;
-            
-            // Weather conditions from WMO code
-            const weatherCode = current.weather_code;
-            const conditions = getWeatherDescription(weatherCode);
-            document.getElementById('conditions').textContent = conditions;
-            
-            // Wind speed - convert from mph to knots (1 mph = 0.868976 knots)
-            const windMph = current.wind_speed_10m;
-            const windKnots = Math.round(windMph * 0.868976);
-            document.getElementById('windSpeed').textContent = windKnots;
+        function drawMoon(mx, my, phase) {
+            // phase: 0=full, 0.5=half, 1=new
+            const mr = 8;
+            // Glow rings
+            for (let ring = mr + 8; ring > mr; ring--) {
+                const ga = 0.02 + (mr + 8 - ring) * 0.008;
+                fillCircle(mx, my, ring, '#FFE8AA', ga);
+            }
+            // Moon disc — clean circle
+            fillCircle(mx, my, mr, '#FFF8E0');
+            // Inner highlight
+            fillCircle(mx, my, mr - 2, '#FFFFF0', 0.3);
+            // Crescent shadow (phase)
+            if (phase > 0.1) {
+                const shadowOffset = Math.floor(mr * 2 * phase);
+                const r2 = mr * mr;
+                for (let dy = -mr; dy <= mr; dy++) {
+                    const rw = Math.round(Math.sqrt(r2 - dy * dy));
+                    const shadowStart = mx - rw + shadowOffset;
+                    const shadowW = rw * 2 + 1 - shadowOffset;
+                    if (shadowW > 0) pxa(shadowStart, my + dy, shadowW, 1, SKY.night_clear[0][2], 0.85);
+                }
+            }
+            // Moon reflection on water
+            for (let y = WT; y < WT + 40; y++) {
+                const wobble = Math.sin(frame * 0.06 + y * 0.4) * (2 + (y - WT) * 0.1);
+                const w = Math.max(1, 6 - Math.floor((y - WT) * 0.1));
+                const a = Math.max(0, 0.15 - (y - WT) * 0.003);
+                pxa(mx + wobble - w / 2, y, w, 1, '#FFE8AA', a);
+            }
         }
 
-        function getWeatherDescription(code) {
-            // WMO Weather interpretation codes
-            const weatherCodes = {
-                0: 'Clear',
-                1: 'Mostly Clear',
-                2: 'Partly Cloudy',
-                3: 'Overcast',
-                45: 'Foggy',
-                48: 'Foggy',
-                51: 'Light Drizzle',
-                53: 'Drizzle',
-                55: 'Heavy Drizzle',
-                56: 'Freezing Drizzle',
-                57: 'Heavy Freezing Drizzle',
-                61: 'Light Rain',
-                63: 'Rain',
-                65: 'Heavy Rain',
-                66: 'Freezing Rain',
-                67: 'Heavy Freezing Rain',
-                71: 'Light Snow',
-                73: 'Snow',
-                75: 'Heavy Snow',
-                77: 'Snow Grains',
-                80: 'Light Showers',
-                81: 'Showers',
-                82: 'Heavy Showers',
-                85: 'Light Snow Showers',
-                86: 'Snow Showers',
-                95: 'Thunderstorm',
-                96: 'Thunderstorm w/ Hail',
-                99: 'Heavy Thunderstorm'
-            };
-            
-            return weatherCodes[code] || 'Unknown';
+        // ═══════════════════════════════════════
+        // CLOUDS (for night_cloudy / night_rain)
+        // ═══════════════════════════════════════
+        const cloudDefs = [
+            { x: 20, y: 20, shape: [[4,0,16,3],[2,2,22,4],[0,5,26,4],[3,8,20,2]], spd: 0.04 },
+            { x: 120, y: 35, shape: [[3,0,12,3],[1,2,18,4],[0,5,20,3]], spd: 0.03 },
+            { x: 230, y: 15, shape: [[5,0,18,3],[2,2,26,5],[0,6,30,4],[4,9,22,2]], spd: 0.05 },
+            { x: 340, y: 28, shape: [[3,0,14,3],[1,2,20,4],[0,5,22,3],[4,7,14,2]], spd: 0.035 },
+        ];
+        function drawClouds(baseColor, highlightColor, shadowAlpha) {
+            const bc = baseColor || '#3A4050';
+            const hc = highlightColor || '#4A5060';
+            const sa = shadowAlpha || 0.2;
+            cloudDefs.forEach(cl => {
+                const ox = ((cl.x + frame * cl.spd) % (W + 50)) - 25;
+                // Shadow
+                cl.shape.forEach(([dx, dy, w, h]) => pxa(ox + dx + 1, cl.y + dy + 1, w, h, '#000000', sa));
+                // Body
+                cl.shape.forEach(([dx, dy, w, h]) => px(ox + dx, cl.y + dy, w, h, bc));
+                // Highlight on top edges
+                cl.shape.slice(0, 2).forEach(([dx, dy, w]) => pxa(ox + dx + 1, cl.y + dy, w - 2, 1, hc, 0.5));
+            });
         }
 
-        // Initial fetch
-        fetchFerryData();
-        fetchWeatherData();
+        // ═══════════════════════════════════════
+        // NAVIGATION LIGHTS (for night scenes)
+        // ═══════════════════════════════════════
+        function drawNavLights() {
+            const bob = Math.sin(frame * 0.06) * 2;
+            // The ferry mascot is at CSS left:50%, top:78px, width:120px
+            // Canvas W/2 = 200. Ferry facing left, so port=left (red), starboard=right (green)
+            // Port (red) - left side of ferry - roughly canvas x=170
+            // Starboard (green) - right side - roughly canvas x=230
+            const fy = 94 + bob; // near waterline of the sprite
+            const blink = Math.sin(frame * 0.15);
+            // Port red
+            if (blink > -0.3) {
+                const a = 0.6 + blink * 0.3;
+                pxa(170, fy, 2, 2, '#FF4444', a);
+                pxa(168, fy - 1, 6, 4, '#FF4444', a * 0.15);
+            }
+            // Starboard green
+            if (blink < 0.3) {
+                const a = 0.6 - blink * 0.3;
+                pxa(228, fy, 2, 2, '#44FF66', a);
+                pxa(226, fy - 1, 6, 4, '#44FF66', a * 0.15);
+            }
+            // Masthead white
+            const mastBlink = Math.sin(frame * 0.08);
+            if (mastBlink > 0.5) {
+                pxa(200, 72 + bob, 2, 2, '#FFFFFF', 0.8);
+                pxa(198, 70 + bob, 6, 6, '#FFFFFF', 0.08);
+            }
+        }
 
-        // Refresh ferry data every 60 seconds
-        refreshInterval = setInterval(fetchFerryData, 60000);
-        
-        // Refresh weather data every 5 minutes (300000 ms)
-        setInterval(fetchWeatherData, 300000);
+        // ═══════════════════════════════════════
+        // SUN (for clear/sunny)
+        // ═══════════════════════════════════════
+        function drawSun(sx, sy) {
+            // Outer glow rings
+            for (let ring = 20; ring > 6; ring--) {
+                const ga = 0.015 + (20 - ring) * 0.006;
+                fillCircle(sx, sy, ring, '#FFE8AA', ga);
+            }
+            // Sun disc
+            fillCircle(sx, sy, 6, '#FFF4CC');
+            // Bright center
+            fillCircle(sx, sy, 3, '#FFFFF0');
+            // Sun reflection on water — broader and brighter than moon
+            for (let y = WT; y < WT + 50; y++) {
+                const dist = y - WT;
+                const wobble = Math.sin(frame * 0.05 + y * 0.3) * (1.5 + dist * 0.12);
+                const w = Math.max(1, 10 - Math.floor(dist * 0.15));
+                const a = Math.max(0, 0.2 - dist * 0.003);
+                pxa(sx + wobble - w / 2, y, w, 1, '#FFE8AA', a);
+                // Secondary shimmer
+                if (dist % 3 === 0) {
+                    const w2 = Math.floor(w * 0.6);
+                    const wobble2 = Math.sin(frame * 0.07 + y * 0.5) * (2 + dist * 0.08);
+                    pxa(sx + wobble2 - w2 / 2 + 4, y, w2, 1, '#FFFFFF', a * 0.3);
+                }
+            }
+        }
 
-        // Handle visibility change to stop/start updates when tab is hidden
-        document.addEventListener('visibilitychange', function() {
-            if (document.hidden) {
-                clearInterval(refreshInterval);
+        // ═══════════════════════════════════════
+        // BIRDS (for clear/sunny)
+        // ═══════════════════════════════════════
+        const birdDefs = [
+            { x: 40, y: 30, spd: 0.25, phase: 0 },
+            { x: 140, y: 22, spd: 0.2, phase: 1.8 },
+            { x: 260, y: 38, spd: 0.3, phase: 3.2 },
+            { x: 340, y: 18, spd: 0.22, phase: 0.9 },
+        ];
+        function drawBirds(color) {
+            const c = color || '#2A4A6A';
+            birdDefs.forEach(b => {
+                const bx = Math.floor(((b.x + frame * b.spd) % (W + 30)) - 15);
+                const by = Math.floor(b.y + Math.sin(frame * 0.08 + b.phase) * 2);
+                const wing = Math.sin(frame * 0.3 + b.phase);
+                // Body
+                px(bx, by, 1, 1, c);
+                // Wings — flap up/down
+                const wy = wing > 0 ? -1 : 1;
+                px(bx - 1, by + wy, 1, 1, c);
+                px(bx + 1, by + wy, 1, 1, c);
+                px(bx - 2, by + wy * 2, 1, 1, c);
+                px(bx + 2, by + wy * 2, 1, 1, c);
+            });
+        }
+
+        // ═══════════════════════════════════════
+        // SCENE RENDERERS
+        // ═══════════════════════════════════════
+
+        function renderClear() {
+            // Bright PNW blue sky
+            drawBandedSky(SKY.clear);
+            // A few wispy clouds
+            drawWispyClouds();
+            drawSun(340, 40);
+            drawBirds('#3A5A7A');
+            drawIslands(ISLAND_COLORS.clear);
+            drawBandedWater(WATER.clear, '#6AB0D0', 0.12);
+            drawSmoke('#D0D8DC', '#B8C0C8');
+        }
+
+        // Wispy thin clouds for clear day
+        function drawWispyClouds() {
+            for (let i = 0; i < 3; i++) {
+                const cx = ((i * 137 + frame * 0.03) % (W + 80)) - 40;
+                const cy = 25 + i * 18;
+                const cw = 30 + i * 10;
+                // Thin horizontal wisps
+                pxa(cx, cy, cw, 1, '#FFFFFF', 0.25);
+                pxa(cx + 3, cy + 1, cw - 6, 1, '#FFFFFF', 0.15);
+                if (i === 1) pxa(cx + 5, cy - 1, cw - 10, 1, '#FFFFFF', 0.12);
+            }
+        }
+
+        function renderOvercast() {
+            drawBandedSky(SKY.overcast);
+            // Thick PNW cloud blanket — slightly lighter than rain
+            drawOvercast('#7E888E', '#868E94', '#747C82');
+            drawIslands(ISLAND_COLORS.overcast);
+            drawBandedWater(WATER.overcast, '#5A8A9A', 0.06);
+            drawSmoke('#C0C4C8', '#A8ACB0');
+        }
+
+        function renderRain() {
+            drawBandedSky();
+            drawOvercast('#6A7A82', '#747E88', '#5E6E76');
+            drawIslands();
+            drawBandedWater();
+            drawSmoke();
+            drawRainParticles();
+        }
+
+        // ═══════════════════════════════════════
+        // WINDY — choppy water, whitecaps, wind streaks, tilted smoke
+        // ═══════════════════════════════════════
+        const windStreaks = [];
+        for (let i = 0; i < 12; i++) {
+            windStreaks.push({
+                x: Math.random() * W,
+                y: 10 + Math.random() * 85,
+                len: 15 + Math.random() * 30,
+                speed: 2.5 + Math.random() * 1.5,
+            });
+        }
+        const whitecaps = [];
+        for (let i = 0; i < 25; i++) {
+            whitecaps.push({
+                x: Math.random() * W,
+                y: WT + 2 + Math.random() * (H - WT - 10),
+                w: 3 + Math.floor(Math.random() * 6),
+                timer: Math.random() * 50,
+                maxTimer: 25 + Math.random() * 30,
+            });
+        }
+
+        function drawWindy() {
+            // Wind streaks across sky
+            windStreaks.forEach(s => {
+                pxa(Math.floor(s.x), Math.floor(s.y), Math.floor(s.len), 1, '#FFFFFF', 0.15);
+                pxa(Math.floor(s.x) + 2, Math.floor(s.y) + 1, Math.floor(s.len * 0.6), 1, '#FFFFFF', 0.08);
+                s.x += s.speed;
+                if (s.x > W + 10) {
+                    s.x = -s.len - Math.random() * 30;
+                    s.y = 10 + Math.random() * 85;
+                }
+            });
+            // Whitecaps on choppy water
+            whitecaps.forEach(wc => {
+                wc.timer++;
+                if (wc.timer > wc.maxTimer) {
+                    wc.timer = 0;
+                    wc.x = Math.random() * W;
+                    wc.y = WT + 2 + Math.random() * (H - WT - 10);
+                    wc.w = 3 + Math.floor(Math.random() * 6);
+                }
+                const t = wc.timer / wc.maxTimer;
+                if (t < 0.4) {
+                    const a = 0.4 * (1 - t * 2.5);
+                    pxa(Math.floor(wc.x), Math.floor(wc.y), wc.w, 1, '#FFFFFF', a);
+                    if (t < 0.2) pxa(Math.floor(wc.x) + 1, Math.floor(wc.y) - 1, wc.w - 2, 1, '#FFFFFF', a * 0.5);
+                }
+            });
+        }
+
+        function drawWindySmoke() {
+            // Smoke blows harder to the right and more horizontal
+            if (frame % 4 === 0) {
+                const bob = Math.sin(frame * 0.06) * 2;
+                smokePuffs.push({
+                    x: W / 2, y: 72 + bob, size: 2, alpha: 0.8,
+                    vx: 0.5 + Math.random() * 0.4, vy: -0.2 - Math.random() * 0.15,
+                    life: 0, maxLife: 20 + Math.random() * 15,
+                    lc: '#C8D0D4', dc: '#A0A8AC',
+                });
+            }
+            for (let i = smokePuffs.length - 1; i >= 0; i--) {
+                const p = smokePuffs[i];
+                p.x += p.vx; p.y += p.vy; p.size += 0.1; p.life++;
+                const t = p.life / p.maxLife;
+                p.alpha = 0.6 * (1 - t);
+                if (p.life > p.maxLife) { smokePuffs.splice(i, 1); continue; }
+                const s = Math.floor(p.size);
+                pxa(Math.floor(p.x) - s, Math.floor(p.y) - s, s * 2, s, t < 0.3 ? p.lc : p.dc, p.alpha);
+            }
+        }
+
+        function renderWindy() {
+            drawBandedSky(SKY.windy);
+            // Partial overcast — windy can be partly cloudy
+            drawOvercast('#6888A0', '#7292A8', '#5E7E96');
+            // Make it patchy — punch some holes
+            for (let i = 0; i < 8; i++) {
+                const hx = ((i * 53 + frame * 0.02) % W);
+                const hy = 15 + (i * 11 % 40);
+                pxa(hx, hy, 20 + (i * 7 % 15), 8 + (i * 3 % 6), SKY.windy[Math.min(i % 5, 4)][2], 0.6);
+            }
+            drawIslands(ISLAND_COLORS.windy);
+            // Choppier water — add wave displacement
+            drawBandedWater(WATER.windy, '#5A9AB0', 0.1);
+            // Extra choppy surface lines
+            for (let y = WT; y < H; y += 4) {
+                const phase = frame * 0.15 + y * 0.8;
+                const x1 = Math.floor((Math.sin(phase) * 0.5 + 0.5) * W);
+                pxa(x1 % W, y, 6 + Math.floor(Math.sin(phase * 0.5) * 3), 1, '#FFFFFF', 0.08);
+            }
+            drawWindy();
+            drawWindySmoke();
+        }
+
+        // ═══════════════════════════════════════
+        // SNOW — falling flakes, cold palette
+        // ═══════════════════════════════════════
+        const snowflakes = [];
+        for (let i = 0; i < 80; i++) {
+            snowflakes.push({
+                x: Math.random() * W,
+                y: Math.random() * H - 20,
+                size: Math.random() > 0.7 ? 2 : 1,
+                speed: 0.5 + Math.random() * 0.8,
+                drift: (Math.random() - 0.5) * 0.3,
+                wobblePhase: Math.random() * Math.PI * 2,
+            });
+        }
+
+        function drawSnow() {
+            snowflakes.forEach(sf => {
+                const wobble = Math.sin(frame * 0.04 + sf.wobblePhase) * 0.5;
+                sf.y += sf.speed;
+                sf.x += sf.drift + wobble;
+                if (sf.y > H) { sf.y = -2 - Math.random() * 20; sf.x = Math.random() * W; }
+                if (sf.x < -5) sf.x = W + 3;
+                if (sf.x > W + 5) sf.x = -3;
+                // Flakes get slightly less visible on water
+                const onWater = sf.y > WT;
+                const a = onWater ? 0.5 : 0.8;
+                pxa(Math.floor(sf.x), Math.floor(sf.y), sf.size, sf.size, '#FFFFFF', a);
+            });
+            // Snow accumulation hints on islands — little white pixels on top edges
+            islandDefs.forEach(isl => {
+                isl.peaks.forEach(pk => {
+                    for (let x = pk.x - 3; x <= pk.x + 3; x++) {
+                        if (x > 0 && x < W && ((x + frame * 0.001) % 3 < 1.5)) {
+                            pxa(x, isl.baseY - pk.h - 1, 1, 1, '#FFFFFF', 0.5);
+                        }
+                    }
+                });
+            });
+        }
+
+        function renderSnow() {
+            drawBandedSky(SKY.snow);
+            drawOvercast('#828A90', '#8A929A', '#7A8288');
+            drawIslands(ISLAND_COLORS.snow);
+            drawBandedWater(WATER.snow, '#5A7888', 0.04);
+            drawSmoke('#B8C0C8', '#A0A8B0');
+            drawSnow();
+        }
+
+        // ═══════════════════════════════════════
+        // FOG — drifting fog layers, low visibility
+        // ═══════════════════════════════════════
+        const fogLayers = [];
+        for (let i = 0; i < 8; i++) {
+            fogLayers.push({
+                x: Math.random() * W - 50,
+                y: 30 + i * 12 + Math.random() * 8,
+                w: 60 + Math.random() * 100,
+                h: 12 + Math.random() * 10,
+                speed: 0.02 + Math.random() * 0.04,
+                alpha: 0.15 + Math.random() * 0.15,
+                dir: Math.random() > 0.5 ? 1 : -1,
+            });
+        }
+        // Water fog — lower, thicker
+        const waterFog = [];
+        for (let i = 0; i < 6; i++) {
+            waterFog.push({
+                x: Math.random() * W - 40,
+                y: WT - 5 + i * 15,
+                w: 80 + Math.random() * 120,
+                h: 10 + Math.random() * 8,
+                speed: 0.015 + Math.random() * 0.03,
+                alpha: 0.2 + Math.random() * 0.15,
+                dir: Math.random() > 0.5 ? 1 : -1,
+            });
+        }
+
+        function drawFog() {
+            // Sky fog layers
+            fogLayers.forEach(fl => {
+                fl.x += fl.speed * fl.dir;
+                if (fl.x > W + 20) fl.x = -fl.w - 10;
+                if (fl.x < -fl.w - 20) fl.x = W + 10;
+                const fx = Math.floor(fl.x);
+                // Soft-edged fog band
+                for (let row = 0; row < fl.h; row++) {
+                    const edgeFade = Math.sin((row / fl.h) * Math.PI);
+                    pxa(fx, fl.y + row, fl.w, 1, '#B8C0C8', fl.alpha * edgeFade);
+                }
+            });
+            // Water fog — thicker, makes islands fade
+            waterFog.forEach(wf => {
+                wf.x += wf.speed * wf.dir;
+                if (wf.x > W + 20) wf.x = -wf.w - 10;
+                if (wf.x < -wf.w - 20) wf.x = W + 10;
+                const fx = Math.floor(wf.x);
+                for (let row = 0; row < wf.h; row++) {
+                    const edgeFade = Math.sin((row / wf.h) * Math.PI);
+                    pxa(fx, wf.y + row, wf.w, 1, '#A8B0B8', wf.alpha * edgeFade);
+                }
+            });
+        }
+
+        function renderFog() {
+            drawBandedSky(SKY.fog);
+            // Islands drawn first, then fog obscures them
+            drawIslands(ISLAND_COLORS.fog);
+            // Heavy fog wash over islands
+            pxa(0, 80, W, 30, '#A8B0B8', 0.4);
+            drawBandedWater(WATER.fog, '#7A9098', 0.03);
+            drawFog();
+            drawSmoke('#C0C4C8', '#B0B4B8');
+            // Extra fog haze over everything — very low visibility PNW style
+            pxa(0, 0, W, H, '#A0A8AE', 0.12);
+        }
+
+        function renderNightClear() {
+            drawBandedSky(SKY.night_clear);
+            drawStars(1.0);
+            drawMoon(320, 35, 0.25);
+            drawIslands(ISLAND_COLORS.night_clear);
+            drawBandedWater(WATER.night_clear, '#1A3050', 0.06);
+            drawNavLights();
+            drawSmoke('#505868', '#383E48');
+        }
+
+        // Heavy overcast layer — nearly full sky coverage, PNW style
+        function drawOvercast(baseColor, lightColor, darkColor) {
+            const bc = baseColor || '#2A3040';
+            const lc = lightColor || '#323848';
+            const dc = darkColor || '#222838';
+            // Fill the sky with a thick cloud blanket from y=0 to ~90
+            // Use layered horizontal bands with texture for that heavy overcast look
+            for (let y = 0; y < 85; y++) {
+                // Base layer — solid coverage
+                const bandColor = y < 20 ? dc : y < 50 ? bc : lc;
+                px(0, y, W, 1, bandColor);
+            }
+            // Texture: darker patches for depth
+            for (let y = 5; y < 80; y += 2) {
+                for (let x = 0; x < W; x += 3) {
+                    const noise = ((x * 7 + y * 13 + frame * 0.3) % 17);
+                    if (noise < 3) pxa(x, y, 2, 2, dc, 0.3);
+                    else if (noise < 5) pxa(x, y, 3, 1, lc, 0.2);
+                }
+            }
+            // Slowly drifting darker cloud masses within the overcast
+            for (let i = 0; i < 6; i++) {
+                const cx = ((i * 73 + frame * (0.03 + i * 0.005)) % (W + 60)) - 30;
+                const cy = 10 + i * 12;
+                const cw = 40 + (i * 17 % 30);
+                const ch = 8 + (i * 7 % 6);
+                pxa(cx, cy, cw, ch, dc, 0.25);
+                pxa(cx + 2, cy + 1, cw - 4, ch - 2, dc, 0.15);
+            }
+            // Bottom edge — ragged transition to sky
+            for (let x = 0; x < W; x++) {
+                const edge = 80 + ((x * 3 + 7) % 7) - 3;
+                const h = 3 + ((x * 5) % 4);
+                pxa(x, edge, 1, h, bc, 0.4 + ((x * 11) % 5) * 0.05);
+            }
+        }
+
+        function renderNightCloudy() {
+            drawBandedSky(SKY.night_cloudy);
+            // Very faint stars — just a few peeking through gaps
+            drawStars(0.08);
+            // Moon barely visible through cloud cover
+            drawMoon(320, 35, 0.25);
+            pxa(0, 0, W, WT, '#14182A', 0.5); // heavy dimming
+            // Thick overcast blanket
+            drawOvercast('#2A3040', '#323848', '#1E2636');
+            drawIslands(ISLAND_COLORS.night_cloudy);
+            drawBandedWater(WATER.night_cloudy, '#1A2838', 0.04);
+            drawNavLights();
+            drawSmoke('#404850', '#303840');
+        }
+
+        function renderNightRain() {
+            drawBandedSky(SKY.night_rain);
+            // No stars — full overcast
+            drawOvercast('#181C28', '#202430', '#121620');
+            drawIslands(ISLAND_COLORS.night_rain);
+            drawBandedWater(WATER.night_rain, '#142028', 0.04);
+            drawNavLights();
+            drawSmoke('#383E44', '#282E34');
+            drawRainParticles('#4A6070', 0.25, '#3A5060');
+        }
+
+        // ═══════════════════════════════════════
+        // SCENE SWITCHER
+        // ═══════════════════════════════════════
+        const SCENE_RENDERERS = {
+            clear: renderClear,
+            overcast: renderOvercast,
+            rain: renderRain,
+            windy: renderWindy,
+            snow: renderSnow,
+            fog: renderFog,
+            night_clear: renderNightClear,
+            night_cloudy: renderNightCloudy,
+            night_rain: renderNightRain,
+        };
+
+        // Called by the weather system to switch scenes
+        FerryApp.setWeatherScene = function(sceneName) {
+            if (SCENE_RENDERERS[sceneName]) {
+                currentScene = sceneName;
+                // Clear smoke puffs on scene change to avoid color mismatch
+                smokePuffs.length = 0;
+            }
+        };
+
+        // ═══════════════════════════════════════
+        // BODY BACKGROUND COLOR PER SCENE
+        // ═══════════════════════════════════════
+        const SCENE_BG = {
+            clear: '#7AAECC',
+            overcast: '#929AA0',
+            rain: '#8A9AA2',
+            windy: '#88A8B8',
+            snow: '#96A0A8',
+            fog: '#A8B0B6',
+            night_clear: '#0E1424',
+            night_cloudy: '#1A1E32',
+            night_rain: '#101420',
+        };
+
+        // ═══════════════════════════════════════
+        // RENDER LOOP — 12 FPS
+        // ═══════════════════════════════════════
+        function render() {
+            X.clearRect(0, 0, W, H);
+            const renderer = SCENE_RENDERERS[currentScene] || renderRain;
+            renderer();
+            bobFerry();
+            frame++;
+
+            // Update body bg to match scene
+            const bg = SCENE_BG[currentScene];
+            if (bg && document.body.style.background !== bg) {
+                document.body.style.background = bg;
+            }
+            // Night mode class for text colors
+            if (currentScene.startsWith('night')) {
+                document.body.classList.add('night-mode');
             } else {
-                fetchFerryData();
-                refreshInterval = setInterval(fetchFerryData, 60000);
+                document.body.classList.remove('night-mode');
             }
-        });
+
+            setTimeout(() => requestAnimationFrame(render), 1000 / 12);
+        }
+        render();
+    })();
+
+    // ===== INIT =====
+    fetchFerryData();
+    fetchVesselData();
+    fetchWeatherData();
+
+    FerryApp.ferryInterval = setInterval(fetchFerryData, 60000);
+    FerryApp.vesselInterval = setInterval(fetchVesselData, 20000);
+    setInterval(fetchWeatherData, 300000);
+
+    document.addEventListener('visibilitychange', () => {
+        if (document.hidden) {
+            clearInterval(FerryApp.ferryInterval);
+            clearInterval(FerryApp.vesselInterval);
+        } else {
+            fetchFerryData();
+            fetchVesselData();
+            FerryApp.ferryInterval = setInterval(fetchFerryData, 60000);
+            FerryApp.vesselInterval = setInterval(fetchVesselData, 20000);
+        }
+    });
     </script>
 </body>
 </html>
