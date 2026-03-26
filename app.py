@@ -8,11 +8,12 @@ Browser requests never hit WSF directly.
 from flask import Flask, jsonify, render_template
 from flask_cors import CORS
 import requests
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 import os
 import re
 import time
 import threading
+from zoneinfo import ZoneInfo
 import logging
 from typing import Dict, List, Any, Optional
 
@@ -21,6 +22,13 @@ from typing import Dict, List, Any, Optional
 # ---------------------------------------------------------------------------
 
 API_KEY = os.environ.get('WSF_API_KEY', '')
+
+# Timezone — all times are Pacific
+PACIFIC = ZoneInfo('America/Los_Angeles')
+
+def now_pacific() -> datetime:
+    """Get current time in Pacific timezone, as a naive datetime for comparison with WSF dates."""
+    return datetime.now(PACIFIC).replace(tzinfo=None)
 
 # WSF API base URLs
 SCHEDULE_URL = "https://www.wsdot.wa.gov/ferries/api/schedule/rest"
@@ -59,15 +67,19 @@ log = logging.getLogger('ferry-display')
 # ---------------------------------------------------------------------------
 
 def parse_dotnet_date(date_string: str) -> Optional[datetime]:
-    """Parse .NET JSON date format: /Date(1769601900000-0800)/"""
+    """Parse .NET JSON date format: /Date(1769601900000-0800)/
+    Always returns a naive datetime in Pacific time."""
     if not date_string:
         return None
     match = re.search(r'/Date\((\d+)([-+]\d{4})?\)/', date_string)
     if match:
         timestamp_ms = int(match.group(1))
-        return datetime.fromtimestamp(timestamp_ms / 1000)
+        # Convert UTC timestamp to Pacific, then strip tzinfo for naive comparison
+        utc_dt = datetime.fromtimestamp(timestamp_ms / 1000, tz=timezone.utc)
+        return utc_dt.astimezone(PACIFIC).replace(tzinfo=None)
     try:
-        return datetime.fromisoformat(date_string.replace('Z', '+00:00'))
+        dt = datetime.fromisoformat(date_string.replace('Z', '+00:00'))
+        return dt.astimezone(PACIFIC).replace(tzinfo=None)
     except (ValueError, TypeError):
         return None
 
@@ -125,7 +137,7 @@ class WSFCache:
     def get_ferries(self) -> Dict[str, Any]:
         """Return the full ferry data payload for /api/ferries."""
         with self._lock:
-            now = datetime.now()
+            now = now_pacific()
             schedules = self._data['schedules']
             alerts = self._data['alerts']
             bulletins = self._data['bulletins']
@@ -178,7 +190,7 @@ class WSFCache:
         """Return vessel locations for /api/vessels."""
         with self._lock:
             return {
-                'timestamp': datetime.now().isoformat(),
+                'timestamp': now_pacific().isoformat(),
                 'fetched_at': self._meta['vessels_at'].isoformat() if self._meta['vessels_at'] else None,
                 'stale': self._is_stale('vessels_at'),
                 'vessels': self._data['vessel_locations'],
@@ -192,7 +204,7 @@ class WSFCache:
                     return None
                 return {
                     'time': dt.isoformat(),
-                    'age_seconds': round((datetime.now() - dt).total_seconds()),
+                    'age_seconds': round((now_pacific() - dt).total_seconds()),
                 }
             return {
                 'api_key_configured': bool(API_KEY),
@@ -210,7 +222,7 @@ class WSFCache:
         ts = self._meta.get(meta_key)
         if not ts:
             return True
-        return (datetime.now() - ts).total_seconds() > 90
+        return (now_pacific() - ts).total_seconds() > 90
 
     # -- background fetching --
 
@@ -250,7 +262,7 @@ class WSFCache:
     def _record_error(self, msg: str):
         with self._lock:
             self._meta['errors'].append({
-                'time': datetime.now().isoformat(),
+                'time': now_pacific().isoformat(),
                 'message': msg,
             })
             # Keep only last 50 errors
@@ -331,15 +343,15 @@ class WSFCache:
             self._data['alerts'] = alerts
             self._data['bulletins'] = bulletins
             self._data['boat_analysis'] = boat_analysis
-            self._meta['schedules_at'] = datetime.now()
-            self._meta['alerts_at'] = datetime.now()
-            self._meta['bulletins_at'] = datetime.now()
+            self._meta['schedules_at'] = now_pacific()
+            self._meta['alerts_at'] = now_pacific()
+            self._meta['bulletins_at'] = now_pacific()
 
         log.info(f"Schedules updated ({len(new_schedules)} directions, {len(alerts)} alerts)")
 
     def _parse_schedule(self, data: Any) -> Dict[str, Any]:
         """Parse WSF schedule response into our format."""
-        now = datetime.now()
+        now = now_pacific()
         upcoming = []
         all_times_for_analysis = []
         departing_name = ''
@@ -604,7 +616,7 @@ class WSFCache:
 
         with self._lock:
             self._data['vessel_locations'] = relevant
-            self._meta['vessels_at'] = datetime.now()
+            self._meta['vessels_at'] = now_pacific()
 
         log.info(f"Vessels updated ({len(relevant)} on Vashon routes)")
 

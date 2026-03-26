@@ -104,19 +104,19 @@
         --font-headline: 'Tiempos Headline', 'Georgia', serif;
         --font-fine: 'Tiempos Fine', 'Georgia', serif;
         --font-body: 'Die Grotesk', 'Helvetica Neue', sans-serif;
-        --font-size-route: clamp(1.4rem, 3vw, 2rem);
-        --font-size-time: clamp(1.1rem, 2.2vw, 1.5rem);
-        --font-size-body: clamp(0.8rem, 1.2vw, 0.95rem);
-        --font-size-small: clamp(0.7rem, 1vw, 0.82rem);
-        --font-size-tiny: clamp(0.6rem, 0.8vw, 0.72rem);
+        --font-size-route: clamp(2rem, 4vw, 3rem);
+        --font-size-time: clamp(1.4rem, 2.8vw, 2rem);
+        --font-size-body: clamp(1rem, 1.8vw, 1.3rem);
+        --font-size-small: clamp(0.85rem, 1.4vw, 1.1rem);
+        --font-size-tiny: clamp(0.75rem, 1.1vw, 0.9rem);
 
         /* Spacing */
         --space-xs: 4px;
         --space-sm: 8px;
-        --space-md: 16px;
-        --space-lg: 24px;
-        --space-xl: 32px;
-        --space-2xl: 48px;
+        --space-md: 14px;
+        --space-lg: 20px;
+        --space-xl: 28px;
+        --space-2xl: 40px;
 
         /* Effects */
         --radius-card: 20px;
@@ -167,10 +167,13 @@
     }
 
     .container {
-        max-width: 1100px;
+        max-width: 1200px;
         margin: 0 auto;
         position: relative;
         z-index: 1;
+        min-height: calc(100vh - 20px);
+        display: flex;
+        flex-direction: column;
     }
 
     /* ===== HEADER ===== */
@@ -270,18 +273,27 @@
     .alert-title { font-weight: 700; }
 
     /* ===== ROUTES ===== */
+    #content {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+    }
+
     .routes-container {
         display: grid;
         grid-template-columns: 1fr 1fr;
         gap: var(--space-lg);
         margin-bottom: var(--space-lg);
+        flex: 1;
     }
 
     .route-card {
         background: var(--color-card-alpha);
         border-radius: var(--radius-card);
-        padding: var(--space-xl) var(--space-lg) var(--space-lg);
+        padding: var(--space-lg) var(--space-md) var(--space-md);
         box-shadow: var(--shadow-card);
+        display: flex;
+        flex-direction: column;
     }
 
     .route-title {
@@ -291,13 +303,20 @@
         font-size: var(--font-size-route);
         color: var(--color-text-heading);
         text-align: center;
-        margin-bottom: var(--space-sm);
+        margin-bottom: var(--space-md);
         letter-spacing: -0.01em;
     }
 
     /* ===== DIRECTION ===== */
     .direction-section {
-        margin-bottom: var(--space-lg);
+        margin-bottom: var(--space-md);
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .direction-section .sailings {
+        flex: 1;
     }
 
     .direction-section:last-child { margin-bottom: 0; }
@@ -309,15 +328,17 @@
         text-transform: uppercase;
         letter-spacing: 0.08em;
         color: var(--color-text-muted);
-        margin-bottom: var(--space-sm);
+        margin-bottom: var(--space-xs);
         padding: 0 var(--space-xs);
     }
 
     /* ===== VESSEL TRACKER ===== */
     .vessel-tracker {
         position: relative;
-        margin: var(--space-sm) 0 var(--space-lg);
-        padding: var(--space-xs) 0;
+        margin: 0;
+        padding: var(--space-sm) var(--space-md) var(--space-lg);
+        background: transparent;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.08);
     }
 
     /* Status label above the bar */
@@ -337,9 +358,9 @@
     /* The track bar */
     .vessel-track-bar {
         position: relative;
-        height: 28px;
-        background: var(--color-vessel-track);
-        border-radius: 14px;
+        height: 34px;
+        background: transparent;
+        border-radius: 0;
         overflow: visible;
     }
 
@@ -348,10 +369,10 @@
         top: 50%;
         left: 12%;
         right: 12%;
-        height: 2px;
+        height: 3px;
         background: var(--color-vessel-dot);
         transform: translateY(-50%);
-        border-radius: 1px;
+        border-radius: 2px;
     }
 
     /* Terminal dots at each end */
@@ -359,8 +380,8 @@
     .vessel-dot-end {
         position: absolute;
         top: 50%;
-        width: 6px;
-        height: 6px;
+        width: 8px;
+        height: 8px;
         border-radius: 50%;
         background: var(--color-vessel-dot);
         transform: translateY(-50%);
@@ -372,9 +393,9 @@
     /* Terminal labels under each dot */
     .vessel-terminal-label {
         position: absolute;
-        bottom: -14px;
+        bottom: -18px;
         font-family: var(--font-body);
-        font-size: 0.55rem;
+        font-size: var(--font-size-tiny);
         color: var(--color-text-muted);
         white-space: nowrap;
     }
@@ -390,7 +411,7 @@
     }
 
     .vessel-icon img {
-        width: 28px;
+        width: 40px;
         height: auto;
         image-rendering: pixelated;
         image-rendering: crisp-edges;
@@ -441,7 +462,7 @@
         font-family: var(--font-body);
         font-size: var(--font-size-tiny);
         font-weight: 700;
-        padding: 1px 7px;
+        padding: 2px 8px;
         border-radius: 8px;
         margin-left: var(--space-xs);
     }
@@ -471,6 +492,7 @@
         justify-content: space-between;
         align-items: center;
         transition: background var(--transition-fast);
+        flex: 1;
     }
 
     .sailing:nth-child(odd) {
@@ -496,7 +518,7 @@
     .sailing-vessel {
         font-family: var(--font-body);
         font-weight: 300;
-        font-size: var(--font-size-tiny);
+        font-size: var(--font-size-small);
         color: var(--color-text-muted);
     }
 
@@ -977,14 +999,14 @@
         if (ba && ba.boat_count) {
             const cls = (ba.boat_count === 1 || ba.boat_count === 3) ? 'service-good' : 'service-degraded';
             const vessels = ba.unique_vessels || [];
-            let text = `<span class="boat-count">${ba.boat_count}-Boat Service</span>`;
+            let text = `<span class="boat-count">${ba.boat_count} Boats</span>`;
             if (vessels.length) text += ` &middot; ${vessels.join(', ')}`;
-            if (ba.avg_interval_minutes) text += ` &middot; ~${ba.avg_interval_minutes}m intervals`;
+            if (ba.avg_interval_minutes) text += ` &middot; ~${ba.avg_interval_minutes}m int`;
             return `<div class="boat-status ${cls}">${text}</div>`;
         }
         // For South route: show vessel name, or out of service
         if (fallbackVesselName) {
-            return `<div class="boat-status service-good"><span class="boat-count">1-Boat Service</span> &middot; ${fallbackVesselName}</div>`;
+            return `<div class="boat-status service-good"><span class="boat-count">1 Boat</span> &middot; ${fallbackVesselName}</div>`;
         }
         // No vessel found — possibly out of service
         return `<div class="boat-status service-degraded"><span class="boat-count">Out of Service</span></div>`;
